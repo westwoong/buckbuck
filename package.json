@@ -23,8 +23,12 @@
     "@nestjs/common": "^10.2.4",
     "@nestjs/core": "^10.2.4",
     "@nestjs/platform-express": "^10.2.4",
+    "@nestjs/typeorm": "^10.0.0",
+    "mysql2": "^3.6.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "typeorm": "^0.3.17",
+    "typeorm-transactional": "^0.4.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.1.17",
