@@ -13,6 +13,9 @@ export class UserEntity extends DefaultEntityColumn {
     password: string;
 
     @Column({nullable: false})
+    salt: string;
+
+    @Column({nullable: false})
     name: string;
 
     @Column({nullable: false})
