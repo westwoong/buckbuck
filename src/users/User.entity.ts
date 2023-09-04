@@ -1,5 +1,7 @@
 import {Column, Entity, OneToMany} from "typeorm";
 import {DefaultEntityColumn} from "../config/default.entity";
+import {PostEntity} from "../posts/Post.entity";
+import {CommentEntity} from "../comments/Comment.entity";
 
 
 @Entity('users')
@@ -25,4 +27,9 @@ export class UserEntity extends DefaultEntityColumn {
     @Column({nullable: false})
     address: string;
 
+    @OneToMany(() => PostEntity, (post) => post.user)
+    post: PostEntity[];
+
+    @OneToMany(() => CommentEntity, (comment) => comment.user)
+    comment: CommentEntity[];
 }
