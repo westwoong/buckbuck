@@ -1,4 +1,4 @@
-import {Column, Entity} from "typeorm";
+import {Column, Entity, OneToMany} from "typeorm";
 import {DefaultEntityColumn} from "../config/default.entity";
 
 
@@ -24,6 +24,5 @@ export class UserEntity extends DefaultEntityColumn {
 
     @Column({nullable: false})
     address: string;
-
 
 }
