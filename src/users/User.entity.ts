@@ -2,29 +2,30 @@ import {Column, Entity, OneToMany} from "typeorm";
 import {DefaultEntityColumn} from "../config/default.entity";
 import {PostEntity} from "../posts/Post.entity";
 import {CommentEntity} from "../comments/Comment.entity";
+import {SignUpRequestDto} from "./dto/signUp.request.dto";
 
 
 @Entity('users')
 export class UserEntity extends DefaultEntityColumn {
-    @Column({nullable: false})
+    @Column()
     account: string;
 
-    @Column({nullable: false})
+    @Column()
     password: string;
 
-    @Column({nullable: false})
+    @Column({nullable: true})
     salt: string;
 
-    @Column({nullable: false})
+    @Column()
     name: string;
 
-    @Column({nullable: false})
+    @Column()
     email: string;
 
-    @Column({nullable: false})
+    @Column()
     phoneNumber: string;
 
-    @Column({nullable: false})
+    @Column()
     nickName: string;
 
     @Column({nullable: true})
@@ -35,4 +36,16 @@ export class UserEntity extends DefaultEntityColumn {
 
     @OneToMany(() => CommentEntity, (comment) => comment.user)
     comment: CommentEntity[];
+
+    constructor(signUpRequestDto: SignUpRequestDto) {
+        super();
+        if (signUpRequestDto) {
+            this.account = signUpRequestDto.account;
+            this.password = signUpRequestDto.password;
+            this.name = signUpRequestDto.name;
+            this.email = signUpRequestDto.email;
+            this.phoneNumber = signUpRequestDto.phoneNumber;
+            this.nickName = signUpRequestDto.nickName;
+        }
+    }
 }

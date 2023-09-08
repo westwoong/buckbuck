@@ -6,16 +6,16 @@ import {PostToCategoriesEntity} from "../categories/PostToCategories.entity";
 
 @Entity('posts')
 export class PostEntity extends DefaultEntityColumn {
-    @Column({nullable: false})
+    @Column()
     title: string;
 
-    @Column({nullable: false})
+    @Column()
     content: string;
 
-    @Column({nullable: false})
+    @Column()
     cost: number;
 
-    @Column({nullable: false})
+    @Column()
     level: string
 
     @OneToMany(() => CommentEntity, (comment) => comment.post)
