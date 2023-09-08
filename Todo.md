@@ -9,4 +9,6 @@
   - 비밀번호 암호화
 
 ## TODO
-- SignUp Validator 적정메소드 호출 에러 해결하기
+- SignUp Validator 정적메소드 호출 에러 해결하기
+- 유효성 검증 분리하기
+- signUp() 코드 리팩토링
