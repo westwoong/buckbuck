@@ -9,6 +9,7 @@ export class UserController {
 
     @Post('/signup')
     signUp(@Body() signUpRequestDto: SignUpRequestDto) {
+        console.log(signUpRequestDto);
         return this.userService.signUp(signUpRequestDto);
     }
 }

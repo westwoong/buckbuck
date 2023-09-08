@@ -9,7 +9,9 @@ export class UserService {
 
         console.log(account, password, name, email, phoneNumber, nickName);
 
-        return signUpRequestDto;
+
+
+        return {signUpRequestDto, status: '성공!'};
 
 
     }
