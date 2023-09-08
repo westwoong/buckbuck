@@ -27,7 +27,7 @@ export class UserEntity extends DefaultEntityColumn {
     @Column({nullable: false})
     nickName: string;
 
-    @Column({nullable: false})
+    @Column({nullable: true})
     address: string;
 
     @OneToMany(() => PostEntity, (post) => post.user)
