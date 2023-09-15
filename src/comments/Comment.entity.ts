@@ -5,10 +5,10 @@ import {PostEntity} from "../posts/Post.entity";
 
 @Entity('comments')
 export class CommentEntity extends DefaultEntityColumn {
-    @Column({nullable: false})
+    @Column()
     content: string;
 
-    @Column({nullable: false})
+    @Column()
     proposalCost: number;
 
     @ManyToOne(() => UserEntity, (user) => user.comment)

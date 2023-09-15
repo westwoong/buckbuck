@@ -4,7 +4,7 @@ import {PostToCategoriesEntity} from "./PostToCategories.entity";
 
 @Entity('categories')
 export class CategoriesEntity extends DefaultEntityColumn {
-    @Column({nullable: false})
+    @Column()
     name: string;
 
     @OneToMany(() => PostToCategoriesEntity, (postToCategory) => postToCategory.category)
