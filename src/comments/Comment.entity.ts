@@ -2,6 +2,7 @@ import {Column, Entity, ManyToOne} from "typeorm";
 import {DefaultEntityColumn} from "../config/default.entity";
 import {UserEntity} from "../users/User.entity";
 import {PostEntity} from "../posts/Post.entity";
+import {CreateCommentRequestDto} from "./dto/createComment.request.dto";
 
 @Entity('comments')
 export class CommentEntity extends DefaultEntityColumn {
@@ -16,5 +17,13 @@ export class CommentEntity extends DefaultEntityColumn {
 
     @ManyToOne(() => PostEntity, (post) => post.comment)
     post: PostEntity;
+
+    constructor(createCommentRequestDto: CreateCommentRequestDto) {
+        super();
+        if (createCommentRequestDto) {
+            this.content = createCommentRequestDto.content;
+            this.proposalCost = createCommentRequestDto.proposalCost;
+        }
+    }
 
 }
