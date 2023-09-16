@@ -1,10 +1,12 @@
-import {ConflictException, Injectable, InternalServerErrorException} from '@nestjs/common';
+import {BadRequestException, ConflictException, Injectable, InternalServerErrorException} from '@nestjs/common';
 import {SignUpRequestDto} from "./dto/signUp.request.dto";
 import {Repository} from "typeorm";
 import {UserEntity} from "./User.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Transactional} from "typeorm-transactional";
 import * as crypto from "crypto";
+import {SignInRequestDto} from "./dto/signIn.request.dto";
+import {AuthService} from "../auth/auth.service";
 
 
 @Injectable()
@@ -12,7 +14,8 @@ export class UserService {
 
     constructor(
         @InjectRepository(UserEntity)
-        private readonly userRepository: Repository<UserEntity>) {
+        private readonly userRepository: Repository<UserEntity>,
+        private readonly authService: AuthService) {
     }
 
     @Transactional()
@@ -75,5 +78,26 @@ export class UserService {
                 resolve(key.toString('base64'))
             });
         });
+    }
+
+    async signIn(signInRequestDto: SignInRequestDto) {
+        const {account, password} = signInRequestDto;
+        const user = await this.userRepository.findOne({
+            where: {
+                account: account
+            }
+        })
+        if (!user) {
+            throw new BadRequestException('존재하지 않는 계정입니다');
+        }
+
+        console.log(user.account);
+
+        const accessToken = this.authService.signInWithJwt({
+            userId: user.id
+        });
+        console.log(accessToken);
+
+        return accessToken;
     }
 }
