@@ -17,7 +17,8 @@ export class CommentService {
     }
 
     async create(postId: PostEntity, createCommentRequestDto: CreateCommentRequestDto) {
-        const comment = new CommentEntity(createCommentRequestDto);
+        const {content, proposalCost} = createCommentRequestDto;
+        const comment = new CommentEntity({content, proposalCost});
         comment.post = postId;
 
         await this.commentRepository.save(comment);
