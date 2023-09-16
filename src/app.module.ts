@@ -8,7 +8,7 @@ import {AuthModule} from "./auth/auth.module";
 
 @Module({
     imports: [
-        UserModule, CategoriesModule, CommentModule, PostModule, ORMModule, AuthModule, PostModule
+        UserModule, CategoriesModule, CommentModule, PostModule, ORMModule, AuthModule, PostModule, CommentModule
     ],
 })
 export class AppModule {
