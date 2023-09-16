@@ -1,18 +1,24 @@
-import {ConflictException, Injectable, InternalServerErrorException} from '@nestjs/common';
+import {BadRequestException, ConflictException, Injectable, InternalServerErrorException} from '@nestjs/common';
 import {SignUpRequestDto} from "./dto/signUp.request.dto";
 import {Repository} from "typeorm";
 import {UserEntity} from "./User.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Transactional} from "typeorm-transactional";
 import * as crypto from "crypto";
+import {SignInRequestDto} from "./dto/signIn.request.dto";
+import {AuthService} from "../auth/auth.service";
+import e from "express";
 
+const ITERATIONS = 105820;
+const KEY_LENGTH = 64;
 
 @Injectable()
 export class UserService {
 
     constructor(
         @InjectRepository(UserEntity)
-        private readonly userRepository: Repository<UserEntity>) {
+        private readonly userRepository: Repository<UserEntity>,
+        private readonly authService: AuthService) {
     }
 
     @Transactional()
@@ -65,14 +71,35 @@ export class UserService {
     }
 
     private async hashPassword(password: string, salt: string): Promise<string> {
-        const iterations = 105820;
-        const keyLength = 64;
         return new Promise((resolve) => {
-            crypto.pbkdf2(password, salt, iterations, keyLength, 'SHA512', (err, key) => {
+            crypto.pbkdf2(password, salt, ITERATIONS, KEY_LENGTH, 'SHA512', (err, key) => {
                 if (err) {
                     throw new InternalServerErrorException(err)
                 }
                 resolve(key.toString('base64'))
+            });
+        });
+    }
+
+    async signIn(signInRequestDto: SignInRequestDto) {
+        const {account, password} = signInRequestDto;
+        const user = await this.userRepository.findOne({
+            where: {
+                account: account
+            }
+        })
+        if (!user) {
+            throw new BadRequestException('존재하지 않는 계정입니다');
+        }
+        return new Promise((resolve, reject) => {
+            crypto.pbkdf2(password, user.salt, ITERATIONS, KEY_LENGTH, 'SHA512', async (err, buffer) => {
+                const hashedPassword = buffer.toString('base64');
+                (hashedPassword === user.password)
+                    ? resolve(this.authService.signInWithJwt({ userId: user.id }))
+                    : reject(new BadRequestException('비밀번호가 틀렸습니다.'));
+                if (err) {
+                    console.log(err);
+                }
             });
         });
     }
