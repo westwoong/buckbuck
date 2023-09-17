@@ -26,7 +26,7 @@ export class PostService {
             where: {
                 id: 3
             }
-        }); // 또는 해당 사용자를 찾는 적절한 방법 사용
+        });
         if (user) {
             post.user = user;
         }

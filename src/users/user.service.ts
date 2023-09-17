@@ -95,10 +95,11 @@ export class UserService {
             crypto.pbkdf2(password, user.salt, ITERATIONS, KEY_LENGTH, 'SHA512', async (err, buffer) => {
                 const hashedPassword = buffer.toString('base64');
                 (hashedPassword === user.password)
-                    ? resolve(this.authService.signInWithJwt({ userId: user.id }))
+                    ? resolve(this.authService.signInWithJwt({userId: user.id}))
                     : reject(new BadRequestException('비밀번호가 틀렸습니다.'));
                 if (err) {
                     console.log(err);
+                    throw new InternalServerErrorException(err);
                 }
             });
         });
