@@ -1,9 +1,10 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {CommentEntity} from "./Comment.entity";
 import {Repository} from "typeorm";
 import {CreateCommentRequestDto} from "./dto/createComment.request.dto";
 import {PostEntity} from "../posts/Post.entity";
+import {Transactional} from "typeorm-transactional";
 
 @Injectable()
 export class CommentService {
@@ -16,6 +17,7 @@ export class CommentService {
     ) {
     }
 
+    @Transactional()
     async create(postId: PostEntity, createCommentRequestDto: CreateCommentRequestDto) {
         const {content, proposalCost} = createCommentRequestDto;
         const comment = new CommentEntity({content, proposalCost});
@@ -25,4 +27,16 @@ export class CommentService {
 
         return comment;
     }
+
+    @Transactional()
+    async delete(commentId: number) {
+        const comment = await this.commentRepository.findOne({
+            where: {
+                id: commentId
+            }
+        })
+        if (!comment) throw new NotFoundException('해당 댓글은 존재하지않습니다')
+        await this.commentRepository.remove(comment);
+    }
+
 }
