@@ -8,11 +8,11 @@ export class ReviewEntity extends DefaultEntityColumn {
 
     @ManyToOne(() => UserEntity, (user) => user.requesterId)
     @JoinColumn()
-    requesterId: UserEntity[];
+    requesterId: UserEntity;
 
     @ManyToOne(() => UserEntity, (user) => user.performerId)
     @JoinColumn()
-    performerId: UserEntity[];
+    performerId: UserEntity;
 
     @ManyToOne(() => PostEntity, (post) => post.review)
     post: PostEntity[];
@@ -21,8 +21,8 @@ export class ReviewEntity extends DefaultEntityColumn {
     stars: number;
 
     constructor(createReviewRequestDto: {
-        requesterId: UserEntity[],
-        performerId: UserEntity[],
+        requesterId: UserEntity,
+        performerId: UserEntity,
         post: PostEntity[],
         starts: number
     }) {
