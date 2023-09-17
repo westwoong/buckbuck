@@ -1,8 +1,9 @@
-import {Column, Entity, OneToMany} from "typeorm";
+import {Column, Entity, JoinColumn, OneToMany} from "typeorm";
 import {DefaultEntityColumn} from "../config/default.entity";
 import {PostEntity} from "../posts/Post.entity";
 import {CommentEntity} from "../comments/Comment.entity";
 import {SignUpRequestDto} from "./dto/signUp.request.dto";
+import {ReviewEntity} from "../reviews/Review.entity";
 
 
 @Entity('users')
@@ -36,6 +37,13 @@ export class UserEntity extends DefaultEntityColumn {
 
     @OneToMany(() => CommentEntity, (comment) => comment.user)
     comment: CommentEntity[];
+
+    @OneToMany(() => ReviewEntity, (review) => review.requesterId)
+    requesterId: ReviewEntity[];
+
+    @OneToMany(() => ReviewEntity, (review) => review.performerId)
+    performerId: ReviewEntity[];
+
 
     constructor(signUpRequestDto: SignUpRequestDto) {
         super();
