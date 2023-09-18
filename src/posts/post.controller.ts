@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, HttpCode, Param, Post} from '@nestjs/common';
+import {Body, Controller, Delete, HttpCode, Param, Patch, Post} from '@nestjs/common';
 import {PostService} from "./post.service";
 import {CreatePostRequestDto} from "./dto/createPost.request.dto";
 
@@ -20,5 +20,12 @@ export class PostController {
     delete(@Param('postId') postId: string) {
         const parsedPostId = parseInt(postId);
         return this.postService.delete(parsedPostId);
+    }
+
+    @Patch(':postId')
+    @HttpCode(200)
+    modify(@Param('postId') postId: string, @Body() modifyPostRequestDto: CreatePostRequestDto) {
+        const parsedPostId = parseInt(postId);
+        return this.postService.modify(parsedPostId, modifyPostRequestDto)
     }
 }
