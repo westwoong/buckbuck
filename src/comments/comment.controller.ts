@@ -20,7 +20,15 @@ export class CommentController {
     @Delete(':commentId')
     @HttpCode(204)
     delete(@Param('commentId') commentId: string) {
-        const parsedCommentId = parseInt(commentId)
+        const parsedCommentId = parseInt(commentId);
         return this.commentService.delete(parsedCommentId);
+    }
+
+    @Patch(':commentId')
+    @HttpCode(200)
+    modify(@Param('commentId') commentId: string,
+           @Body() modifyCommentRequestDto: CreateCommentRequestDto) {
+        const parsedCommentId = parseInt(commentId);
+        return this.commentService.modify(parsedCommentId, modifyCommentRequestDto);
     }
 }

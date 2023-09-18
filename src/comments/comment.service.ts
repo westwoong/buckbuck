@@ -39,4 +39,20 @@ export class CommentService {
         await this.commentRepository.remove(comment);
     }
 
+    @Transactional()
+    async modify(commentId: number, modifyCommentRequestDto: CreateCommentRequestDto) {
+        const {content, proposalCost} = modifyCommentRequestDto;
+        const comment = await this.commentRepository.findOne({
+            where: {
+                id: commentId
+            }
+        })
+        if (!comment) throw new NotFoundException('해당 댓글은 존재하지않습니다')
+
+        comment.content = content;
+        comment.proposalCost = proposalCost;
+
+        await this.commentRepository.save(comment);
+        return
+    }
 }
