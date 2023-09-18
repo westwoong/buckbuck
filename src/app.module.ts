@@ -11,7 +11,7 @@ import {ReviewModule} from "./reviews/review.module";
     imports: [
         UserModule, CategoriesModule, CommentModule,
         PostModule, ORMModule, AuthModule, PostModule,
-        CommentModule, ReviewModule
+        CommentModule, ReviewModule, CategoriesModule
     ],
 })
 export class AppModule {
