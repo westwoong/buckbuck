@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {CategoriesEntity} from "./Categories.entity";
 import {Repository} from "typeorm";
@@ -16,7 +16,24 @@ export class CategoriesService {
         const {name} = createCategoryRequestDto;
         const category = new CategoriesEntity({name});
         await this.categoryRepository.save(category);
+        if (category.name === name) throw new ConflictException('이미 존재하는 카테고리입니다.');
 
         return category;
+    }
+
+    async modify(categoryId: number, modifyCategoryRequestDto: CreateCategoryRequestDto) {
+        const {name} = modifyCategoryRequestDto;
+        const category = await this.categoryRepository.findOne({
+            where: {
+                id: categoryId
+            }
+        })
+        if (!category) throw new NotFoundException('해당 카테고리는 존재하지않습니다.');
+        if (category.name === name) throw new ConflictException('이미 존재하는 카테고리입니다.');
+
+        category.name = name;
+
+        await this.categoryRepository.save(category);
+        return
     }
 }
