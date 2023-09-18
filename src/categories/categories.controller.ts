@@ -1,4 +1,4 @@
-import {Body, Controller, HttpCode, Param, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, HttpCode, Param, Patch, Post} from '@nestjs/common';
 import {CategoriesService} from "./categories.service";
 import {CreateCategoryRequestDto} from "./dto/createCategory.request.dto";
 
@@ -20,5 +20,12 @@ export class CategoriesController {
     ) {
         const parsedCategoryId = parseInt(categoryId);
         return this.categoryService.modify(parsedCategoryId, modifyCategoryRequestDto);
+    }
+
+    @Delete(':categoryId')
+    @HttpCode(204)
+    delete(@Param('categoryId') categoryId: string) {
+        const parsedCategoryId = parseInt(categoryId);
+        return this.categoryService.delete(parsedCategoryId);
     }
 }
