@@ -1,6 +1,8 @@
-import {Body, Controller, Delete, HttpCode, Param, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, HttpCode, Param, Patch, Request, Post, UseGuards} from '@nestjs/common';
 import {PostService} from "./post.service";
 import {CreatePostRequestDto} from "./dto/createPost.request.dto";
+import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
+import {UserEntity} from "../users/User.entity";
 
 @Controller('posts')
 export class PostController {
@@ -10,16 +12,23 @@ export class PostController {
 
     @Post()
     @HttpCode(201)
-    create(@Body() createPostRequestDto: CreatePostRequestDto) {
-        return this.postService.create(createPostRequestDto);
+    @UseGuards(JwtAuthGuard)
+    create(@Request() req: any, @Body() createPostRequestDto: CreatePostRequestDto) {
+        const userId = req.user.userId;
+        return this.postService.create(userId, createPostRequestDto);
 
     }
 
     @Delete(':postId')
     @HttpCode(204)
-    delete(@Param('postId') postId: string) {
+    @UseGuards(JwtAuthGuard)
+    delete(
+        @Request() req: any,
+        @Param('postId') postId: string
+    ) {
+        const userId = req.user.userId;
         const parsedPostId = parseInt(postId);
-        return this.postService.delete(parsedPostId);
+        return this.postService.delete(userId, parsedPostId);
     }
 
     @Patch(':postId')

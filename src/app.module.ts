@@ -6,12 +6,14 @@ import {CommentModule} from "./comments/comment.module";
 import {PostModule} from "./posts/post.module";
 import {AuthModule} from "./auth/auth.module";
 import {ReviewModule} from "./reviews/review.module";
+import {JwtPassportModule} from "./auth/jwtPassport/jwt-passport.module";
 
 @Module({
     imports: [
         UserModule, CategoriesModule, CommentModule,
         PostModule, ORMModule, AuthModule, PostModule,
-        CommentModule, ReviewModule, CategoriesModule
+        CommentModule, ReviewModule, CategoriesModule,
+        JwtPassportModule
     ],
 })
 export class AppModule {
