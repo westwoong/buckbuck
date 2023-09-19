@@ -1,10 +1,20 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import {Module} from '@nestjs/common';
+import {ORMModule} from './config/ORM.module';
+import {UserModule} from "./users/user.module";
+import {CategoriesModule} from "./categories/categories.module";
+import {CommentModule} from "./comments/comment.module";
+import {PostModule} from "./posts/post.module";
+import {AuthModule} from "./auth/auth.module";
+import {ReviewModule} from "./reviews/review.module";
+import {JwtPassportModule} from "./auth/jwtPassport/jwt-passport.module";
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [
+        UserModule, CategoriesModule, CommentModule,
+        PostModule, ORMModule, AuthModule, PostModule,
+        CommentModule, ReviewModule, CategoriesModule,
+        JwtPassportModule
+    ],
 })
-export class AppModule {}
+export class AppModule {
+}
