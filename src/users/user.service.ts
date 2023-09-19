@@ -74,7 +74,7 @@ export class UserService {
         user.password = hashedPassword;
 
         await this.userRepository.save(user);
-        return `안녕하세요 ${nickName}님 회원가입이 완료되었습니다`;
+        return
     }
 
     private async hashPassword(password: string, salt: string): Promise<string> {
