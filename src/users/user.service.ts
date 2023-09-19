@@ -1,4 +1,10 @@
-import {BadRequestException, ConflictException, Injectable, InternalServerErrorException} from '@nestjs/common';
+import {
+    BadRequestException,
+    ConflictException,
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException
+} from '@nestjs/common';
 import {SignUpRequestDto} from "./dto/signUp.request.dto";
 import {Repository} from "typeorm";
 import {UserEntity} from "./User.entity";
@@ -8,6 +14,7 @@ import * as crypto from "crypto";
 import {SignInRequestDto} from "./dto/signIn.request.dto";
 import {AuthService} from "../auth/auth.service";
 import e from "express";
+import {FindUserIdResponseDto} from "./dto/findUserId.response.dto";
 
 const ITERATIONS = 105820;
 const KEY_LENGTH = 64;
@@ -103,5 +110,11 @@ export class UserService {
                 }
             });
         });
+    }
+
+    async findOneById(userId: number) {
+        const user = await this.userRepository.findOne({where: {id: userId}});
+        if (!user) throw new NotFoundException('해당 유저는 존재하지않습니다.');
+        return new FindUserIdResponseDto(user);
     }
 }

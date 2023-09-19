@@ -21,17 +21,11 @@ export class PostService {
     }
 
     @Transactional()
-    async create(createPostRequestDto: CreatePostRequestDto) {
+    async create(userId: UserEntity, createPostRequestDto: CreatePostRequestDto) {
         const {title, content, cost, level} = createPostRequestDto;
         const post = new PostEntity({title, content, cost, level});
-        const user = await this.userRepository.findOne({
-            where: {
-                id: 3
-            }
-        });
-        if (user) {
-            post.user = user;
-        }
+        post.user = userId;
+
 
         await this.postRepository.save(post);
 

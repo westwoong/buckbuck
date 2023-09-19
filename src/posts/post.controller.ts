@@ -1,6 +1,8 @@
-import {Body, Controller, Delete, HttpCode, Param, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, HttpCode, Param, Patch, Request, Post, UseGuards} from '@nestjs/common';
 import {PostService} from "./post.service";
 import {CreatePostRequestDto} from "./dto/createPost.request.dto";
+import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
+import {UserEntity} from "../users/User.entity";
 
 @Controller('posts')
 export class PostController {
@@ -8,10 +10,12 @@ export class PostController {
     constructor(private readonly postService: PostService) {
     }
 
+    @UseGuards(JwtAuthGuard)
     @Post()
     @HttpCode(201)
-    create(@Body() createPostRequestDto: CreatePostRequestDto) {
-        return this.postService.create(createPostRequestDto);
+    create(@Request() req: any, @Body() createPostRequestDto: CreatePostRequestDto) {
+        const userId = req.user.userId;
+        return this.postService.create(userId, createPostRequestDto);
 
     }
 
