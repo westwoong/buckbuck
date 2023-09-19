@@ -1,4 +1,4 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {PostEntity} from "./Post.entity";
 import {Repository} from "typeorm";
@@ -33,14 +33,17 @@ export class PostService {
     }
 
     @Transactional()
-    async delete(postId: number) {
+    async delete(userId: number, postId: number) {
         const post = await this.postRepository.findOne({
             where: {
                 id: postId,
             },
+            relations: ['user'],
         });
 
         if (!post) throw new NotFoundException('해당 게시글은 존재하지 않습니다.');
+
+        if (post.user.id !== userId) throw new ForbiddenException('본인의 게시글만 삭제가 가능합니다.');
 
         const comments = await this.commentRepository.find({
                 where: {

@@ -3,7 +3,7 @@ import {AuthGuard} from '@nestjs/passport';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-    handleRequest(err: any, user: any, info: any) {
+    handleRequest(err: Error, user: any, info: Error) {
         if (info?.message === 'No auth token') {
             throw new UnauthorizedException(
                 'Header에 토큰을 넣어야 합니다.',
@@ -31,6 +31,5 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         }
 
         return user;
-
     }
 }

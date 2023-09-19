@@ -10,9 +10,9 @@ export class PostController {
     constructor(private readonly postService: PostService) {
     }
 
-    @UseGuards(JwtAuthGuard)
     @Post()
     @HttpCode(201)
+    @UseGuards(JwtAuthGuard)
     create(@Request() req: any, @Body() createPostRequestDto: CreatePostRequestDto) {
         const userId = req.user.userId;
         return this.postService.create(userId, createPostRequestDto);
@@ -21,9 +21,14 @@ export class PostController {
 
     @Delete(':postId')
     @HttpCode(204)
-    delete(@Param('postId') postId: string) {
+    @UseGuards(JwtAuthGuard)
+    delete(
+        @Request() req: any,
+        @Param('postId') postId: string
+    ) {
+        const userId = req.user.userId;
         const parsedPostId = parseInt(postId);
-        return this.postService.delete(parsedPostId);
+        return this.postService.delete(userId, parsedPostId);
     }
 
     @Patch(':postId')
