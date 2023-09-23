@@ -24,9 +24,13 @@ export class CommentController {
 
     @Delete(':commentId')
     @HttpCode(204)
-    delete(@Param('commentId') commentId: string) {
+    @UseGuards(JwtAuthGuard)
+    delete(
+        @Request() req: UserIdRequest,
+        @Param('commentId') commentId: string) {
+        const userId = req.user.userId;
         const parsedCommentId = parseInt(commentId);
-        return this.commentService.delete(parsedCommentId);
+        return this.commentService.delete(userId, parsedCommentId);
     }
 
     @Patch(':commentId')

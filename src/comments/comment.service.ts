@@ -1,4 +1,4 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {CommentEntity} from "./Comment.entity";
 import {Repository} from "typeorm";
@@ -43,13 +43,13 @@ export class CommentService {
     }
 
     @Transactional()
-    async delete(commentId: number) {
+    async delete(userId: number, commentId: number) {
         const comment = await this.commentRepository.findOne({
-            where: {
-                id: commentId
-            }
+            where: {id: commentId},
+            relations: ['user']
         })
         if (!comment) throw new NotFoundException('해당 댓글은 존재하지않습니다')
+        if (comment.user.id !== userId) throw new ForbiddenException('본인의 댓글만 삭제가 가능합니다.')
         await this.commentRepository.remove(comment);
     }
 
