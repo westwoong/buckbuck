@@ -35,9 +35,13 @@ export class CommentController {
 
     @Patch(':commentId')
     @HttpCode(200)
-    modify(@Param('commentId') commentId: string,
-           @Body() modifyCommentRequestDto: CreateCommentRequestDto) {
+    @UseGuards(JwtAuthGuard)
+    modify(
+        @Request() req: UserIdRequest,
+        @Param('commentId') commentId: string,
+        @Body() modifyCommentRequestDto: CreateCommentRequestDto) {
+        const userId = req.user.userId;
         const parsedCommentId = parseInt(commentId);
-        return this.commentService.modify(parsedCommentId, modifyCommentRequestDto);
+        return this.commentService.modify(userId, parsedCommentId, modifyCommentRequestDto);
     }
 }

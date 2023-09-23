@@ -1,4 +1,10 @@
-import {BadRequestException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
+import {
+    BadRequestException,
+    ForbiddenException,
+    Injectable,
+    NotFoundException,
+    UnauthorizedException
+} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {CommentEntity} from "./Comment.entity";
 import {Repository} from "typeorm";
@@ -54,14 +60,19 @@ export class CommentService {
     }
 
     @Transactional()
-    async modify(commentId: number, modifyCommentRequestDto: CreateCommentRequestDto) {
+    async modify(userId: number, commentId: number, modifyCommentRequestDto: CreateCommentRequestDto) {
         const {content, proposalCost} = modifyCommentRequestDto;
-        const comment = await this.commentRepository.findOne({
-            where: {
-                id: commentId
-            }
+        const user = await this.userRepository.findOne({
+            where: {id: userId}
         })
+
+        const comment = await this.commentRepository.findOne({
+            where: {id: commentId},
+            relations: ['user']
+        })
+        if (!user) throw new BadRequestException('잘못된 접근입니다.')
         if (!comment) throw new NotFoundException('해당 댓글은 존재하지않습니다')
+        if (comment.user.id !== userId) throw new ForbiddenException('본인의 댓글만 수정이 가능합니다.')
 
         comment.content = content;
         comment.proposalCost = proposalCost;
