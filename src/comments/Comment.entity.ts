@@ -12,10 +12,10 @@ export class CommentEntity extends DefaultEntityColumn {
     @Column()
     proposalCost: number;
 
-    @ManyToOne(() => UserEntity, (user) => user.comment)
+    @ManyToOne(() => UserEntity, (user) => user.comment, {nullable: false})
     user: UserEntity;
 
-    @ManyToOne(() => PostEntity, (post) => post.comment)
+    @ManyToOne(() => PostEntity, (post) => post.comment, {nullable: false})
     post: PostEntity;
 
     constructor(createCommentRequestDto: CreateCommentRequestDto) {

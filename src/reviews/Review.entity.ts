@@ -7,15 +7,15 @@ import {CreateReviewRequestDto} from "./dto/createReview.request.dto";
 @Entity('reviews')
 export class ReviewEntity extends DefaultEntityColumn {
 
-    @ManyToOne(() => UserEntity, (user) => user.requesterId)
+    @ManyToOne(() => UserEntity, (user) => user.requesterId, {nullable: false})
     @JoinColumn()
     requesterId: UserEntity;
 
-    @ManyToOne(() => UserEntity, (user) => user.performerId)
+    @ManyToOne(() => UserEntity, (user) => user.performerId, {nullable: false})
     @JoinColumn()
     performerId: UserEntity;
 
-    @ManyToOne(() => PostEntity, (post) => post.review)
+    @ManyToOne(() => PostEntity, (post) => post.review, {nullable: false})
     post: PostEntity;
 
     @Column()
