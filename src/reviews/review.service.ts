@@ -1,4 +1,4 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {ReviewEntity} from "./Review.entity";
 import {Repository} from "typeorm";
@@ -20,29 +20,32 @@ export class ReviewService {
     }
 
     @Transactional()
-    async create(performerId: number, createReviewRequestDto: CreateReviewRequestDto) {
+    async create(userId: number, performerId: number, createReviewRequestDto: CreateReviewRequestDto) {
         const {stars, comment} = createReviewRequestDto;
-        /*임시 게시글, 추후 변경 예정*/
+        /*임시 게시글, 추후 프론트(postId 전달) 추가 후 변경 예정*/
         const post = await this.postRepository.findOne({
-            where: {
-                id: 4
-            }
+            where: {id: 4}
         });
         if (!post) throw new NotFoundException('해당 게시글은 존재하지않습니다.');
 
         const review = new ReviewEntity({post, stars, comment});
 
+        const requester = await this.userRepository.findOne({
+            where: {id: userId}
+        })
         const performer = await this.userRepository.findOne({
+            where: {id: performerId}
+        })
+        const isExistReview = await this.reviewRepository.findOne({
             where: {
-                id: performerId
+                requesterId: {id: userId},
+                post: post
             }
         })
+        if (isExistReview) throw new BadRequestException('이미 리뷰를 작성했습니다.')
+        if (!performer || !requester) throw new NotFoundException('해당 사용자는 존재하지않습니다.');
 
-        if (!performer) {
-            throw new NotFoundException('해당 사용자는 존재하지않습니다.');
-        }
-        /*인가 적용 전 임시 userId, JWT Guard 적용시 변경 예정 */
-        review.requesterId = performer;
+        review.requesterId = requester;
         review.performerId = performer;
 
         await this.reviewRepository.save(review);
