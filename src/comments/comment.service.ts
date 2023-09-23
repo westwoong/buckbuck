@@ -1,10 +1,12 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {CommentEntity} from "./Comment.entity";
 import {Repository} from "typeorm";
 import {CreateCommentRequestDto} from "./dto/createComment.request.dto";
 import {PostEntity} from "../posts/Post.entity";
 import {Transactional} from "typeorm-transactional";
+import {UserEntity} from "../users/User.entity";
+import {CreateCommentResponseDto} from "./dto/createComment.response.dto";
 
 @Injectable()
 export class CommentService {
@@ -13,19 +15,31 @@ export class CommentService {
         @InjectRepository(CommentEntity)
         private readonly commentRepository: Repository<CommentEntity>,
         @InjectRepository(PostEntity)
-        private readonly postRepository: Repository<PostEntity>
+        private readonly postRepository: Repository<PostEntity>,
+        @InjectRepository(UserEntity)
+        private readonly userRepository: Repository<UserEntity>,
     ) {
     }
 
     @Transactional()
-    async create(postId: PostEntity, createCommentRequestDto: CreateCommentRequestDto) {
+    async create(userId: number, postId: number, createCommentRequestDto: CreateCommentRequestDto) {
         const {content, proposalCost} = createCommentRequestDto;
+        const user = await this.userRepository.findOne({
+            where: {id: userId}
+        })
+        const post = await this.postRepository.findOne({
+            where: {id: postId}
+        })
+        if (!user) throw new BadRequestException('잘못된 접근입니다.')
+        if (!post) throw new NotFoundException('해당 게시글은 존재하지 않습니다.');
+
         const comment = new CommentEntity({content, proposalCost});
-        comment.post = postId;
+        comment.post = post;
+        comment.user = user;
 
         await this.commentRepository.save(comment);
 
-        return comment;
+        return new CreateCommentResponseDto(comment);
     }
 
     @Transactional()

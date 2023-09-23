@@ -1,7 +1,8 @@
-import {Body, Controller, Delete, HttpCode, Param, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, HttpCode, Param, Patch, Post, Request, UseGuards} from '@nestjs/common';
 import {CommentService} from "./comment.service";
 import {CreateCommentRequestDto} from "./dto/createComment.request.dto";
-import {PostEntity} from "../posts/Post.entity";
+import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
+import {UserIdRequest} from "../common/userId.request.interface";
 
 @Controller('comments')
 export class CommentController {
@@ -10,10 +11,14 @@ export class CommentController {
 
     @Post(':postId')
     @HttpCode(201)
+    @UseGuards(JwtAuthGuard)
     create(
-        @Param('postId') postId: PostEntity,
+        @Request() req: UserIdRequest,
+        @Param('postId') postId: string,
         @Body() createCommentRequestDto: CreateCommentRequestDto) {
-        return this.commentService.create(postId, createCommentRequestDto);
+        const userId = req.user.userId;
+        const parsedPostId = parseInt(postId);
+        return this.commentService.create(userId, parsedPostId, createCommentRequestDto);
 
     }
 
