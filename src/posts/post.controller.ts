@@ -8,7 +8,6 @@ import {
     Request,
     Post,
     UseGuards,
-    UnauthorizedException, ForbiddenException
 } from '@nestjs/common';
 import {PostService} from "./post.service";
 import {CreatePostRequestDto} from "./dto/createPost.request.dto";
@@ -51,7 +50,6 @@ export class PostController {
         @Body() modifyPostRequestDto: CreatePostRequestDto
     ) {
         const userId = req.user.userId;
-        console.log(userId);
         const parsedPostId = parseInt(postId);
         return this.postService.modify(userId, parsedPostId, modifyPostRequestDto)
     }
