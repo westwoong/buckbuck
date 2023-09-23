@@ -1,4 +1,4 @@
-import {ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {PostEntity} from "./Post.entity";
 import {Repository} from "typeorm";
@@ -21,11 +21,16 @@ export class PostService {
     }
 
     @Transactional()
-    async create(userId: UserEntity, createPostRequestDto: CreatePostRequestDto) {
+    async create(userId: number, createPostRequestDto: CreatePostRequestDto) {
         const {title, content, cost, level} = createPostRequestDto;
         const post = new PostEntity({title, content, cost, level});
-        post.user = userId;
-
+        const foundUser = await this.userRepository.findOne({
+            where: {
+                id: userId
+            }
+        });
+        if (!foundUser) throw new BadRequestException('사용자가 존재하지 않습니다.');
+        post.user = foundUser;
 
         await this.postRepository.save(post);
 

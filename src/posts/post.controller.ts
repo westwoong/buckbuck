@@ -3,6 +3,7 @@ import {PostService} from "./post.service";
 import {CreatePostRequestDto} from "./dto/createPost.request.dto";
 import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
 import {UserEntity} from "../users/User.entity";
+import {UserIdRequest} from "../common/userId.request.interface";
 
 @Controller('posts')
 export class PostController {
@@ -13,7 +14,7 @@ export class PostController {
     @Post()
     @HttpCode(201)
     @UseGuards(JwtAuthGuard)
-    create(@Request() req: any, @Body() createPostRequestDto: CreatePostRequestDto) {
+    create(@Request() req: UserIdRequest, @Body() createPostRequestDto: CreatePostRequestDto) {
         const userId = req.user.userId;
         return this.postService.create(userId, createPostRequestDto);
 
