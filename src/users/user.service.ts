@@ -13,7 +13,6 @@ import {Transactional} from "typeorm-transactional";
 import * as crypto from "crypto";
 import {SignInRequestDto} from "./dto/signIn.request.dto";
 import {AuthService} from "../auth/auth.service";
-import e from "express";
 import {FindUserIdResponseDto} from "./dto/findUserId.response.dto";
 
 const ITERATIONS = 105820;
