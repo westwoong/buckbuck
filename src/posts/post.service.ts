@@ -25,9 +25,7 @@ export class PostService {
         const {title, content, cost, level} = createPostRequestDto;
         const post = new PostEntity({title, content, cost, level});
         const foundUser = await this.userRepository.findOne({
-            where: {
-                id: userId
-            }
+            where: {id: userId}
         });
         if (!foundUser) throw new BadRequestException('사용자가 존재하지 않습니다.');
         post.user = foundUser;
@@ -40,9 +38,7 @@ export class PostService {
     @Transactional()
     async delete(userId: number, postId: number) {
         const post = await this.postRepository.findOne({
-            where: {
-                id: postId,
-            },
+            where: {id: postId},
             relations: ['user'],
         });
 
@@ -51,9 +47,7 @@ export class PostService {
         if (post.user.id !== userId) throw new ForbiddenException('본인의 게시글만 삭제가 가능합니다.');
 
         const comments = await this.commentRepository.find({
-                where: {
-                    post: post
-                }
+                where: {post: post}
             })
         ;
 
@@ -62,14 +56,21 @@ export class PostService {
     }
 
     @Transactional()
-    async modify(postId: number, modifyPostRequestDto: CreatePostRequestDto) {
+    async modify(userId: number, postId: number, modifyPostRequestDto: CreatePostRequestDto) {
         const {title, content, cost, level} = modifyPostRequestDto;
         const post = await this.postRepository.findOne({
             where: {id: postId},
+            relations: ['user'],
         });
-        if (!post) {
-            throw new NotFoundException('해당 게시글은 존재하지 않습니다.');
-        }
+
+        const foundUser = await this.userRepository.findOne({
+            where: {id: userId}
+        });
+
+        if (!post) throw new NotFoundException('해당 게시글은 존재하지 않습니다.');
+        if (!foundUser) throw new BadRequestException('사용자가 존재하지 않습니다.');
+        if (post.user.id !== userId) throw new ForbiddenException('본인의 게시글만 수정 가능합니다.')
+
         post.title = title;
         post.content = content;
         post.cost = cost;
