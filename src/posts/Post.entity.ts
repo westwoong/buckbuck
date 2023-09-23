@@ -1,4 +1,4 @@
-import {Column, Entity, ManyToOne, OneToMany, OneToOne} from "typeorm";
+import {Column, Entity, ManyToOne, OneToMany, RelationId} from "typeorm";
 import {DefaultEntityColumn} from "../config/default.entity";
 import {UserEntity} from "../users/User.entity";
 import {CommentEntity} from "../comments/Comment.entity";
@@ -23,7 +23,7 @@ export class PostEntity extends DefaultEntityColumn {
     @OneToMany(() => CommentEntity, (comment) => comment.post)
     comment: CommentEntity[];
 
-    @ManyToOne(() => UserEntity, (user) => user.post)
+    @ManyToOne(() => UserEntity, (user) => user.post, {nullable: false})
     user: UserEntity;
 
     @OneToMany(() => PostToCategoriesEntity, (postToCategory) => postToCategory.post)
