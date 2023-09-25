@@ -49,6 +49,29 @@ describe('UserController (E2E)', () => {
         })
     })
 
+
+    describe('/users/signin (POST)', () => {
+        it('로그인에 성공하면 200으로 응답한다', async () => {
+            const signUp = await request(app.getHttpServer()).post('/users/signup').send({
+                account: "xptmxmlqslek123",
+                password: "testpassword123",
+                name: "김돌쇠",
+                email: "test11r@example.com",
+                phoneNumber: "01052828282",
+                nickName: "빨리점11"
+            })
+            const signIn = await request(app.getHttpServer()).post('/users/signin').send({
+                account: "xptmxmlqslek123",
+                password: "testpassword123",
+            })
+            console.log(signIn.status);
+            console.log(signIn.body);
+            console.log(signIn.headers);
+            expect(signUp.status).toBe(201);
+            expect(signIn.status).toBe(200);
+        })
+    })
+
     afterAll(async () => {
         await app.close();
     })
