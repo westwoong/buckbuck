@@ -11,7 +11,6 @@ describe('UserController (E2E)', () => {
     let dataSource: DataSource;
 
     beforeAll(async () => {
-        console.log("beforeAll")
         initializeTransactionalContext();
         dotenv.config();
         const moduleRef: TestingModule = await Test.createTestingModule({
@@ -21,14 +20,11 @@ describe('UserController (E2E)', () => {
         dataSource = moduleRef.get<DataSource>(DataSource);
 
         app = moduleRef.createNestApplication();
-        app.useGlobalPipes(new ValidationPipe({
-            transform: true
-        }));
+        app.useGlobalPipes(new ValidationPipe({transform: true}));
         await app.init();
     })
 
     beforeEach(async () => {
-        console.log("beforeEach")
         await dataSource.dropDatabase();
         await dataSource.synchronize();
     })
@@ -43,8 +39,6 @@ describe('UserController (E2E)', () => {
                 phoneNumber: "01052828282",
                 nickName: "빨리점11"
             })
-            console.log(response.status);
-            console.log(response.body);
             expect(response.status).toBe(201);
         })
     })
@@ -64,9 +58,6 @@ describe('UserController (E2E)', () => {
                 account: "xptmxmlqslek123",
                 password: "testpassword123",
             })
-            console.log(signIn.status);
-            console.log(signIn.body);
-            console.log(signIn.headers);
             expect(signUp.status).toBe(201);
             expect(signIn.status).toBe(200);
         })
