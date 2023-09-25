@@ -104,7 +104,6 @@ export class UserService {
                     ? resolve(this.authService.signInWithJwt({userId: user.id}))
                     : reject(new BadRequestException('비밀번호가 틀렸습니다.'));
                 if (err) {
-                    console.log(err);
                     throw new InternalServerErrorException(err);
                 }
             });
