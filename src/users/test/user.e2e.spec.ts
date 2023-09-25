@@ -41,6 +41,33 @@ describe('UserController (E2E)', () => {
             })
             expect(response.status).toBe(201);
         })
+
+        it('회원가입 양식중 하나라도 넣지않으면 400을 응답한다.', async () => {
+            await request(app.getHttpServer()).post('/users/signup').send({
+                account: "xptmxmlqslek123",
+            }).expect(400);
+
+            await request(app.getHttpServer()).post('/users/signup').send({
+                password: "testpassword123",
+            }).expect(400);
+
+            await request(app.getHttpServer()).post('/users/signup').send({
+                name: "김돌쇠",
+            }).expect(400);
+
+            await request(app.getHttpServer()).post('/users/signup').send({
+                email: "test11@rexample.com",
+            }).expect(400);
+
+            await request(app.getHttpServer()).post('/users/signup').send({
+                phoneNumber: "01052828282",
+            }).expect(400);
+
+            await request(app.getHttpServer()).post('/users/signup').send({
+                nickName: "빨리점11"
+            }).expect(400);
+
+        })
     })
 
 
