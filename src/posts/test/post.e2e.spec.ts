@@ -57,35 +57,46 @@ describe('PostController (E2E)', () => {
         })
 
         it('게시글 작성 중 하나라도 넣지않으면 400 코드를 반환한다.', async () => {
-            request(app.getHttpServer())
+            await request(app.getHttpServer())
                 .post('/posts')
                 .send({
                     title: '테스트 제목입니다.',
                 }).set('Authorization', `Bearer ${userToken}`)
                 .expect(400);
 
-            request(app.getHttpServer())
+            await request(app.getHttpServer())
                 .post('/posts')
                 .send({
                     content: '테스트 내용입니다.',
                 }).set('Authorization', `Bearer ${userToken}`)
                 .expect(400);
 
-            request(app.getHttpServer())
+            await request(app.getHttpServer())
                 .post('/posts')
                 .send({
                     cost: 10500,
                 }).set('Authorization', `Bearer ${userToken}`)
                 .expect(400);
 
-            request(app.getHttpServer())
+            await request(app.getHttpServer())
                 .post('/posts')
                 .send({
                     level: '고수'
                 }).set('Authorization', `Bearer ${userToken}`)
                 .expect(400);
-
         })
+
+        it('로그인을 안했을 시 401 코드를 반환한다', async () => {
+            await request(app.getHttpServer())
+                .post('/posts')
+                .send({
+                    title: '테스트 제목입니다.',
+                    content: '테스트 내용입니다.',
+                    cost: 10500,
+                    level: '고수'
+                }).expect(401);
+        })
+
     })
 
     afterAll(async () => {
