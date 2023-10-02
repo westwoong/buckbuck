@@ -7,6 +7,8 @@ import * as request from 'supertest';
 import {DataSource} from "typeorm";
 import {AuthService} from "../../auth/auth.service";
 import {UserTokenFactory} from '../../common/testSetup/userTokenFactory'
+import {PostFactory} from "../../common/testSetup/postFactory";
+import {CreatePostResponseDto} from "../dto/createPost.response.dto";
 
 describe('PostController (E2E)', () => {
     let app: INestApplication;
@@ -47,13 +49,41 @@ describe('PostController (E2E)', () => {
             // When =
             const response = await request(app.getHttpServer())
                 .post('/posts')
-                .send(fixturePost).set('Authorization', `Bearer ${userToken}`);
+                .send(fixturePost)
+                .set('Authorization', `Bearer ${userToken}`);
             // then
             expect(response.status).toBe(201);
             expect(response.body.title).toBe(fixturePost.title);
             expect(response.body.content).toBe(fixturePost.content);
             expect(response.body.cost).toBe(fixturePost.cost);
             expect(response.body.level).toBe(fixturePost.level);
+        })
+    })
+
+    describe('modify Post', () => {
+        it('게시글 수정 시 http 200으로 응답한다', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource, authService);
+            const userToken = await userTokenFactory.createUserToken();
+            const userId = await userTokenFactory.userId();
+            const postFactory = new PostFactory(dataSource, userId);
+            const post = await postFactory.createPost();
+            const postId = post.id;
+
+            const modifyPost = {
+                title: '수정 테스트 입니다..',
+                content: '내용도 수정해볼게요',
+                cost: 50000,
+                level: '초급'
+            }
+
+            const response = await request(app.getHttpServer())
+                .patch(`/posts/${postId}`)
+                .send(modifyPost)
+                .set('Authorization', `Bearer ${userToken}`);
+
+            const fixedPost = await postFactory.getPost();
+            console.log(fixedPost);
+            expect(response.status).toBe(200);
         })
     })
 
