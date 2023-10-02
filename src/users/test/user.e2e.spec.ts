@@ -118,6 +118,23 @@ describe('UserController (E2E)', () => {
         });
     });
 
+    describe('회원가입 nickName 유효성 검사', () => {
+        const signUpDto = new SignUpRequestDto();
+        it.each([
+            ['빨리점11', true], // 정상적인 닉네임
+            ['', false], // 공백인 경우
+            ['_빨리점_', false], // 특수문자가 포함된 경우
+            ['왕', false], // 길이 미달
+            ['빨리빨리빨리좀제발빨리좀', false], // 길이 초과
+        ])('phoneNumber 필드 유효성 검사에 이상이 없을 시 errors의 길이가 0이여야한다.', async (nickName, isValid) => {
+            signUpDto.nickName = nickName;
+            const errors = await validate(signUpDto, {skipMissingProperties: true});
+
+            if (isValid) expect(errors).toHaveLength(0);
+            if (!isValid) expect(errors).not.toHaveLength(0);
+        });
+    });
+
     describe('/users/signup (POST)', () => {
         it('회원가입에 성공하면 201로 응답한다.', async () => {
             const response = await request(app.getHttpServer()).post('/users/signup').send({
