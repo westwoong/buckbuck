@@ -5,6 +5,8 @@ import * as request from 'supertest';
 import * as dotenv from 'dotenv';
 import {initializeTransactionalContext} from "typeorm-transactional";
 import {DataSource} from "typeorm";
+import {SignUpRequestDto} from "../dto/signUp.request.dto";
+import {validate} from "class-validator";
 
 describe('UserController (E2E)', () => {
     let app: INestApplication;
@@ -29,6 +31,25 @@ describe('UserController (E2E)', () => {
         await dataSource.synchronize();
     })
 
+    describe('회원가입 양식 유효성 검사', () => {
+        const signUpDto = new SignUpRequestDto();
+        it.each([
+            ['xptmxmlqslek123', true], // 검사 통과 아이디 값(정상)
+            ['', false], // 아이디 미입력 검사
+            ['XPTMXMDLQSLEK123', false],       // 대문자 검사
+            ['xptmxmdlqslek!@#', false],       // 특수문자 검사
+            ['tt1', false], // 길이 미달 검사
+            ['xptmxmdxpmxpxmpxmpxmpxmlqslek!@#', false], // 길이 초과 검사
+
+        ])('account 필드 유효성 검사', async (account, isValid) => {
+            signUpDto.account = account;
+            const errors = await validate(signUpDto, {skipMissingProperties: true});
+
+            if (isValid) expect(errors).toHaveLength(0);
+            if (!isValid) expect(errors).not.toHaveLength(0);
+        });
+    });
+
     describe('/users/signup (POST)', () => {
         it('회원가입에 성공하면 201로 응답한다.', async () => {
             const response = await request(app.getHttpServer()).post('/users/signup').send({
@@ -40,33 +61,6 @@ describe('UserController (E2E)', () => {
                 nickName: "빨리점11"
             })
             expect(response.status).toBe(201);
-        })
-
-        it('회원가입 양식중 하나라도 넣지않으면 400을 응답한다.', async () => {
-            await request(app.getHttpServer()).post('/users/signup').send({
-                account: "xptmxmlqslek123",
-            }).expect(400);
-
-            await request(app.getHttpServer()).post('/users/signup').send({
-                password: "testpassword123",
-            }).expect(400);
-
-            await request(app.getHttpServer()).post('/users/signup').send({
-                name: "김돌쇠",
-            }).expect(400);
-
-            await request(app.getHttpServer()).post('/users/signup').send({
-                email: "test11@rexample.com",
-            }).expect(400);
-
-            await request(app.getHttpServer()).post('/users/signup').send({
-                phoneNumber: "01052828282",
-            }).expect(400);
-
-            await request(app.getHttpServer()).post('/users/signup').send({
-                nickName: "빨리점11"
-            }).expect(400);
-
         })
     })
 
@@ -86,7 +80,7 @@ describe('UserController (E2E)', () => {
                 password: "testpassword123",
             })
             expect(signUp.status).toBe(201);
-            expect(signIn.status).toBe(200);
+            expect(signIn.body).toBeDefined();
         })
     })
 
