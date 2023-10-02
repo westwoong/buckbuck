@@ -100,6 +100,24 @@ describe('UserController (E2E)', () => {
         });
     });
 
+    describe('회원가입 phoneNumber 유효성 검사', () => {
+        const signUpDto = new SignUpRequestDto();
+        it.each([
+            ['01052828282', true], // 정상적인 번호
+            ['010-5282-8282', false], // 하이픈 포함
+            ['52828282', false], // 010 미포함(길이미달)
+            ['010 5282 8282', false], // 공백 포함 시
+            ['010528282821', false], // 길이 초과 시
+            ['공일공52828282', false], // 숫자 외 문자 포함 시
+        ])('phoneNumber 필드 유효성 검사에 이상이 없을 시 errors의 길이가 0이여야한다.', async (phoneNumber, isValid) => {
+            signUpDto.phoneNumber = phoneNumber;
+            const errors = await validate(signUpDto, {skipMissingProperties: true});
+
+            if (isValid) expect(errors).toHaveLength(0);
+            if (!isValid) expect(errors).not.toHaveLength(0);
+        });
+    });
+
     describe('/users/signup (POST)', () => {
         it('회원가입에 성공하면 201로 응답한다.', async () => {
             const response = await request(app.getHttpServer()).post('/users/signup').send({
