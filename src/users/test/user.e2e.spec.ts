@@ -31,17 +31,17 @@ describe('UserController (E2E)', () => {
         await dataSource.synchronize();
     })
 
-    describe('회원가입 양식 유효성 검사', () => {
+    describe('회원가입 account 유효성 검사', () => {
         const signUpDto = new SignUpRequestDto();
         it.each([
-            ['xptmxmlqslek123', true], // 검사 통과 아이디 값(정상)
+            ['xptmxmlqslek123', true], // 검사 통과 정상 아이디 값
             ['', false], // 아이디 미입력 검사
             ['XPTMXMDLQSLEK123', false],       // 대문자 검사
             ['xptmxmdlqslek!@#', false],       // 특수문자 검사
             ['tt1', false], // 길이 미달 검사
             ['xptmxmdxpmxpxmpxmpxmpxmlqslek!@#', false], // 길이 초과 검사
 
-        ])('account 필드 유효성 검사', async (account, isValid) => {
+        ])('account 필드 유효성 검사에 이상이 없을 시 errors의 길이가 0이여야한다.', async (account, isValid) => {
             signUpDto.account = account;
             const errors = await validate(signUpDto, {skipMissingProperties: true});
 
@@ -49,6 +49,23 @@ describe('UserController (E2E)', () => {
             if (!isValid) expect(errors).not.toHaveLength(0);
         });
     });
+
+    describe('회원가입 password 유효성 검사', () => {
+        const signUpDto = new SignUpRequestDto();
+        it.each([
+            ['testpassword123', true], // 정상 패스워드값
+            ['test password 123', false], // 비밀번호 공백 포함
+            ['pw1234', false], // 비밀번호 길이 미달
+            ['thisPasswordLengthToLong!#@12312', false], // 비밀번호 길이 초과
+        ])('password 필드 유효성 검사에 이상이 없을 시 errors의 길이가 0이여야한다.', async (password, isValid) => {
+            signUpDto.password = password;
+            const errors = await validate(signUpDto, {skipMissingProperties: true});
+
+            if (isValid) expect(errors).toHaveLength(0);
+            if (!isValid) expect(errors).not.toHaveLength(0);
+        });
+    });
+
 
     describe('/users/signup (POST)', () => {
         it('회원가입에 성공하면 201로 응답한다.', async () => {
