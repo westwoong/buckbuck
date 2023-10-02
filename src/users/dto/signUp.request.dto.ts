@@ -27,6 +27,7 @@ export class SignUpRequestDto {
     email: string;
 
     @IsNotEmpty()
+    @IsString()
     @Matches(/^010\d{8}$/, {message: '- 을 제외한 핸드폰 번호 11자리를 입력해주세요 (예: 01012345678)'})
     phoneNumber: string;
 
