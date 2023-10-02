@@ -66,6 +66,23 @@ describe('UserController (E2E)', () => {
         });
     });
 
+    describe('회원가입 name 유효성 검사', () => {
+        const signUpDto = new SignUpRequestDto();
+        it.each([
+            ['김돌쇠', true], // 정상 이름
+            ['', false], // 이름이 공백
+            ['jonson', false], // 영문 이름
+            ['웅', false], // 이름 길이 미달
+            ['김수한무거북이와두루미삼천갑자', false], // 이름 길이 초과
+        ])('name 필드 유효성 검사에 이상이 없을 시 errors의 길이가 0이여야한다.', async (name, isValid) => {
+            signUpDto.name = name;
+            const errors = await validate(signUpDto, {skipMissingProperties: true});
+
+            if (isValid) expect(errors).toHaveLength(0);
+            if (!isValid) expect(errors).not.toHaveLength(0);
+        });
+    });
+
 
     describe('/users/signup (POST)', () => {
         it('회원가입에 성공하면 201로 응답한다.', async () => {
