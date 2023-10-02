@@ -83,6 +83,22 @@ describe('UserController (E2E)', () => {
         });
     });
 
+    describe('회원가입 email 유효성 검사', () => {
+        const signUpDto = new SignUpRequestDto();
+        it.each([
+            ['test11r@example.com', true], // 정상 이메일
+            ['test 11r@example.com', false], // 공백 포함 시
+            ['test11rexample.com', false], // @ 미포함 시
+            ['test11r@.com', false], // 도메인 미포함 시
+            ['test11r@example', false], // 최상위 도메인 미포함 시
+        ])('email 필드 유효성 검사에 이상이 없을 시 errors의 길이가 0이여야한다.', async (email, isValid) => {
+            signUpDto.email = email;
+            const errors = await validate(signUpDto, {skipMissingProperties: true});
+
+            if (isValid) expect(errors).toHaveLength(0);
+            if (!isValid) expect(errors).not.toHaveLength(0);
+        });
+    });
 
     describe('/users/signup (POST)', () => {
         it('회원가입에 성공하면 201로 응답한다.', async () => {
