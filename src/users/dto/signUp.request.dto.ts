@@ -19,6 +19,7 @@ export class SignUpRequestDto {
     @IsNotEmpty()
     @IsString()
     @Length(2, 10)
+    @Matches(/^[가-힣]+$/, {message: '이름은 한글만 입력이 가능합니다.'})
     name: string;
 
     @IsNotEmpty()
