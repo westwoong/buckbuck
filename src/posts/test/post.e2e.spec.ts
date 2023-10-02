@@ -32,26 +32,29 @@ describe('PostController (E2E)', () => {
         await dataSource.synchronize();
     })
 
-    describe('create', () => {
-        it('게시글을 작성하면 201로 응답한다.', async () => {
+    describe('create Post', () => {
+        it('게시글을 작성 시 body값이 fixture 값과 동일해야한다.', async () => {
             // Given = 테스트 사전 Fixture
             const userTokenFactory = new UserTokenFactory(dataSource, authService);
             const userToken = await userTokenFactory.createUserToken();
 
+            const fixturePost = {
+                title: '테스트 제목입니다.',
+                content: '테스트 내용입니다.',
+                cost: 10500,
+                level: '고수'
+            }
             // When =
             const response = await request(app.getHttpServer())
                 .post('/posts')
-                .send({
-                    title: '테스트 제목입니다.',
-                    content: '테스트 내용입니다.',
-                    cost: 10500,
-                    level: '고수'
-                }).set('Authorization', `Bearer ${userToken}`);
-
+                .send(fixturePost).set('Authorization', `Bearer ${userToken}`);
             // then
             expect(response.status).toBe(201);
+            expect(response.body.title).toBe(fixturePost.title);
+            expect(response.body.content).toBe(fixturePost.content);
+            expect(response.body.cost).toBe(fixturePost.cost);
+            expect(response.body.level).toBe(fixturePost.level);
         })
-
     })
 
     afterAll(async () => {
