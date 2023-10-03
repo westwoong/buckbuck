@@ -5,7 +5,7 @@ export class CreateReviewRequestDto {
     post: PostEntity;
 
     @IsNotEmpty()
-    @IsNumber()
+    @IsString()
     @Length(1, 1)
     @Matches(/^[1-5]$/)
     readonly stars: number;
