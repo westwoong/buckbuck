@@ -84,6 +84,26 @@ describe('CommentController (E2E)', () => {
         })
     })
 
+    describe('delete Comment', () => {
+        it('댓글 삭제 시 getComment()의 length가 0이여야한다.', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource, authService);
+            const userToken = await userTokenFactory.createUserToken();
+            const userId = await userTokenFactory.userId();
+            const postFactory = new PostFactory(dataSource, userId);
+            const post = await postFactory.createPost();
+            const commentFactory = new CommentFactory(dataSource, userId, post.id);
+            const comment = await commentFactory.createComment();
+
+            const response = await request(app.getHttpServer())
+                .delete(`/comments/${comment.id}`)
+                .set('Authorization', `Bearer ${userToken}`);
+
+            const isExistComment = await commentFactory.getComment();
+            expect(response.status).toBe(204);
+            expect(isExistComment).toHaveLength(0);
+        })
+    })
+
     afterAll(async () => {
         await app.close();
     })
