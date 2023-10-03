@@ -24,7 +24,7 @@ export class ReviewService {
         const {stars, comment} = createReviewRequestDto;
         /*임시 게시글, 추후 프론트(postId 전달) 추가 후 변경 예정*/
         const post = await this.postRepository.findOne({
-            where: {id: 4}
+            where: {id: 1}
         });
         if (!post) throw new NotFoundException('해당 게시글은 존재하지않습니다.');
 
