@@ -1,14 +1,14 @@
 import {PostEntity} from "../../posts/Post.entity";
-import {IsNotEmpty, IsNumber, IsString, Length, Matches} from "class-validator";
+import {IsInt, IsNotEmpty, IsString, Length, Max, Min} from "class-validator";
 
 export class CreateReviewRequestDto {
     post: PostEntity;
 
     @IsNotEmpty()
-    @IsString()
-    @Length(1, 1)
-    @Matches(/^[1-5]$/)
-    readonly stars: number;
+    @IsInt()
+    @Min(1, { message: '최소 별점은 1점입니다.' })
+    @Max(5, { message: '최대 별점은 5점입니다.' })
+    stars: number;
 
     @IsString()
     @Length(0, 50)
