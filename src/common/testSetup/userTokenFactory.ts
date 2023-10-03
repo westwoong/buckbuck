@@ -23,6 +23,18 @@ export class UserTokenFactory {
         return this.authService.signInWithJwt({userId: user.id})
     }
 
+    public async createSecondUserToken() {
+        const user = await this.dataSource.getRepository(UserEntity).save({
+            account: "xptmxmlqslek1234",
+            password: "testpassword1234",
+            name: '길동이',
+            email: "test1234@example.com",
+            phoneNumber: "01082825252",
+            nickName: "빨리점22",
+        });
+        return this.authService.signInWithJwt({userId: user.id})
+    }
+
     public async userId() {
         const user = await this.dataSource.getRepository(UserEntity).findOne({
             where: {
