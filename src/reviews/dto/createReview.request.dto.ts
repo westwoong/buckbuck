@@ -12,5 +12,5 @@ export class CreateReviewRequestDto {
 
     @IsString()
     @Length(0, 50)
-    readonly comment: string;
+    comment: string;
 }
