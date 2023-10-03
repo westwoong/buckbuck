@@ -11,6 +11,7 @@ export class CreateReviewRequestDto {
     stars: number;
 
     @IsString()
-    @Length(0, 50)
+    @IsNotEmpty()
+    @Length(0, 20)
     comment: string;
 }
