@@ -4,7 +4,7 @@ import {validate} from "class-validator";
 
 describe('createPost RequestDto', () => {
     describe('게시글 작성 API', () => {
-        describe('title 유효성 검사', () => {
+        it ('title 값이 유효하지않을 시 에러를 반환한다', () => {
             const createPostRequestDto = new CreatePostRequestDto();
             it.each([
                 ['테스트 제목입니다', true],
@@ -23,7 +23,7 @@ describe('createPost RequestDto', () => {
             it.each([
                 ['테스트 본문 내용입니다', true],
                 ['', false]
-            ])('content 필드 유효성 검사에 이상이 없을 시 error의 길이가 0이여야한다.', async (content, isValid) => {
+            ])('content 값이 유효하지않을 시 에러를 반환한다', async (content, isValid) => {
                 createPostRequestDto.content = content;
                 const errors = await validate(createPostRequestDto, {skipMissingProperties: true});
 
@@ -36,7 +36,7 @@ describe('createPost RequestDto', () => {
             const createPostRequestDto = new CreatePostRequestDto();
             it.each([
                 [15000, true], // 정상
-            ])('cost 필드 유효성 검사에 이상이 없을 시 error의 길이가 0이여야한다.', async (cost, isValid) => {
+            ])('cost 값이 유효하지않을 시 에러를 반환한다', async (cost, isValid) => {
                 createPostRequestDto.cost = cost;
                 const errors = await validate(createPostRequestDto, {skipMissingProperties: true});
 
@@ -50,7 +50,7 @@ describe('createPost RequestDto', () => {
             it.each([
                 ['고수', true],
                 ['', false]
-            ])('level 필드 유효성 검사에 이상이 없을 시 error의 길이가 0이여야한다.', async (level, isValid) => {
+            ])('level 값이 유효하지않을 시 에러를 반환한다', async (level, isValid) => {
                 createPostRequestDto.level = level;
                 const errors = await validate(createPostRequestDto, {skipMissingProperties: true});
 
