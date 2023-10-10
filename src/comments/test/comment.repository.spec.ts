@@ -106,4 +106,25 @@ describe('CommentRepository (E2E)', () => {
             expect(foundComment?.user).toBeDefined();
         })
     })
+
+    describe('remove()', () => {
+        it('댓글을 정상적으로 삭제한다.', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource);
+            await userTokenFactory.createUser()
+            const userFinder = new UserFinder(dataSource);
+            const userId = await userFinder.userId();
+            const postFactory = new PostFactory(dataSource, userId);
+            const post = await postFactory.createPost();
+            const commentFactory = new CommentFactory(dataSource, userId, post.id);
+            const comment = await commentFactory.createComment();
+
+            await commentRepository.remove(comment);
+
+            const foundComment = await commentRepository.findOne({
+                where: {id: comment.id}
+            })
+
+            expect(foundComment).toBe(null);
+        })
+    })
 })
