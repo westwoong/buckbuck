@@ -147,6 +147,7 @@ describe('PostRepository (E2E)', () => {
                 where: {id: post.id},
             });
 
+            expect(foundPost).toBe(null);
 
         })
 
