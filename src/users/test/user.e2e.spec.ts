@@ -210,6 +210,23 @@ describe('UserController (E2E)', () => {
             })
             expect(signIn.status).toBe(200);
         })
+
+        it('로그인 성공시 body값이 존재해야한다', async () => {
+            await request(app.getHttpServer()).post('/users/signup').send({
+                account: "xptmxmlqslek123",
+                password: "testpassword123",
+                name: "홍길동",
+                email: "test11r@example.com",
+                phoneNumber: "01052828282",
+                nickName: "빨리점11"
+            })
+            const signIn = await request(app.getHttpServer()).post('/users/signin').send({
+                account: "xptmxmlqslek123",
+                password: "testpassword123",
+            })
+
+            expect(signIn.body).toBeDefined();
+        })
     })
 
     afterAll(async () => {
