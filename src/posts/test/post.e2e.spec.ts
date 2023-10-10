@@ -123,7 +123,7 @@ describe('PostController (E2E)', () => {
                     level: '고수'
                 }
 
-                const response = await request(app.getHttpServer())
+                await request(app.getHttpServer())
                     .post('/posts')
                     .send(post)
                     .set('Authorization', `Bearer ${userToken}`);
@@ -176,7 +176,7 @@ describe('PostController (E2E)', () => {
                 level: '초급'
             }
 
-            const response = await request(app.getHttpServer())
+            await request(app.getHttpServer())
                 .patch(`/posts/${postId}`)
                 .send(modifyPost)
                 .set('Authorization', `Bearer ${userToken}`);
