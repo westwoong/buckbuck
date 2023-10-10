@@ -11,6 +11,7 @@ import {PostFactory} from "../../common/testSetup/post/postFactory";
 import {CommentFactory} from "../../common/testSetup/comment/commentFactory";
 import {CommentFinder} from "../../common/testSetup/comment/commentFinder";
 import {UserFinder} from "../../common/testSetup/user/userFinder";
+import {CommentEntity} from "../Comment.entity";
 
 describe('CommentController (E2E)', () => {
     let app: INestApplication;
@@ -254,6 +255,31 @@ describe('CommentController (E2E)', () => {
 
                 expect(response.status).toBe(403);
             })
+
+            it('수정할 댓글이 없을 시 404 코드로 응답한다.', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                const userToken = await userTokenFactory.createUserToken();
+                const userFinder = new UserFinder(dataSource);
+                const userId = await userFinder.userId();
+                const postFactory = new PostFactory(dataSource, userId);
+                const post = await postFactory.createPost();
+                const commentFactory = new CommentFactory(dataSource, userId, post.id);
+                const comment = await commentFactory.createComment();
+
+                await dataSource.getRepository(CommentEntity).delete(1);
+
+                const modifyComment = {
+                    content: '테스트 댓글 수정해봅니다.',
+                    proposalCost: 50500
+                }
+
+                const response = await request(app.getHttpServer())
+                    .patch(`/comments/${comment.id}`)
+                    .send(modifyComment)
+                    .set('Authorization', `Bearer ${userToken}`);
+
+                expect(response.status).toBe(404);
+            })
         })
 
         it('댓글이 입력값으로 수정되었는지 확인한다.', async () => {
@@ -285,55 +311,77 @@ describe('CommentController (E2E)', () => {
     })
 
     describe('delete Comment', () => {
-        it('댓글 삭제 시 httpcode 204로 응답한다', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
-            const userFinder = new UserFinder(dataSource);
-            const userId = await userFinder.userId();
-            const postFactory = new PostFactory(dataSource, userId);
-            const post = await postFactory.createPost();
-            const commentFactory = new CommentFactory(dataSource, userId, post.id);
-            const comment = await commentFactory.createComment();
+        describe('httpcode 응답 값이 정상인지 확인한다', () => {
+            it('댓글 삭제 시 httpcode 204로 응답한다', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                const userToken = await userTokenFactory.createUserToken();
+                const userFinder = new UserFinder(dataSource);
+                const userId = await userFinder.userId();
+                const postFactory = new PostFactory(dataSource, userId);
+                const post = await postFactory.createPost();
+                const commentFactory = new CommentFactory(dataSource, userId, post.id);
+                const comment = await commentFactory.createComment();
 
-            const response = await request(app.getHttpServer())
-                .delete(`/comments/${comment.id}`)
-                .set('Authorization', `Bearer ${userToken}`);
+                const response = await request(app.getHttpServer())
+                    .delete(`/comments/${comment.id}`)
+                    .set('Authorization', `Bearer ${userToken}`);
 
-            expect(response.status).toBe(204);
-        })
+                expect(response.status).toBe(204);
+            })
 
-        it('userToken이 없을 시 401 코드로 응답한다.', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            await userTokenFactory.createUser();
-            const userFinder = new UserFinder(dataSource);
-            const userId = await userFinder.userId();
-            const postFactory = new PostFactory(dataSource, userId);
-            const post = await postFactory.createPost();
-            const commentFactory = new CommentFactory(dataSource, userId, post.id);
-            const comment = await commentFactory.createComment();
+            it('userToken이 없을 시 401 코드로 응답한다.', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                await userTokenFactory.createUser();
+                const userFinder = new UserFinder(dataSource);
+                const userId = await userFinder.userId();
+                const postFactory = new PostFactory(dataSource, userId);
+                const post = await postFactory.createPost();
+                const commentFactory = new CommentFactory(dataSource, userId, post.id);
+                const comment = await commentFactory.createComment();
 
-            const response = await request(app.getHttpServer())
-                .patch(`/comments/${comment.id}`)
+                const response = await request(app.getHttpServer())
+                    .patch(`/comments/${comment.id}`)
 
-            expect(response.status).toBe(401);
-        })
+                expect(response.status).toBe(401);
+            })
 
-        it('삭제 권한이 없을 시 403 코드로 응답한다.', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            await userTokenFactory.createUser();
-            const secondUserToken = await userTokenFactory.createSecondUserToken();
-            const userFinder = new UserFinder(dataSource);
-            const userId = await userFinder.userId();
-            const postFactory = new PostFactory(dataSource, userId);
-            const post = await postFactory.createPost();
-            const commentFactory = new CommentFactory(dataSource, userId, post.id);
-            const comment = await commentFactory.createComment();
+            it('삭제 권한이 없을 시 403 코드로 응답한다.', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                await userTokenFactory.createUser();
+                const secondUserToken = await userTokenFactory.createSecondUserToken();
+                const userFinder = new UserFinder(dataSource);
+                const userId = await userFinder.userId();
+                const postFactory = new PostFactory(dataSource, userId);
+                const post = await postFactory.createPost();
+                const commentFactory = new CommentFactory(dataSource, userId, post.id);
+                const comment = await commentFactory.createComment();
 
-            const response = await request(app.getHttpServer())
-                .delete(`/comments/${comment.id}`)
-                .set('Authorization', `Bearer ${secondUserToken}`);
+                const response = await request(app.getHttpServer())
+                    .delete(`/comments/${comment.id}`)
+                    .set('Authorization', `Bearer ${secondUserToken}`);
 
-            expect(response.status).toBe(403);
+                expect(response.status).toBe(403);
+            })
+
+            it('삭제할 댓글이 없을 시 404 코드로 응답한다.', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                const userToken = await userTokenFactory.createUserToken();
+                const userFinder = new UserFinder(dataSource);
+                const userId = await userFinder.userId();
+                const postFactory = new PostFactory(dataSource, userId);
+                const post = await postFactory.createPost();
+                const commentFactory = new CommentFactory(dataSource, userId, post.id);
+                const comment = await commentFactory.createComment();
+
+                await dataSource.getRepository(CommentEntity).delete(1);
+
+                const response = await request(app.getHttpServer())
+                    .delete(`/comments/${comment.id}`)
+                    .set('Authorization', `Bearer ${userToken}`);
+
+                expect(response.status).toBe(404);
+            })
+
         })
 
         it('댓글이 삭제되었는지 확인한다.', async () => {
