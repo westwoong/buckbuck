@@ -5,6 +5,7 @@ import * as request from 'supertest';
 import * as dotenv from 'dotenv';
 import {initializeTransactionalContext} from "typeorm-transactional";
 import {DataSource} from "typeorm";
+import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
 
 describe('UserController (E2E)', () => {
     let app: INestApplication;
@@ -108,13 +109,70 @@ describe('UserController (E2E)', () => {
                 })
                 expect(response.status).toBe(400);
             })
+
+
+            it('입력한 account가 사전에 존재할 시 409으로 응답한다', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource);
+                await userTokenFactory.createUser();
+                const response = await request(app.getHttpServer()).post('/users/signup').send({
+                    account: "xptmxmlqslek123",
+                    password: "testpassword123",
+                    name: "길동이",
+                    email: "test123@example.com",
+                    phoneNumber: "01012345678",
+                    nickName: "빨리점1"
+                })
+                expect(response.status).toBe(409);
+            })
+
+            it('입력한 email가 사전에 존재할 시 409으로 응답한다', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource);
+                await userTokenFactory.createUser();
+                const response = await request(app.getHttpServer()).post('/users/signup').send({
+                    account: "xptmxmlqslek111",
+                    password: "testpassword123",
+                    name: "길동이",
+                    email: "test11r@example.com",
+                    phoneNumber: "01012345678",
+                    nickName: "빨리점1"
+                })
+                expect(response.status).toBe(409);
+            })
+
+            it('입력한 phoneNumber가 사전에 존재할 시 409으로 응답한다', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource);
+                await userTokenFactory.createUser();
+                const response = await request(app.getHttpServer()).post('/users/signup').send({
+                    account: "xptmxmlqslek111",
+                    password: "testpassword123",
+                    name: "길동이",
+                    email: "test1234@example.com",
+                    phoneNumber: "01052828282",
+                    nickName: "빨리점1"
+                })
+                expect(response.status).toBe(409);
+            })
+
+            it('입력한 nickname이 사전에 존재할 시 409으로 응답한다', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource);
+                await userTokenFactory.createUser();
+                const response = await request(app.getHttpServer()).post('/users/signup').send({
+                    account: "xptmxmlqslek111",
+                    password: "testpassword123",
+                    name: "길동이",
+                    email: "test1234@example.com",
+                    phoneNumber: "01012345678",
+                    nickName: "빨리점11"
+                })
+                expect(response.status).toBe(409);
+            })
         })
     })
 
 
     describe('/users/signin (POST)', () => {
         it('로그인에 성공하면 200으로 응답한다', async () => {
-            const signUp = await request(app.getHttpServer()).post('/users/signup').send({
+            await request(app.getHttpServer()).post('/users/signup').send({
                 account: "xptmxmlqslek123",
                 password: "testpassword123",
                 name: "홍길동",
@@ -126,8 +184,7 @@ describe('UserController (E2E)', () => {
                 account: "xptmxmlqslek123",
                 password: "testpassword123",
             })
-            expect(signUp.status).toBe(201);
-            expect(signIn.body).toBeDefined();
+            expect(signIn.status).toBe(200);
         })
     })
 
