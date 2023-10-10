@@ -109,6 +109,18 @@ describe('PostController (E2E)', () => {
 
                 expect(response.status).toBe(400);
             })
+
+            it('userToken이 없을 시 401 코드로 응답한다', async () => {
+                const post = {
+                    title: '테스트 제목입니다.',
+                    content: '테스트 내용입니다.',
+                    cost: 10500
+                }
+                const response = await request(app.getHttpServer())
+                    .post('/posts')
+                    .send(post)
+                expect(response.status).toBe(401);
+            })
         })
 
         describe('게시글이 정상적으로 저장되었는지 확인한다.', () => {
@@ -162,6 +174,53 @@ describe('PostController (E2E)', () => {
                     .set('Authorization', `Bearer ${userToken}`);
 
                 expect(response.status).toBe(200);
+            })
+
+            it('userToken이 없을 시 401 코드로 응답한다', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                await userTokenFactory.createUserToken();
+                const userFinder = new UserFinder(dataSource);
+                const userId = await userFinder.userId();
+                const postFactory = new PostFactory(dataSource, userId);
+                const post = await postFactory.createPost();
+                const postId = post.id;
+
+                const modifyPost = {
+                    title: '수정 테스트 입니다..',
+                    content: '내용도 수정해볼게요',
+                    cost: 50000,
+                    level: '초급'
+                }
+
+                const response = await request(app.getHttpServer())
+                    .patch(`/posts/${postId}`)
+                    .send(modifyPost)
+                expect(response.status).toBe(401);
+            })
+
+            it('수정 권한이 없을 시 403 코드로 응답한다', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                await userTokenFactory.createUser();
+                const secondUserToken = await userTokenFactory.createSecondUserToken();
+                const userFinder = new UserFinder(dataSource);
+                const userId = await userFinder.userId();
+                const postFactory = new PostFactory(dataSource, userId);
+                const post = await postFactory.createPost();
+                const postId = post.id;
+
+                const modifyPost = {
+                    title: '수정 테스트 입니다..',
+                    content: '내용도 수정해볼게요',
+                    cost: 50000,
+                    level: '초급'
+                }
+
+                const response = await request(app.getHttpServer())
+                    .patch(`/posts/${postId}`)
+                    .send(modifyPost)
+                    .set('Authorization', `Bearer ${secondUserToken}`);
+
+                expect(response.status).toBe(403);
             })
 
             it('title의 값이 비어있을 시 400 코드로 응답한다', async () => {
@@ -303,6 +362,39 @@ describe('PostController (E2E)', () => {
                 .set('Authorization', `Bearer ${userToken}`);
 
             expect(response.status).toBe(204);
+        })
+
+        it('userToken이 없을 시 401 코드로 응답한다', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource, authService);
+            await userTokenFactory.createUserToken();
+            const userFinder = new UserFinder(dataSource);
+            const userId = await userFinder.userId();
+            const postFactory = new PostFactory(dataSource, userId);
+            const post = await postFactory.createPost();
+            const postId = post.id;
+
+            const response = await request(app.getHttpServer())
+                .delete(`/posts/${postId}`)
+                .send()
+            expect(response.status).toBe(401);
+        })
+
+        it('삭제 권한이 없을 시 403 코드로 응답한다', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource, authService);
+            await userTokenFactory.createUser();
+            const secondUserToken = await userTokenFactory.createSecondUserToken();
+            const userFinder = new UserFinder(dataSource);
+            const userId = await userFinder.userId();
+            const postFactory = new PostFactory(dataSource, userId);
+            const post = await postFactory.createPost();
+            const postId = post.id;
+
+            const response = await request(app.getHttpServer())
+                .delete(`/posts/${postId}`)
+                .send()
+                .set('Authorization', `Bearer ${secondUserToken}`);
+
+            expect(response.status).toBe(403);
         })
 
         it('게시글 삭제 가 정상적으로 이루어졌는지 확인한다', async () => {
