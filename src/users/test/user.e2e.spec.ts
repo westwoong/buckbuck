@@ -35,7 +35,7 @@ describe('UserController (E2E)', () => {
                 const response = await request(app.getHttpServer()).post('/users/signup').send({
                     account: "xptmxmlqslek123",
                     password: "testpassword123",
-                    name: "김돌쇠",
+                    name: "홍길동",
                     email: "test11r@example.com",
                     phoneNumber: "01052828282",
                     nickName: "빨리점11"
@@ -46,7 +46,7 @@ describe('UserController (E2E)', () => {
             it('account의 값이 비어있을 시 400으로 응답한다.', async () => {
                 const response = await request(app.getHttpServer()).post('/users/signup').send({
                     password: "testpassword123",
-                    name: "김돌쇠",
+                    name: "홍길동",
                     email: "test11r@example.com",
                     phoneNumber: "01052828282",
                     nickName: "빨리점11"
@@ -57,7 +57,7 @@ describe('UserController (E2E)', () => {
             it('password의 값이 비어있을 시 400으로 응답한다.', async () => {
                 const response = await request(app.getHttpServer()).post('/users/signup').send({
                     account: "xptmxmlqslek123",
-                    name: "김돌쇠",
+                    name: "홍길동",
                     email: "test11r@example.com",
                     phoneNumber: "01052828282",
                     nickName: "빨리점11"
@@ -80,7 +80,7 @@ describe('UserController (E2E)', () => {
                 const response = await request(app.getHttpServer()).post('/users/signup').send({
                     account: "xptmxmlqslek123",
                     password: "testpassword123",
-                    name: "김돌쇠",
+                    name: "홍길동",
                     phoneNumber: "01052828282",
                     nickName: "빨리점11"
                 })
@@ -91,7 +91,7 @@ describe('UserController (E2E)', () => {
                 const response = await request(app.getHttpServer()).post('/users/signup').send({
                     account: "xptmxmlqslek123",
                     password: "testpassword123",
-                    name: "김돌쇠",
+                    name: "홍길동",
                     email: "test11r@example.com",
                     nickName: "빨리점11"
                 })
@@ -102,7 +102,7 @@ describe('UserController (E2E)', () => {
                 const response = await request(app.getHttpServer()).post('/users/signup').send({
                     account: "xptmxmlqslek123",
                     password: "testpassword123",
-                    name: "김돌쇠",
+                    name: "홍길동",
                     email: "test11r@example.com",
                     phoneNumber: "01052828282",
                 })
@@ -117,7 +117,7 @@ describe('UserController (E2E)', () => {
             const signUp = await request(app.getHttpServer()).post('/users/signup').send({
                 account: "xptmxmlqslek123",
                 password: "testpassword123",
-                name: "김돌쇠",
+                name: "홍길동",
                 email: "test11r@example.com",
                 phoneNumber: "01052828282",
                 nickName: "빨리점11"

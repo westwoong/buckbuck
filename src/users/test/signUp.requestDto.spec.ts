@@ -41,7 +41,7 @@ describe('SignUpRequestDto', () => {
         describe('name 유효성 검사', () => {
             const signUpDto = new SignUpRequestDto();
             it.each([
-                ['김돌쇠', true], // 정상 이름
+                ['홍길동', true], // 정상 이름
                 ['', false], // 이름이 공백
                 ['jonson', false], // 영문 이름
                 ['웅', false], // 이름 길이 미달
