@@ -23,7 +23,7 @@ describe('createPost RequestDto', () => {
         it.each([
             ['테스트 본문 내용입니다', true],
             ['', false],
-            ['이것은 댓글의 길이가 30글자가 넘어갔을 때 테스트입니다', false]
+            ['이것은 본문의 길이가 30글자가 넘어갔을 때 테스트입니다', false]
         ])('content 값이 유효하지않을 시 에러를 반환한다', async (content, isValid) => {
             createPostRequestDto.content = content;
             const errors = await validate(createPostRequestDto, {skipMissingProperties: true});
