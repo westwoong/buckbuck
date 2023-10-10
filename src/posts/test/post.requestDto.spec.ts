@@ -1,13 +1,3 @@
-import {INestApplication, ValidationPipe} from '@nestjs/common';
-import {Test, TestingModule} from '@nestjs/testing';
-import {AppModule} from '../../app.module';
-import {initializeTransactionalContext} from 'typeorm-transactional';
-import * as dotenv from 'dotenv';
-import * as request from 'supertest';
-import {DataSource} from "typeorm";
-import {AuthService} from "../../auth/auth.service";
-import {UserTokenFactory} from '../../common/testSetup/userTokenFactory'
-import {PostFactory} from "../../common/testSetup/postFactory";
 import {CreatePostRequestDto} from "../dto/createPost.request.dto";
 import {validate} from "class-validator";
 
