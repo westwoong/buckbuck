@@ -13,7 +13,7 @@ export class UserTokenFactory {
     }
 
     public async createUser() {
-        const user = await this.dataSource.getRepository(UserEntity).save({
+        return await this.dataSource.getRepository(UserEntity).save({
             account: "xptmxmlqslek123",
             password: "testpassword123",
             name: '홍길동',

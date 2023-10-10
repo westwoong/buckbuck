@@ -6,6 +6,9 @@ import * as dotenv from 'dotenv';
 import {DataSource, Repository} from "typeorm";
 import {PostEntity} from "../Post.entity";
 import {UserEntity} from "../../users/User.entity";
+import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
+import {UserFinder} from "../../common/testSetup/user/userFinder";
+import {PostFactory} from "../../common/testSetup/post/postFactory";
 
 
 describe('PostRepository (E2E)', () => {
@@ -33,30 +36,42 @@ describe('PostRepository (E2E)', () => {
         await dataSource.synchronize();
     })
 
-    describe('findOne()', () => {
-        it('use relations -> get post with user data', async () => {
-            // given
-            const user = new UserEntity({
-                account: "xptmxmlqslek123",
-                password: "testpassword123",
-                name: "홍길동",
-                email: "test11r@example.com",
-                phoneNumber: "01052828282",
-                nickName: "빨리점11"
-            })
-            const savedUser = await dataSource.getRepository(UserEntity).save(user);
+    describe('save()', () => {
+        it('게시글을 정상적으로 저장한다', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource)
+            const user = await userTokenFactory.createUser();
+
             const post = new PostEntity({
                 title: '테스트 제목입니다.',
                 content: '테스트 내용입니다.',
                 cost: 10500,
                 level: '고수'
             })
-            post.userId = savedUser.id;
+            post.userId = user.id;
+
             const savedPost = await postRepository.save(post);
+            expect(savedPost.title).toBe(post.title);
+            expect(savedPost.content).toBe(post.content);
+            expect(savedPost.cost).toBe(post.cost);
+            expect(savedPost.level).toBe(post.level);
+            expect(savedPost.userId).toBe(user.id);
+            expect(savedPost.user).toBeDefined();
+        })
+
+    })
+
+    describe('findOne()', () => {
+        it('relations 옵션 사용 시 게시글과 사용자의 데이터를 가져온다', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource)
+            await userTokenFactory.createUser();
+            const userFinder = new UserFinder(dataSource);
+            const userId = await userFinder.userId();
+            const postFactory = new PostFactory(dataSource, userId);
+            const post = await postFactory.createPost();
 
             // when
             const foundPost = await postRepository.findOne({
-                where: { id: savedPost.id },
+                where: {id: post.id},
                 relations: ['user'],
             });
 
