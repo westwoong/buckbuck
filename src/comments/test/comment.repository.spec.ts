@@ -85,4 +85,25 @@ describe('CommentRepository (E2E)', () => {
             expect(modifiedComment.content).toBe(modifyComment.content)
         })
     })
+
+    describe('findOne()', () => {
+        it('relations 사용 시 댓글과 사용자의 데이터를 가져온다', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource);
+            await userTokenFactory.createUser()
+            const userFinder = new UserFinder(dataSource);
+            const userId = await userFinder.userId();
+            const postFactory = new PostFactory(dataSource, userId);
+            const post = await postFactory.createPost();
+            const commentFactory = new CommentFactory(dataSource, userId, post.id);
+            const comment = await commentFactory.createComment();
+
+            const foundComment = await commentRepository.findOne({
+                where: {id: comment.id},
+                relations: ['user']
+            })
+
+            expect(foundComment?.id).toBeDefined();
+            expect(foundComment?.user).toBeDefined();
+        })
+    })
 })
