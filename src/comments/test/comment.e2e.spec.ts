@@ -66,15 +66,13 @@ describe('CommentController (E2E)', () => {
                 const userId = await userFinder.userId();
                 const postFactory = new PostFactory(dataSource, userId);
                 const post = await postFactory.createPost();
-                const commentFactory = new CommentFactory(dataSource, userId, post.id);
-                const comment = await commentFactory.createComment();
 
-                const modifyComment = {
+                const comment = {
                     proposalCost: 15000
                 }
                 const response = await request(app.getHttpServer())
-                    .post(`/comments/${comment.id}`)
-                    .send(modifyComment)
+                    .post(`/comments/${post.id}`)
+                    .send(comment)
                     .set('Authorization', `Bearer ${userToken}`);
 
                 expect(response.status).toBe(400);
@@ -87,15 +85,13 @@ describe('CommentController (E2E)', () => {
                 const userId = await userFinder.userId();
                 const postFactory = new PostFactory(dataSource, userId);
                 const post = await postFactory.createPost();
-                const commentFactory = new CommentFactory(dataSource, userId, post.id);
-                const comment = await commentFactory.createComment();
 
-                const modifyComment = {
+                const comment = {
                     content: '테스트 댓글 달아봅니다.',
                 }
                 const response = await request(app.getHttpServer())
-                    .post(`/comments/${comment.id}`)
-                    .send(modifyComment)
+                    .post(`/comments/${post.id}`)
+                    .send(comment)
                     .set('Authorization', `Bearer ${userToken}`);
 
                 expect(response.status).toBe(400);
