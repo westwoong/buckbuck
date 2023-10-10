@@ -34,16 +34,4 @@ export class UserTokenFactory {
         });
         return this.authService.signInWithJwt({userId: user.id})
     }
-
-    public async userId() {
-        const user = await this.dataSource.getRepository(UserEntity).findOne({
-            where: {
-                account: 'xptmxmlqslek123'
-            }
-        })
-
-        if (!user) throw Error('userId Error');
-
-        return user.id;
-    }
 }
