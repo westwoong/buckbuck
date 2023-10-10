@@ -58,6 +58,36 @@ describe('PostRepository (E2E)', () => {
             expect(savedPost.user).toBeDefined();
         })
 
+        it('게시글을 정상적으로 수정한다', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource)
+            await userTokenFactory.createUser();
+            const userFinder = new UserFinder(dataSource);
+            const userId = await userFinder.userId();
+            const postFactory = new PostFactory(dataSource, userId);
+            const post = await postFactory.createPost();
+
+            expect(post.title).toBe('테스트 제목입니다.')
+
+            const modifyPost = {
+                title: '수정 테스트 입니다..',
+                content: '내용도 수정해볼게요',
+                cost: 50000,
+                level: '초급'
+            }
+
+            post.title = modifyPost.title;
+            post.content = modifyPost.content;
+            post.cost = modifyPost.cost;
+            post.level = modifyPost.level;
+
+            await postRepository.save(post);
+
+            expect(post.title).toBe(modifyPost.title);
+            expect(post.content).toBe(modifyPost.content);
+            expect(post.cost).toBe(modifyPost.cost);
+            expect(post.level).toBe(modifyPost.level);
+        })
+
     })
 
     describe('findOne()', () => {
