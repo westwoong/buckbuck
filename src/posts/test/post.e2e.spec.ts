@@ -139,7 +139,7 @@ describe('PostController (E2E)', () => {
     })
 
     describe('modify Post', () => {
-        it('게시글 수정 시 httpcode 200으로 응답한다', async () => {
+        it('게시글 수정 시 200 코드로 응답한다', async () => {
             const userTokenFactory = new UserTokenFactory(dataSource, authService);
             const userToken = await userTokenFactory.createUserToken();
             const userId = await userTokenFactory.userId();
@@ -160,6 +160,35 @@ describe('PostController (E2E)', () => {
                 .set('Authorization', `Bearer ${userToken}`);
 
             expect(response.status).toBe(200);
+        })
+
+        it('게시글 수정 시 DB의 데이터가 수정되었는지 확인한다.', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource, authService);
+            const userToken = await userTokenFactory.createUserToken();
+            const userId = await userTokenFactory.userId();
+            const postFactory = new PostFactory(dataSource, userId);
+            const post = await postFactory.createPost();
+            const postId = post.id;
+
+            const modifyPost = {
+                title: '수정 테스트 입니다..',
+                content: '내용도 수정해볼게요',
+                cost: 50000,
+                level: '초급'
+            }
+
+            const response = await request(app.getHttpServer())
+                .patch(`/posts/${postId}`)
+                .send(modifyPost)
+                .set('Authorization', `Bearer ${userToken}`);
+
+            const postFinder = new PostFinder(dataSource);
+            const savedPost = await postFinder.getPost();
+
+            expect(modifyPost.title).toBe(savedPost!.title);
+            expect(modifyPost.content).toBe(savedPost!.content);
+            expect(modifyPost.cost).toBe(savedPost!.cost);
+            expect(modifyPost.level).toBe(savedPost!.level);
         })
     })
 
