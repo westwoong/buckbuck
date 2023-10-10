@@ -15,8 +15,18 @@ export class UserFinder {
             }
         })
 
-        if (!user) throw Error('Error: userId is null');
-
+        if (!user) throw Error('Error: user is null');
         return user.id;
+    }
+
+    public async userInfo() {
+        const user = await this.dataSource.getRepository(UserEntity).findOne({
+            where: {
+                account: 'xptmxmlqslek123'
+            }
+        })
+        if (!user) throw Error('Error: user is null');
+
+        return user;
     }
 }
