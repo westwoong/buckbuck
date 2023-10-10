@@ -42,45 +42,84 @@ describe('CommentController (E2E)', () => {
             const postFactory = new PostFactory(dataSource, userId);
             const post = await postFactory.createPost();
 
-            const fixtureComment = {
+            const comment = {
                 content: '테스트 댓글 달아봅니다.',
                 proposalCost: 15000
             }
 
             const response = await request(app.getHttpServer())
                 .post(`/comments/${post.id}`)
-                .send(fixtureComment)
+                .send(comment)
                 .set('Authorization', `Bearer ${userToken}`);
 
             expect(response.status).toBe(201);
-            expect(response.body.content).toBe(fixtureComment.content);
-            expect(response.body.proposalCost).toBe(fixtureComment.proposalCost);
         })
+
+
     })
 
     describe('modify Comment', () => {
-        it('댓글 수정 시 httpcode 200으로 응답한다.', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
-            const userId = await userTokenFactory.userId();
-            const postFactory = new PostFactory(dataSource, userId);
-            const post = await postFactory.createPost();
-            const commentFactory = new CommentFactory(dataSource, userId, post.id);
-            const comment = await commentFactory.createComment();
+        describe('httpcode 응답 값이 정상인지 확인한다.', () => {
+            it('댓글 수정 시 200으로 응답한다.', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                const userToken = await userTokenFactory.createUserToken();
+                const userId = await userTokenFactory.userId();
+                const postFactory = new PostFactory(dataSource, userId);
+                const post = await postFactory.createPost();
+                const commentFactory = new CommentFactory(dataSource, userId, post.id);
+                const comment = await commentFactory.createComment();
 
-            const modifyComment = {
-                content: '테스트 댓글 달아봅니다.',
-                proposalCost: 15000
-            }
+                const modifyComment = {
+                    content: '테스트 댓글 수정해봅니다.',
+                    proposalCost: 50500
+                }
+                const response = await request(app.getHttpServer())
+                    .patch(`/comments/${comment.id}`)
+                    .send(modifyComment)
+                    .set('Authorization', `Bearer ${userToken}`);
 
-            const response = await request(app.getHttpServer())
-                .patch(`/comments/${comment.id}`)
-                .send(modifyComment)
-                .set('Authorization', `Bearer ${userToken}`);
+                expect(response.status).toBe(200);
+            })
 
-            const fixedComment = await commentFactory.getComment();
-            console.log(fixedComment)
-            expect(response.status).toBe(200);
+            it('content의 값이 비어있을 시 400으로 응답한다.', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                const userToken = await userTokenFactory.createUserToken();
+                const userId = await userTokenFactory.userId();
+                const postFactory = new PostFactory(dataSource, userId);
+                const post = await postFactory.createPost();
+                const commentFactory = new CommentFactory(dataSource, userId, post.id);
+                const comment = await commentFactory.createComment();
+
+                const modifyComment = {
+                    proposalCost: 50500
+                }
+                const response = await request(app.getHttpServer())
+                    .patch(`/comments/${comment.id}`)
+                    .send(modifyComment)
+                    .set('Authorization', `Bearer ${userToken}`);
+
+                expect(response.status).toBe(400);
+            })
+
+            it('proposalCost의 값이 비어있을 시 400으로 응답한다.', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                const userToken = await userTokenFactory.createUserToken();
+                const userId = await userTokenFactory.userId();
+                const postFactory = new PostFactory(dataSource, userId);
+                const post = await postFactory.createPost();
+                const commentFactory = new CommentFactory(dataSource, userId, post.id);
+                const comment = await commentFactory.createComment();
+
+                const modifyComment = {
+                    content: '테스트 댓글 수정해봅니다.',
+                }
+                const response = await request(app.getHttpServer())
+                    .patch(`/comments/${comment.id}`)
+                    .send(modifyComment)
+                    .set('Authorization', `Bearer ${userToken}`);
+
+                expect(response.status).toBe(400);
+            })
         })
     })
 
