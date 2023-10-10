@@ -26,6 +26,10 @@ export class PostEntity extends DefaultEntityColumn {
     @ManyToOne(() => UserEntity, (user) => user.post, {nullable: false})
     user: UserEntity;
 
+    @Column()
+    @RelationId((post: PostEntity) => post.user)
+    userId: number;
+
     @OneToMany(() => PostToCategoriesEntity, (postToCategory) => postToCategory.post)
     postToCategories: PostToCategoriesEntity[];
 
