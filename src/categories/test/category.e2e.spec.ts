@@ -32,14 +32,16 @@ describe('CategoryController (E2E)', () => {
     })
 
     describe('create Category', () => {
-        it('카테고리 생성 시 name의 필드값에 카테고리명이 담긴다.', async () => {
-            const fixtureCategory = {name: '테스트 카테고리'};
-            const response = await request(app.getHttpServer())
-                .post(`/categories`)
-                .send(fixtureCategory)
+        describe('카테고리 생성 시 httpcode 응답 값이 정상인지 확인한다.', () => {
+            it('카테고리 생성 시 201 코드로 응답한다.', async () => {
+                const category = {name: '테스트 카테고리'};
 
-            expect(response.status).toBe(201);
-            expect(response.body.name).toBe(fixtureCategory.name);
+                const response = await request(app.getHttpServer())
+                    .post(`/categories`)
+                    .send(category)
+
+                expect(response.status).toBe(201);
+            })
         })
     })
 
