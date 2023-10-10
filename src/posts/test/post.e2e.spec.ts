@@ -36,77 +36,105 @@ describe('PostController (E2E)', () => {
     })
 
     describe('create Post', () => {
-        it('게시글을 작성 시 201 코드로 응답한다.', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
+        describe('httpcode 응답 값이 정상인지 확인한다.', () => {
+            it('게시글을 작성 시 201 코드로 응답한다.', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                const userToken = await userTokenFactory.createUserToken();
 
-            const post = {
-                title: '테스트 제목입니다.',
-                content: '테스트 내용입니다.',
-                cost: 10500,
-                level: '고수'
-            }
+                const post = {
+                    title: '테스트 제목입니다.',
+                    content: '테스트 내용입니다.',
+                    cost: 10500,
+                    level: '고수'
+                }
 
-            const response = await request(app.getHttpServer())
-                .post('/posts')
-                .send(post)
-                .set('Authorization', `Bearer ${userToken}`);
+                const response = await request(app.getHttpServer())
+                    .post('/posts')
+                    .send(post)
+                    .set('Authorization', `Bearer ${userToken}`);
 
-            expect(response.status).toBe(201);
+                expect(response.status).toBe(201);
+            })
+
+            it('title의 값이 비어있을 시 400 코드로 응답한다', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                const userToken = await userTokenFactory.createUserToken();
+
+                const post = {
+                    content: '테스트 내용입니다.',
+                    cost: 10500,
+                    level: '고수'
+                }
+
+                const response = await request(app.getHttpServer())
+                    .post('/posts')
+                    .send(post)
+                    .set('Authorization', `Bearer ${userToken}`);
+
+                expect(response.status).toBe(400);
+            })
+
+            it('content의 값이 비어있을 시 400 코드로 응답한다', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                const userToken = await userTokenFactory.createUserToken();
+
+                const post = {
+                    title: '테스트 제목입니다.',
+                    cost: 10500,
+                    level: '고수'
+                }
+
+                const response = await request(app.getHttpServer())
+                    .post('/posts')
+                    .send(post)
+                    .set('Authorization', `Bearer ${userToken}`);
+
+                expect(response.status).toBe(400);
+            })
+
+            it('level의 값이 비어있을 시 400 코드로 응답한다', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                const userToken = await userTokenFactory.createUserToken();
+
+                const post = {
+                    title: '테스트 제목입니다.',
+                    content: '테스트 내용입니다.',
+                    cost: 10500
+                }
+
+                const response = await request(app.getHttpServer())
+                    .post('/posts')
+                    .send(post)
+                    .set('Authorization', `Bearer ${userToken}`);
+
+                expect(response.status).toBe(400);
+            })
         })
 
-        it('title의 값이 비어있을 시 400 코드로 응답한다', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
+        describe('게시글이 정상적으로 저장되었는지 확인한다.', () => {
+            it('입력한 데이터가 정상적으로 저장되었는지 확인한다.', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                const userToken = await userTokenFactory.createUserToken();
+                const postFinder = new PostFinder(dataSource);
 
-            const post = {
-                content: '테스트 내용입니다.',
-                cost: 10500,
-                level: '고수'
-            }
+                const post = {
+                    title: '테스트 제목입니다.',
+                    content: '테스트 내용입니다.',
+                    cost: 10500,
+                    level: '고수'
+                }
 
-            const response = await request(app.getHttpServer())
-                .post('/posts')
-                .send(post)
-                .set('Authorization', `Bearer ${userToken}`);
+                const response = await request(app.getHttpServer())
+                    .post('/posts')
+                    .send(post)
+                    .set('Authorization', `Bearer ${userToken}`);
 
-            expect(response.status).toBe(400);
-        })
-
-        it('content의 값이 비어있을 시 400 코드로 응답한다', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
-
-            const post = {
-                title: '테스트 제목입니다.',
-                cost: 10500,
-                level: '고수'
-            }
-
-            const response = await request(app.getHttpServer())
-                .post('/posts')
-                .send(post)
-                .set('Authorization', `Bearer ${userToken}`);
-
-            expect(response.status).toBe(400);
-        })
-
-        it('level의 값이 비어있을 시 400 코드로 응답한다', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
-
-            const post = {
-                title: '테스트 제목입니다.',
-                content: '테스트 내용입니다.',
-                cost: 10500
-            }
-
-            const response = await request(app.getHttpServer())
-                .post('/posts')
-                .send(post)
-                .set('Authorization', `Bearer ${userToken}`);
-
-            expect(response.status).toBe(400);
+                const savedPost = await postFinder.getPost();
+                expect(post.title).toBe(savedPost!.title);
+                expect(post.content).toBe(savedPost!.content);
+                expect(post.cost).toBe(savedPost!.cost);
+                expect(post.level).toBe(savedPost!.level);
+            })
         })
     })
 
@@ -131,9 +159,6 @@ describe('PostController (E2E)', () => {
                 .send(modifyPost)
                 .set('Authorization', `Bearer ${userToken}`);
 
-            const postFinder = new PostFinder(dataSource);
-            const fixedPost = await postFinder.getPost();
-            console.log(fixedPost)
             expect(response.status).toBe(200);
         })
     })
