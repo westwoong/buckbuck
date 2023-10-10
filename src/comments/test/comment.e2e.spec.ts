@@ -68,7 +68,7 @@ describe('CommentController (E2E)', () => {
                 proposalCost: 15000
             }
 
-            const response = await request(app.getHttpServer())
+            await request(app.getHttpServer())
                 .post(`/comments/${post.id}`)
                 .send(comment)
                 .set('Authorization', `Bearer ${userToken}`);
