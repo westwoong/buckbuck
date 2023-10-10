@@ -1,5 +1,5 @@
 import {DataSource} from "typeorm";
-import {CommentEntity} from "../../comments/Comment.entity";
+import {CommentEntity} from "../../../comments/Comment.entity";
 
 export class CommentFactory {
     private dataSource: DataSource;

@@ -1,6 +1,6 @@
 import {DataSource} from "typeorm";
-import {UserEntity} from "../../users/User.entity";
-import {AuthService} from "../../auth/auth.service";
+import {UserEntity} from "../../../users/User.entity";
+import {AuthService} from "../../../auth/auth.service";
 
 export class UserTokenFactory {
     private dataSource: DataSource;

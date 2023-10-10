@@ -1,5 +1,5 @@
 import {DataSource} from "typeorm";
-import {PostEntity} from "../../posts/Post.entity";
+import {PostEntity} from "../../../posts/Post.entity";
 
 export class PostFactory {
     private dataSource: DataSource;

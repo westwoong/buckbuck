@@ -6,9 +6,9 @@ import * as dotenv from 'dotenv';
 import * as request from 'supertest';
 import {DataSource} from "typeorm";
 import {AuthService} from "../../auth/auth.service";
-import {UserTokenFactory} from '../../common/testSetup/userTokenFactory'
-import {PostFactory} from "../../common/testSetup/postFactory";
-import {PostFinder} from "../../common/testSetup/postFinder";
+import {UserTokenFactory} from '../../common/testSetup/user/userTokenFactory'
+import {PostFactory} from "../../common/testSetup/post/postFactory";
+import {PostFinder} from "../../common/testSetup/post/postFinder";
 
 describe('PostController (E2E)', () => {
     let app: INestApplication;
