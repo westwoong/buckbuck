@@ -9,6 +9,7 @@ import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
 import {PostFactory} from "../../common/testSetup/post/postFactory";
 import * as request from "supertest";
 import {ReviewFinder} from "../../common/testSetup/review/reviewFinder";
+import {UserFinder} from "../../common/testSetup/user/userFinder";
 
 describe('ReviewController (E2E)', () => {
     let app: INestApplication;
@@ -40,7 +41,8 @@ describe('ReviewController (E2E)', () => {
             const userTokenFactory = new UserTokenFactory(dataSource, authService);
             await userTokenFactory.createUserToken();
             const userToken = await userTokenFactory.createSecondUserToken();
-            const performerId = await userTokenFactory.userId();
+            const userFinder = new UserFinder(dataSource);
+            const performerId = await userFinder.userId();
             const postFactory = new PostFactory(dataSource, performerId);
             await postFactory.createPost();
 
@@ -60,7 +62,8 @@ describe('ReviewController (E2E)', () => {
             const userTokenFactory = new UserTokenFactory(dataSource, authService);
             await userTokenFactory.createUserToken();
             const userToken = await userTokenFactory.createSecondUserToken();
-            const performerId = await userTokenFactory.userId();
+            const userFinder = new UserFinder(dataSource);
+            const performerId = await userFinder.userId();
             const postFactory = new PostFactory(dataSource, performerId);
             await postFactory.createPost();
 
