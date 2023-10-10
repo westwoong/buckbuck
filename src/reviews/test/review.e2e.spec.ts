@@ -8,6 +8,7 @@ import {AuthService} from "../../auth/auth.service";
 import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
 import {PostFactory} from "../../common/testSetup/post/postFactory";
 import * as request from "supertest";
+import {ReviewFinder} from "../../common/testSetup/review/reviewFinder";
 
 describe('ReviewController (E2E)', () => {
     let app: INestApplication;
@@ -43,14 +44,41 @@ describe('ReviewController (E2E)', () => {
             const postFactory = new PostFactory(dataSource, performerId);
             await postFactory.createPost();
 
+            const review = {
+                stars: 5,
+                comment: '친절해요'
+            }
+
             const response = await request(app.getHttpServer())
                 .post(`/reviews/performers/${performerId}`)
-                .send({
-                    stars: 5,
-                    comment: '친절해요'
-                })
+                .send(review)
                 .set('Authorization', `Bearer ${userToken}`);
             expect(response.status).toBe(201);
+        })
+
+        it('리뷰가 정상적으로 저장되었는지 확인한다.', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource, authService);
+            await userTokenFactory.createUserToken();
+            const userToken = await userTokenFactory.createSecondUserToken();
+            const performerId = await userTokenFactory.userId();
+            const postFactory = new PostFactory(dataSource, performerId);
+            await postFactory.createPost();
+
+            const review = {
+                stars: 5,
+                comment: '친절해요'
+            }
+
+            await request(app.getHttpServer())
+                .post(`/reviews/performers/${performerId}`)
+                .send(review)
+                .set('Authorization', `Bearer ${userToken}`);
+
+            const reviewFinder = new ReviewFinder(dataSource);
+            const savedReview = await reviewFinder.getReview();
+
+            expect(review.stars).toBe(savedReview!.stars);
+            expect(review.comment).toBe(savedReview!.comment);
         })
     })
 
