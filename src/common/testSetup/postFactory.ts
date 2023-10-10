@@ -19,8 +19,4 @@ export class PostFactory {
             userId: this.userId
         });
     }
-
-    public async getPost(){
-        return await this.dataSource.getRepository(PostEntity).find()
-    }
 }
