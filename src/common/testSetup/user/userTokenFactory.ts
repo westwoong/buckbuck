@@ -6,9 +6,21 @@ export class UserTokenFactory {
     private dataSource: DataSource;
     private authService: AuthService;
 
+    constructor(dataSource: DataSource, authService?: AuthService)
     constructor(dataSource: DataSource, authService: AuthService) {
         this.dataSource = dataSource;
         this.authService = authService;
+    }
+
+    public async createUser() {
+        const user = await this.dataSource.getRepository(UserEntity).save({
+            account: "xptmxmlqslek123",
+            password: "testpassword123",
+            name: '홍길동',
+            email: "test11r@example.com",
+            phoneNumber: "01052828282",
+            nickName: "빨리점11",
+        });
     }
 
     public async createUserToken() {
