@@ -9,6 +9,7 @@ import {AuthService} from "../../auth/auth.service";
 import {UserTokenFactory} from '../../common/testSetup/user/userTokenFactory'
 import {PostFactory} from "../../common/testSetup/post/postFactory";
 import {CommentFactory} from "../../common/testSetup/comment/commentFactory";
+import {CommentFinder} from "../../common/testSetup/comment/commentFinder";
 
 describe('CommentController (E2E)', () => {
     let app: INestApplication;
@@ -120,27 +121,6 @@ describe('CommentController (E2E)', () => {
 
                 expect(response.status).toBe(400);
             })
-
-            it('댓글이 정상적으로 수정되었는지 확인한다.', async () => {
-                const userTokenFactory = new UserTokenFactory(dataSource, authService);
-                const userToken = await userTokenFactory.createUserToken();
-                const userId = await userTokenFactory.userId();
-                const postFactory = new PostFactory(dataSource, userId);
-                const post = await postFactory.createPost();
-                const commentFactory = new CommentFactory(dataSource, userId, post.id);
-                const comment = await commentFactory.createComment();
-
-                const modifyComment = {
-                    content: '테스트 댓글 수정해봅니다.',
-                    proposalCost: 50500
-                }
-
-                await request(app.getHttpServer())
-                    .patch(`/comments/${comment.id}`)
-                    .send(modifyComment)
-                    .set('Authorization', `Bearer ${userToken}`);
-
-            })
         })
     })
 
@@ -158,7 +138,8 @@ describe('CommentController (E2E)', () => {
                 .delete(`/comments/${comment.id}`)
                 .set('Authorization', `Bearer ${userToken}`);
 
-            const isExistComment = await commentFactory.getComment();
+            const commentFinder = new CommentFinder(dataSource);
+            const isExistComment = await commentFinder.getComment();
             expect(response.status).toBe(204);
             expect(isExistComment).toHaveLength(0);
         })

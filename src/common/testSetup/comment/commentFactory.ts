@@ -20,8 +20,4 @@ export class CommentFactory {
             postId: this.postId,
         })
     }
-
-    public async getComment(){
-        return await this.dataSource.getRepository(CommentEntity).find();
-    }
 }
