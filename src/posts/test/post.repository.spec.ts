@@ -110,4 +110,23 @@ describe('PostRepository (E2E)', () => {
             expect(foundPost?.user).toBeDefined()
         })
     })
+
+    describe('remove()', () => {
+        it('게시글을 정상적으로 삭제한다.', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource)
+            await userTokenFactory.createUser();
+            const userFinder = new UserFinder(dataSource);
+            const userId = await userFinder.userId();
+            const postFactory = new PostFactory(dataSource, userId);
+            const post = await postFactory.createPost();
+
+            await postRepository.remove(post);
+
+            const foundPost = await postRepository.findOne({
+                where: {id: post.id},
+            });
+
+            expect(foundPost).toBe(null);
+        })
+    })
 })
