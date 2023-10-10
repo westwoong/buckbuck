@@ -9,6 +9,7 @@ import {AuthService} from "../../auth/auth.service";
 import {UserTokenFactory} from '../../common/testSetup/user/userTokenFactory'
 import {PostFactory} from "../../common/testSetup/post/postFactory";
 import {PostFinder} from "../../common/testSetup/post/postFinder";
+import {UserFinder} from "../../common/testSetup/user/userFinder";
 
 describe('PostController (E2E)', () => {
     let app: INestApplication;
@@ -142,7 +143,8 @@ describe('PostController (E2E)', () => {
             it('게시글 수정 시 200 코드로 응답한다', async () => {
                 const userTokenFactory = new UserTokenFactory(dataSource, authService);
                 const userToken = await userTokenFactory.createUserToken();
-                const userId = await userTokenFactory.userId();
+                const userFinder = new UserFinder(dataSource);
+                const userId = await userFinder.userId();
                 const postFactory = new PostFactory(dataSource, userId);
                 const post = await postFactory.createPost();
                 const postId = post.id;
@@ -165,16 +167,21 @@ describe('PostController (E2E)', () => {
             it('title의 값이 비어있을 시 400 코드로 응답한다', async () => {
                 const userTokenFactory = new UserTokenFactory(dataSource, authService);
                 const userToken = await userTokenFactory.createUserToken();
+                const userFinder = new UserFinder(dataSource);
+                const userId = await userFinder.userId();
+                const postFactory = new PostFactory(dataSource, userId);
+                const post = await postFactory.createPost();
+                const postId = post.id;
 
-                const post = {
+                const modifyPost = {
                     content: '내용도 수정해볼게요',
                     cost: 50000,
                     level: '초급'
                 }
 
                 const response = await request(app.getHttpServer())
-                    .patch('/posts')
-                    .send(post)
+                    .patch(`/posts/${postId}`)
+                    .send(modifyPost)
                     .set('Authorization', `Bearer ${userToken}`);
 
                 expect(response.status).toBe(400);
@@ -183,16 +190,44 @@ describe('PostController (E2E)', () => {
             it('content의 값이 비어있을 시 400 코드로 응답한다', async () => {
                 const userTokenFactory = new UserTokenFactory(dataSource, authService);
                 const userToken = await userTokenFactory.createUserToken();
+                const userFinder = new UserFinder(dataSource);
+                const userId = await userFinder.userId();
+                const postFactory = new PostFactory(dataSource, userId);
+                const post = await postFactory.createPost();
+                const postId = post.id;
 
-                const post = {
+                const modifyPost = {
                     title: '수정 테스트 입니다..',
                     cost: 50000,
                     level: '초급'
                 }
 
                 const response = await request(app.getHttpServer())
-                    .patch('/posts')
-                    .send(post)
+                    .patch(`/posts/${postId}`)
+                    .send(modifyPost)
+                    .set('Authorization', `Bearer ${userToken}`);
+
+                expect(response.status).toBe(400);
+            })
+
+            it('cost의 값이 비어있을 시 400 코드로 응답한다', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                const userToken = await userTokenFactory.createUserToken();
+                const userFinder = new UserFinder(dataSource);
+                const userId = await userFinder.userId();
+                const postFactory = new PostFactory(dataSource, userId);
+                const post = await postFactory.createPost();
+                const postId = post.id;
+
+                const modifyPost = {
+                    title: '수정 테스트 입니다..',
+                    content: '내용도 수정해볼게요',
+                    level: '초급'
+                }
+
+                const response = await request(app.getHttpServer())
+                    .patch(`/posts/${postId}`)
+                    .send(modifyPost)
                     .set('Authorization', `Bearer ${userToken}`);
 
                 expect(response.status).toBe(400);
@@ -201,16 +236,21 @@ describe('PostController (E2E)', () => {
             it('level의 값이 비어있을 시 400 코드로 응답한다', async () => {
                 const userTokenFactory = new UserTokenFactory(dataSource, authService);
                 const userToken = await userTokenFactory.createUserToken();
+                const userFinder = new UserFinder(dataSource);
+                const userId = await userFinder.userId();
+                const postFactory = new PostFactory(dataSource, userId);
+                const post = await postFactory.createPost();
+                const postId = post.id;
 
-                const post = {
+                const modifyPost = {
                     title: '수정 테스트 입니다..',
                     content: '내용도 수정해볼게요',
-                    cost: 50000
+                    level: '초급'
                 }
 
                 const response = await request(app.getHttpServer())
-                    .patch('/posts')
-                    .send(post)
+                    .patch(`/posts/${postId}`)
+                    .send(modifyPost)
                     .set('Authorization', `Bearer ${userToken}`);
 
                 expect(response.status).toBe(400);
@@ -220,7 +260,8 @@ describe('PostController (E2E)', () => {
         it('게시글이 입력값으로 수정되었는지 확인한다.', async () => {
             const userTokenFactory = new UserTokenFactory(dataSource, authService);
             const userToken = await userTokenFactory.createUserToken();
-            const userId = await userTokenFactory.userId();
+            const userFinder = new UserFinder(dataSource);
+            const userId = await userFinder.userId();
             const postFactory = new PostFactory(dataSource, userId);
             const post = await postFactory.createPost();
             const postId = post.id;
@@ -251,7 +292,8 @@ describe('PostController (E2E)', () => {
         it('게시글 삭제 시 204 코드로 응답한다.', async () => {
             const userTokenFactory = new UserTokenFactory(dataSource, authService);
             const userToken = await userTokenFactory.createUserToken();
-            const userId = await userTokenFactory.userId();
+            const userFinder = new UserFinder(dataSource);
+            const userId = await userFinder.userId();
             const postFactory = new PostFactory(dataSource, userId);
             const post = await postFactory.createPost();
             const postId = post.id;
@@ -266,7 +308,8 @@ describe('PostController (E2E)', () => {
         it('게시글 삭제 가 정상적으로 이루어졌는지 확인한다', async () => {
             const userTokenFactory = new UserTokenFactory(dataSource, authService);
             const userToken = await userTokenFactory.createUserToken();
-            const userId = await userTokenFactory.userId();
+            const userFinder = new UserFinder(dataSource);
+            const userId = await userFinder.userId();
             const postFactory = new PostFactory(dataSource, userId);
             const post = await postFactory.createPost();
             const postId = post.id;
