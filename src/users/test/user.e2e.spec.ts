@@ -195,20 +195,38 @@ describe('UserController (E2E)', () => {
 
 
     describe('/users/signin (POST)', () => {
-        it('로그인에 성공하면 200으로 응답한다', async () => {
-            await request(app.getHttpServer()).post('/users/signup').send({
-                account: "xptmxmlqslek123",
-                password: "testpassword123",
-                name: "홍길동",
-                email: "test11r@example.com",
-                phoneNumber: "01052828282",
-                nickName: "빨리점11"
+        describe('로그인 시 httpcode 응답 값이 정상인지 확인한다', () => {
+            it('로그인에 성공하면 200으로 응답한다', async () => {
+                await request(app.getHttpServer()).post('/users/signup').send({
+                    account: "xptmxmlqslek123",
+                    password: "testpassword123",
+                    name: "홍길동",
+                    email: "test11r@example.com",
+                    phoneNumber: "01052828282",
+                    nickName: "빨리점11"
+                })
+                const signIn = await request(app.getHttpServer()).post('/users/signin').send({
+                    account: "xptmxmlqslek123",
+                    password: "testpassword123",
+                })
+                expect(signIn.status).toBe(200);
             })
-            const signIn = await request(app.getHttpServer()).post('/users/signin').send({
-                account: "xptmxmlqslek123",
-                password: "testpassword123",
+
+            it('로그인 실패 시 400으로 응답한다', async () => {
+                await request(app.getHttpServer()).post('/users/signup').send({
+                    account: "xptmxmlqslek123",
+                    password: "testpassword123",
+                    name: "홍길동",
+                    email: "test11r@example.com",
+                    phoneNumber: "01052828282",
+                    nickName: "빨리점11"
+                })
+                const signIn = await request(app.getHttpServer()).post('/users/signin').send({
+                    account: "wkfahtehlsid123",
+                    password: "wkfahtehlspassword123",
+                })
+                expect(signIn.status).toBe(400);
             })
-            expect(signIn.status).toBe(200);
         })
 
         it('로그인 성공시 body값이 존재해야한다', async () => {
