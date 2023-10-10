@@ -217,7 +217,7 @@ describe('CommentController (E2E)', () => {
     })
 
     describe('delete Comment', () => {
-        it('댓글 삭제 시 getComment()의 length가 0이여야한다.', async () => {
+        it('댓글 삭제 시 httpcode 204로 응답한다', async () => {
             const userTokenFactory = new UserTokenFactory(dataSource, authService);
             const userToken = await userTokenFactory.createUserToken();
             const userId = await userTokenFactory.userId();
@@ -230,9 +230,24 @@ describe('CommentController (E2E)', () => {
                 .delete(`/comments/${comment.id}`)
                 .set('Authorization', `Bearer ${userToken}`);
 
+            expect(response.status).toBe(204);
+        })
+
+        it('댓글이 삭제되었는지 확인한다.', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource, authService);
+            const userToken = await userTokenFactory.createUserToken();
+            const userId = await userTokenFactory.userId();
+            const postFactory = new PostFactory(dataSource, userId);
+            const post = await postFactory.createPost();
+            const commentFactory = new CommentFactory(dataSource, userId, post.id);
+            const comment = await commentFactory.createComment();
+
+            await request(app.getHttpServer())
+                .delete(`/comments/${comment.id}`)
+                .set('Authorization', `Bearer ${userToken}`);
+
             const commentFinder = new CommentFinder(dataSource);
             const isExistComment = await commentFinder.getComment();
-            expect(response.status).toBe(204);
             expect(isExistComment).toBe(null);
         })
     })
