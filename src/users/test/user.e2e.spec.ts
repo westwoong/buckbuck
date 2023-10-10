@@ -6,6 +6,7 @@ import * as dotenv from 'dotenv';
 import {initializeTransactionalContext} from "typeorm-transactional";
 import {DataSource} from "typeorm";
 import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
+import {UserFinder} from "../../common/testSetup/user/userFinder";
 
 describe('UserController (E2E)', () => {
     let app: INestApplication;
@@ -166,6 +167,29 @@ describe('UserController (E2E)', () => {
                 })
                 expect(response.status).toBe(409);
             })
+        })
+
+        it('회원정보가 정상적으로 저장되었는지 확인한다', async () => {
+            const signUp = {
+                account: "xptmxmlqslek123",
+                password: "testpassword123",
+                name: "홍길동",
+                email: "test11r@example.com",
+                phoneNumber: "01052828282",
+                nickName: "빨리점11"
+            }
+            await request(app.getHttpServer()).post('/users/signup').send(signUp)
+
+            const userFinder = new UserFinder(dataSource);
+            const user = await userFinder.userInfo()
+
+            expect(signUp.account).toBe(user.account);
+            expect(signUp.name).toBe(user.name);
+            expect(signUp.email).toBe(user.email);
+            expect(signUp.phoneNumber).toBe(user.phoneNumber);
+            expect(signUp.nickName).toBe(user.nickName);
+            expect(user.password).toBeDefined();
+
         })
     })
 
