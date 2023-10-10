@@ -315,6 +315,31 @@ describe('PostController (E2E)', () => {
 
                 expect(response.status).toBe(400);
             })
+
+            it('수정할 게시글이 없을 시 404 코드로 응답한다.', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                const userToken = await userTokenFactory.createUserToken();
+                const userFinder = new UserFinder(dataSource);
+                const userId = await userFinder.userId();
+                const postFactory = new PostFactory(dataSource, userId);
+                const post = await postFactory.createPost();
+                const postId = post.id;
+                await dataSource.getRepository(PostEntity).remove(post);
+
+                const modifyPost = {
+                    title: '수정 테스트 입니다..',
+                    content: '내용도 수정해볼게요',
+                    cost: 50000,
+                    level: '초급'
+                }
+
+                const response = await request(app.getHttpServer())
+                    .patch(`/posts/${postId}`)
+                    .send(modifyPost)
+                    .set('Authorization', `Bearer ${userToken}`);
+
+                expect(response.status).toBe(404);
+            })
         })
 
         it('게시글이 입력값으로 수정되었는지 확인한다.', async () => {
