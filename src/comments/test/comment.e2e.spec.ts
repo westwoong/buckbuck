@@ -314,7 +314,6 @@ describe('CommentController (E2E)', () => {
 
             const response = await request(app.getHttpServer())
                 .patch(`/comments/${comment.id}`)
-                .send()
 
             expect(response.status).toBe(401);
         })
@@ -332,7 +331,6 @@ describe('CommentController (E2E)', () => {
 
             const response = await request(app.getHttpServer())
                 .delete(`/comments/${comment.id}`)
-                .send()
                 .set('Authorization', `Bearer ${secondUserToken}`);
 
             expect(response.status).toBe(403);

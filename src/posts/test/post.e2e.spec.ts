@@ -420,7 +420,6 @@ describe('PostController (E2E)', () => {
 
                 const response = await request(app.getHttpServer())
                     .delete(`/posts/${postId}`)
-                    .send()
                 expect(response.status).toBe(401);
             })
 
@@ -436,7 +435,6 @@ describe('PostController (E2E)', () => {
 
                 const response = await request(app.getHttpServer())
                     .delete(`/posts/${postId}`)
-                    .send()
                     .set('Authorization', `Bearer ${secondUserToken}`);
 
                 expect(response.status).toBe(403);
