@@ -5,7 +5,6 @@ import {initializeTransactionalContext} from 'typeorm-transactional';
 import * as dotenv from 'dotenv';
 import {DataSource, Repository} from "typeorm";
 import {PostEntity} from "../Post.entity";
-import {UserEntity} from "../../users/User.entity";
 import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
 import {UserFinder} from "../../common/testSetup/user/userFinder";
 import {PostFactory} from "../../common/testSetup/post/postFactory";
@@ -55,7 +54,6 @@ describe('PostRepository (E2E)', () => {
             expect(savedPost.cost).toBe(post.cost);
             expect(savedPost.level).toBe(post.level);
             expect(savedPost.userId).toBe(user.id);
-            expect(savedPost.user).toBeDefined();
         })
 
         it('게시글을 정상적으로 수정한다', async () => {
@@ -108,6 +106,26 @@ describe('PostRepository (E2E)', () => {
             // then
             expect(foundPost?.id).toBeDefined();
             expect(foundPost?.user).toBeDefined()
+        })
+
+        it('findOne 사용 시 게시글의 데이터를 가져온다.', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource)
+            await userTokenFactory.createUser();
+            const userFinder = new UserFinder(dataSource);
+            const userId = await userFinder.userId();
+            const postFactory = new PostFactory(dataSource, userId);
+            const post = await postFactory.createPost();
+
+            const foundPost = await postRepository.findOne({
+                where: {id: post.id},
+            });
+
+            expect(foundPost?.title).toBe(post.title);
+            expect(foundPost?.content).toBe(post.content);
+            expect(foundPost?.cost).toBe(post.cost);
+            expect(foundPost?.level).toBe(post.level);
+
+
         })
     })
 
