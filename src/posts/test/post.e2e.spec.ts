@@ -35,7 +35,7 @@ describe('PostController (E2E)', () => {
     })
 
     describe('create Post', () => {
-        describe('httpcode 응답 값이 정상인지 확인한다.', () => {
+        describe('게시글 작성 시 httpcode 응답 값이 정상인지 확인한다.', () => {
             it('게시글을 작성 시 201 코드로 응답한다.', async () => {
                 const userTokenFactory = new UserTokenFactory(dataSource, authService);
                 const userToken = await userTokenFactory.createUserToken();
@@ -138,27 +138,83 @@ describe('PostController (E2E)', () => {
     })
 
     describe('modify Post', () => {
-        it('게시글 수정 시 200 코드로 응답한다', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
-            const userId = await userTokenFactory.userId();
-            const postFactory = new PostFactory(dataSource, userId);
-            const post = await postFactory.createPost();
-            const postId = post.id;
+        describe('게시글 수정 시 httpcode 응답 값이 정상인지 확인한다.', () => {
+            it('게시글 수정 시 200 코드로 응답한다', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                const userToken = await userTokenFactory.createUserToken();
+                const userId = await userTokenFactory.userId();
+                const postFactory = new PostFactory(dataSource, userId);
+                const post = await postFactory.createPost();
+                const postId = post.id;
 
-            const modifyPost = {
-                title: '수정 테스트 입니다..',
-                content: '내용도 수정해볼게요',
-                cost: 50000,
-                level: '초급'
-            }
+                const modifyPost = {
+                    title: '수정 테스트 입니다..',
+                    content: '내용도 수정해볼게요',
+                    cost: 50000,
+                    level: '초급'
+                }
 
-            const response = await request(app.getHttpServer())
-                .patch(`/posts/${postId}`)
-                .send(modifyPost)
-                .set('Authorization', `Bearer ${userToken}`);
+                const response = await request(app.getHttpServer())
+                    .patch(`/posts/${postId}`)
+                    .send(modifyPost)
+                    .set('Authorization', `Bearer ${userToken}`);
 
-            expect(response.status).toBe(200);
+                expect(response.status).toBe(200);
+            })
+
+            it('title의 값이 비어있을 시 400 코드로 응답한다', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                const userToken = await userTokenFactory.createUserToken();
+
+                const post = {
+                    content: '내용도 수정해볼게요',
+                    cost: 50000,
+                    level: '초급'
+                }
+
+                const response = await request(app.getHttpServer())
+                    .patch('/posts')
+                    .send(post)
+                    .set('Authorization', `Bearer ${userToken}`);
+
+                expect(response.status).toBe(400);
+            })
+
+            it('content의 값이 비어있을 시 400 코드로 응답한다', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                const userToken = await userTokenFactory.createUserToken();
+
+                const post = {
+                    title: '수정 테스트 입니다..',
+                    cost: 50000,
+                    level: '초급'
+                }
+
+                const response = await request(app.getHttpServer())
+                    .patch('/posts')
+                    .send(post)
+                    .set('Authorization', `Bearer ${userToken}`);
+
+                expect(response.status).toBe(400);
+            })
+
+            it('level의 값이 비어있을 시 400 코드로 응답한다', async () => {
+                const userTokenFactory = new UserTokenFactory(dataSource, authService);
+                const userToken = await userTokenFactory.createUserToken();
+
+                const post = {
+                    title: '수정 테스트 입니다..',
+                    content: '내용도 수정해볼게요',
+                    cost: 50000
+                }
+
+                const response = await request(app.getHttpServer())
+                    .patch('/posts')
+                    .send(post)
+                    .set('Authorization', `Bearer ${userToken}`);
+
+                expect(response.status).toBe(400);
+            })
         })
 
         it('게시글이 입력값으로 수정되었는지 확인한다.', async () => {
