@@ -3,7 +3,6 @@ import {PostEntity} from "../../../posts/Post.entity";
 
 export class PostFinder {
     private dataSource: DataSource;
-    readonly userId: number;
 
     constructor(dataSource: DataSource) {
         this.dataSource = dataSource;

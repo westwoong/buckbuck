@@ -3,8 +3,6 @@ import {CommentEntity} from "../../../comments/Comment.entity";
 
 export class CommentFinder {
     private dataSource: DataSource;
-    readonly userId: number;
-    readonly postId: number;
 
     constructor(dataSource: DataSource) {
         this.dataSource = dataSource;
