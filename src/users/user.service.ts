@@ -95,14 +95,14 @@ export class UserService {
             }
         })
         if (!user) {
-            throw new BadRequestException('존재하지 않는 계정입니다');
+            throw new BadRequestException('로그인에 실패하였습니다. 아이디와 비밀번호를 확인해주시길 바랍니다');
         }
         return new Promise((resolve, reject) => {
             crypto.pbkdf2(password, user.salt, ITERATIONS, KEY_LENGTH, 'SHA512', async (err, buffer) => {
                 const hashedPassword = buffer.toString('base64');
                 (hashedPassword === user.password)
                     ? resolve(this.authService.signInWithJwt({userId: user.id}))
-                    : reject(new BadRequestException('비밀번호가 틀렸습니다.'));
+                    : reject(new BadRequestException('로그인에 실패하였습니다. 아이디와 비밀번호를 확인해주시길 바랍니다'));
                 if (err) {
                     throw new InternalServerErrorException(err);
                 }
