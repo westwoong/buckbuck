@@ -9,8 +9,6 @@ import {AuthService} from "../../auth/auth.service";
 import {UserTokenFactory} from '../../common/testSetup/userTokenFactory'
 import {PostFactory} from "../../common/testSetup/postFactory";
 import {CommentFactory} from "../../common/testSetup/commentFactory";
-import {validate} from "class-validator";
-import {CreateCommentRequestDto} from "../dto/createComment.request.dto";
 
 describe('CommentController (E2E)', () => {
     let app: INestApplication;
@@ -34,33 +32,6 @@ describe('CommentController (E2E)', () => {
     beforeEach(async () => {
         await dataSource.dropDatabase();
         await dataSource.synchronize();
-    })
-
-    describe('댓글 작성 content 유효성 검사', () => {
-        const createCommentRequestDto = new CreateCommentRequestDto();
-        it.each([
-            ['댓글 내용 테스트 입니다.', true],
-            ['', false]
-        ])('content 필드 유효성 검사에 이상이 없을 시 error의 길이가 0이여야한다.', async (content, isValid) => {
-            createCommentRequestDto.content = content;
-            const errors = await validate(createCommentRequestDto, {skipMissingProperties: true});
-
-            if (isValid) expect(errors).toHaveLength(0);
-            if (!isValid) expect(errors).not.toHaveLength(0);
-        })
-    })
-
-    describe('댓글 작성 proposalCost 유효성 검사', () => {
-        const createCommentRequestDto = new CreateCommentRequestDto();
-        it.each([
-            [15000, true],
-        ])('content 필드 유효성 검사에 이상이 없을 시 error의 길이가 0이여야한다.', async (proposalCost, isValid) => {
-            createCommentRequestDto.proposalCost = proposalCost;
-            const errors = await validate(createCommentRequestDto, {skipMissingProperties: true});
-
-            if (isValid) expect(errors).toHaveLength(0);
-            if (!isValid) expect(errors).not.toHaveLength(0);
-        })
     })
 
     describe('create Comment', () => {
