@@ -8,6 +8,8 @@ import {PostEntity} from "../Post.entity";
 import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
 import {UserFinder} from "../../common/testSetup/user/userFinder";
 import {PostFactory} from "../../common/testSetup/post/postFactory";
+import {CommentFactory} from "../../common/testSetup/comment/commentFactory";
+import {CommentEntity} from "../../comments/Comment.entity";
 
 
 describe('PostRepository (E2E)', () => {
@@ -138,12 +140,37 @@ describe('PostRepository (E2E)', () => {
             const postFactory = new PostFactory(dataSource, userId);
             const post = await postFactory.createPost();
 
+
             await postRepository.remove(post);
 
             const foundPost = await postRepository.findOne({
                 where: {id: post.id},
             });
 
+
+        })
+
+        it('댓글이 달린 게시글 삭제 시 댓글과 같이 삭제한다.', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource)
+            await userTokenFactory.createUser();
+            const userFinder = new UserFinder(dataSource);
+            const userId = await userFinder.userId();
+            const postFactory = new PostFactory(dataSource, userId);
+            const post = await postFactory.createPost();
+            const commentFactory = new CommentFactory(dataSource, userId, post.id);
+            await commentFactory.createComment();
+
+            const comments = await dataSource.getRepository<CommentEntity>(CommentEntity).find({
+                where: {
+                    post: post
+                }
+            })
+            await dataSource.getRepository<CommentEntity>(CommentEntity).remove(comments)
+            await postRepository.remove(post);
+
+            const foundPost = await postRepository.findOne({
+                where: {id: post.id},
+            });
             expect(foundPost).toBe(null);
         })
     })
