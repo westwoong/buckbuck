@@ -161,7 +161,7 @@ describe('PostController (E2E)', () => {
             expect(response.status).toBe(200);
         })
 
-        it('게시글 수정 시 DB의 데이터가 수정되었는지 확인한다.', async () => {
+        it('게시글이 입력값으로 수정되었는지 확인한다.', async () => {
             const userTokenFactory = new UserTokenFactory(dataSource, authService);
             const userToken = await userTokenFactory.createUserToken();
             const userId = await userTokenFactory.userId();
