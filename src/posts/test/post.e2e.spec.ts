@@ -193,7 +193,7 @@ describe('PostController (E2E)', () => {
     })
 
     describe('delete Post', () => {
-        it('게시글 삭제 시 httpcode 204로 응답한다.', async () => {
+        it('게시글 삭제 시 204 코드로 응답한다.', async () => {
             const userTokenFactory = new UserTokenFactory(dataSource, authService);
             const userToken = await userTokenFactory.createUserToken();
             const userId = await userTokenFactory.userId();
@@ -205,10 +205,24 @@ describe('PostController (E2E)', () => {
                 .delete(`/posts/${postId}`)
                 .set('Authorization', `Bearer ${userToken}`);
 
-            const isExistPost = await dataSource.getRepository(PostEntity).find()
-            console.log(isExistPost);
             expect(response.status).toBe(204);
-            expect(isExistPost).toHaveLength(0);
+        })
+
+        it('게시글 삭제 가 정상적으로 이루어졌는지 확인한다', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource, authService);
+            const userToken = await userTokenFactory.createUserToken();
+            const userId = await userTokenFactory.userId();
+            const postFactory = new PostFactory(dataSource, userId);
+            const post = await postFactory.createPost();
+            const postId = post.id;
+
+            await request(app.getHttpServer())
+                .delete(`/posts/${postId}`)
+                .set('Authorization', `Bearer ${userToken}`);
+
+            const postFinder = new PostFinder(dataSource);
+            const isExistPost = await postFinder.getPost();
+            expect(isExistPost).toBe(null);
         })
     })
 
