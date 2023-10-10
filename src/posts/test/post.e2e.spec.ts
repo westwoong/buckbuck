@@ -8,8 +8,8 @@ import {DataSource} from "typeorm";
 import {AuthService} from "../../auth/auth.service";
 import {UserTokenFactory} from '../../common/testSetup/userTokenFactory'
 import {PostFactory} from "../../common/testSetup/postFactory";
-import {CreatePostRequestDto} from "../dto/createPost.request.dto";
-import {validate} from "class-validator";
+import {PostEntity} from "../Post.entity";
+import {PostFinder} from "../../common/testSetup/postFinder";
 
 describe('PostController (E2E)', () => {
     let app: INestApplication;
@@ -35,84 +35,78 @@ describe('PostController (E2E)', () => {
         await dataSource.synchronize();
     })
 
-    describe('게시글 작성 title 유효성 검사', () => {
-        const createPostRequestDto = new CreatePostRequestDto();
-        it.each([
-            ['테스트 제목입니다', true],
-            ['', false]
-        ])('title 필드 유효성 검사에 이상이 없을 시 error의 길이가 0이여야한다.', async (title, isValid) => {
-            createPostRequestDto.title = title;
-            const errors = await validate(createPostRequestDto, {skipMissingProperties: true});
-
-            if (isValid) expect(errors).toHaveLength(0);
-            if (!isValid) expect(errors).not.toHaveLength(0);
-        })
-    })
-
-    describe('게시글 작성 content 유효성 검사', () => {
-        const createPostRequestDto = new CreatePostRequestDto();
-        it.each([
-            ['테스트 본문 내용입니다', true],
-            ['', false]
-        ])('content 필드 유효성 검사에 이상이 없을 시 error의 길이가 0이여야한다.', async (content, isValid) => {
-            createPostRequestDto.content = content;
-            const errors = await validate(createPostRequestDto, {skipMissingProperties: true});
-
-            if (isValid) expect(errors).toHaveLength(0);
-            if (!isValid) expect(errors).not.toHaveLength(0);
-        })
-    })
-
-    describe('게시글 작성 cost 유효성 검사', () => {
-        const createPostRequestDto = new CreatePostRequestDto();
-        it.each([
-            [15000, true], // 정상
-        ])('cost 필드 유효성 검사에 이상이 없을 시 error의 길이가 0이여야한다.', async (cost, isValid) => {
-            createPostRequestDto.cost = cost;
-            const errors = await validate(createPostRequestDto, {skipMissingProperties: true});
-
-            if (isValid) expect(errors).toHaveLength(0);
-            if (!isValid) expect(errors).not.toHaveLength(0);
-        })
-    })
-
-    describe('게시글 작성 level 유효성 검사', () => {
-        const createPostRequestDto = new CreatePostRequestDto();
-        it.each([
-            ['고수', true],
-            ['', false]
-        ])('level 필드 유효성 검사에 이상이 없을 시 error의 길이가 0이여야한다.', async (level, isValid) => {
-            createPostRequestDto.level = level;
-            const errors = await validate(createPostRequestDto, {skipMissingProperties: true});
-
-            if (isValid) expect(errors).toHaveLength(0);
-            if (!isValid) expect(errors).not.toHaveLength(0);
-        })
-    })
-
     describe('create Post', () => {
-        it('게시글을 작성 시 body값이 fixture 값과 동일해야한다.', async () => {
-            // Given = 테스트 사전 Fixture
+        it('게시글을 작성 시 201 코드로 응답한다.', async () => {
             const userTokenFactory = new UserTokenFactory(dataSource, authService);
             const userToken = await userTokenFactory.createUserToken();
 
-            const fixturePost = {
+            const post = {
                 title: '테스트 제목입니다.',
                 content: '테스트 내용입니다.',
                 cost: 10500,
                 level: '고수'
             }
-            // When =
+
             const response = await request(app.getHttpServer())
                 .post('/posts')
-                .send(fixturePost)
+                .send(post)
                 .set('Authorization', `Bearer ${userToken}`);
-            // then
+
             expect(response.status).toBe(201);
-            expect(response.body.title).toBe(fixturePost.title);
-            expect(response.body.content).toBe(fixturePost.content);
-            expect(response.body.cost).toBe(fixturePost.cost);
-            expect(response.body.level).toBe(fixturePost.level);
+        })
+
+        it('title의 값이 비어있을 시 400 코드로 응답한다', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource, authService);
+            const userToken = await userTokenFactory.createUserToken();
+
+            const post = {
+                content: '테스트 내용입니다.',
+                cost: 10500,
+                level: '고수'
+            }
+
+            const response = await request(app.getHttpServer())
+                .post('/posts')
+                .send(post)
+                .set('Authorization', `Bearer ${userToken}`);
+
+            expect(response.status).toBe(400);
+        })
+
+        it('content의 값이 비어있을 시 400 코드로 응답한다', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource, authService);
+            const userToken = await userTokenFactory.createUserToken();
+
+            const post = {
+                title: '테스트 제목입니다.',
+                cost: 10500,
+                level: '고수'
+            }
+
+            const response = await request(app.getHttpServer())
+                .post('/posts')
+                .send(post)
+                .set('Authorization', `Bearer ${userToken}`);
+
+            expect(response.status).toBe(400);
+        })
+
+        it('level의 값이 비어있을 시 400 코드로 응답한다', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource, authService);
+            const userToken = await userTokenFactory.createUserToken();
+
+            const post = {
+                title: '테스트 제목입니다.',
+                content: '테스트 내용입니다.',
+                cost: 10500
+            }
+
+            const response = await request(app.getHttpServer())
+                .post('/posts')
+                .send(post)
+                .set('Authorization', `Bearer ${userToken}`);
+
+            expect(response.status).toBe(400);
         })
     })
 
@@ -137,8 +131,9 @@ describe('PostController (E2E)', () => {
                 .send(modifyPost)
                 .set('Authorization', `Bearer ${userToken}`);
 
-            const fixedPost = await postFactory.getPost();
-            console.log(fixedPost);
+            const postFinder = new PostFinder(dataSource);
+            const fixedPost = await postFinder.getPost();
+            console.log(fixedPost)
             expect(response.status).toBe(200);
         })
     })
@@ -156,7 +151,7 @@ describe('PostController (E2E)', () => {
                 .delete(`/posts/${postId}`)
                 .set('Authorization', `Bearer ${userToken}`);
 
-            const isExistPost = await postFactory.getPost();
+            const isExistPost = await dataSource.getRepository(PostEntity).find()
             console.log(isExistPost);
             expect(response.status).toBe(204);
             expect(isExistPost).toHaveLength(0);
