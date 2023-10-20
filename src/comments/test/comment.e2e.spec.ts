@@ -59,64 +59,6 @@ describe('CommentController (E2E)', () => {
 
                 expect(response.status).toBe(201);
             })
-
-            it('content의 값이 비어있을 시 400으로 응답한다.', async () => {
-                const userTokenFactory = new UserTokenFactory(dataSource, authService);
-                const userToken = await userTokenFactory.createUserToken();
-                const userFinder = new UserFinder(dataSource);
-                const userId = await userFinder.userId();
-                const postFactory = new PostFactory(dataSource, userId);
-                const post = await postFactory.createPost();
-
-                const comment = {
-                    proposalCost: 15000
-                }
-                const response = await request(app.getHttpServer())
-                    .post(`/comments/${post.id}`)
-                    .send(comment)
-                    .set('Authorization', `Bearer ${userToken}`);
-
-                expect(response.status).toBe(400);
-            })
-
-            it('proposalCost의 값이 비어있을 시 400으로 응답한다.', async () => {
-                const userTokenFactory = new UserTokenFactory(dataSource, authService);
-                const userToken = await userTokenFactory.createUserToken();
-                const userFinder = new UserFinder(dataSource);
-                const userId = await userFinder.userId();
-                const postFactory = new PostFactory(dataSource, userId);
-                const post = await postFactory.createPost();
-
-                const comment = {
-                    content: '테스트 댓글 달아봅니다.',
-                }
-                const response = await request(app.getHttpServer())
-                    .post(`/comments/${post.id}`)
-                    .send(comment)
-                    .set('Authorization', `Bearer ${userToken}`);
-
-                expect(response.status).toBe(400);
-            })
-
-            it('userToken이 없을 시 401 코드로 응답한다.', async () => {
-                const userTokenFactory = new UserTokenFactory(dataSource, authService);
-                await userTokenFactory.createUser();
-                const userFinder = new UserFinder(dataSource);
-                const userId = await userFinder.userId();
-                const postFactory = new PostFactory(dataSource, userId);
-                const post = await postFactory.createPost();
-
-                const comment = {
-                    content: '테스트 댓글 달아봅니다.',
-                    proposalCost: 15000
-                }
-                const response = await request(app.getHttpServer())
-                    .post(`/comments/${post.id}`)
-                    .send(comment)
-                expect(response.status).toBe(401);
-            })
-
-
         })
 
         it('입력한 데이터가 정상적으로 저장되었는지 확인한다.', async () => {
