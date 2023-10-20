@@ -42,6 +42,62 @@ describe('PostController', () => {
                 }).set('Authorization', `Bearer ${userToken}`)
                 .expect(201)
         })
+
+        it('title 의 값이 비어있을 시 400 코드로 응답한다', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource, authService);
+            const userToken = await userTokenFactory.createUserToken();
+
+            return request(app.getHttpServer())
+                .post('/posts')
+                .send({
+                    content: '테스트 내용입니다.',
+                    cost: 10500,
+                    level: '고수'
+                })
+                .set('Authorization', `Bearer ${userToken}`)
+                .expect(400);
+        })
+
+        it('content 의 값이 비어있을 시 400 코드로 응답한다', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource, authService);
+            const userToken = await userTokenFactory.createUserToken();
+
+            return request(app.getHttpServer())
+                .post('/posts')
+                .send({
+                    title: '테스트 제목입니다.',
+                    cost: 10500,
+                    level: '고수'
+                })
+                .set('Authorization', `Bearer ${userToken}`)
+                .expect(400);
+        })
+
+        it('level 의 값이 비어있을 시 400 코드로 응답한다', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource, authService);
+            const userToken = await userTokenFactory.createUserToken();
+
+            return request(app.getHttpServer())
+                .post('/posts')
+                .send({
+                    title: '테스트 제목입니다.',
+                    content: '테스트 내용입니다.',
+                    cost: 10500
+                })
+                .set('Authorization', `Bearer ${userToken}`)
+                .expect(400);
+        })
+
+        it('userToken 이 없을 시 401 코드로 응답한다', async () => {
+            return request(app.getHttpServer())
+                .post('/posts')
+                .send({
+                    title: '테스트 제목입니다.',
+                    content: '테스트 내용입니다.',
+                    cost: 10500
+                })
+                .expect(401);
+        })
     })
 
     describe('/posts/:postId (PATCH)', () => {
