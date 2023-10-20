@@ -7,9 +7,6 @@ import * as request from "supertest";
 import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
 import {DataSource} from "typeorm";
 import {AuthService} from "../../auth/auth.service";
-import {UserFinder} from "../../common/testSetup/user/userFinder";
-import {PostFactory} from "../../common/testSetup/post/postFactory";
-import {CommentFactory} from "../../common/testSetup/comment/commentFactory";
 
 jest.mock('../comment.service');
 
@@ -124,5 +121,24 @@ describe('CommentController', () => {
                 })
                 .expect(401);
         })
+    })
+
+    describe('/comments/:commentId (DELETE)', () => {
+        it('정상적인 요청 시 204 응답코드를 반환한다', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource, authService);
+            const userToken = await userTokenFactory.createUserToken();
+
+            return request(app.getHttpServer())
+                .delete(`/comments/:commentId`)
+                .set('Authorization', `Bearer ${userToken}`)
+                .expect(204)
+        })
+
+        it('userToken 이 없을 시 401 코드로 응답한다.', async () => {
+            return request(app.getHttpServer())
+                .delete(`/comments/:commentId`)
+                .expect(401);
+        })
+
     })
 });
