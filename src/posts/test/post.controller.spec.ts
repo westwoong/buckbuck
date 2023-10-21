@@ -28,6 +28,7 @@ describe('PostController', () => {
         app.useGlobalPipes(new ValidationPipe({transform: true}));
         await app.init();
     });
+
     describe('/posts (POST)', () => {
         it('정상적인 요청시 201 응답코드를 반환한다.', async () => {
             const userTokenFactory = new UserTokenFactory(dataSource, authService);
