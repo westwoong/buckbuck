@@ -41,7 +41,61 @@ describe('ReviewController', () => {
                 }).set('Authorization', `Bearer ${userToken}`)
                 .expect(201)
         })
+
+        it('stars 값의 타입이 문자열일 시 400으로 응답한다.', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource, authService);
+            const userToken = await userTokenFactory.createUserToken();
+            return request(app.getHttpServer())
+                .post('/reviews/performers/:performerId')
+                .send({
+                    stars: '5점드릴게요',
+                    comment: '친절해요'
+                }).set('Authorization', `Bearer ${userToken}`)
+                .expect(400)
+        })
+
+        it('stars 의 값이 비어있을 시 400으로 응답한다.', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource, authService);
+            const userToken = await userTokenFactory.createUserToken();
+            return request(app.getHttpServer())
+                .post('/reviews/performers/:performerId')
+                .send({
+                    comment: '친절해요'
+                }).set('Authorization', `Bearer ${userToken}`)
+                .expect(400)
+        })
+
+        it('comment 값의 타입이 숫자일 시 400으로 응답한다.', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource, authService);
+            const userToken = await userTokenFactory.createUserToken();
+            return request(app.getHttpServer())
+                .post('/reviews/performers/:performerId')
+                .send({
+                    stars: '5점드릴게요',
+                    comment: 8888
+                }).set('Authorization', `Bearer ${userToken}`)
+                .expect(400)
+        })
+
+        it('comment 의 값이 비어있을 시 400으로 응답한다.', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource, authService);
+            const userToken = await userTokenFactory.createUserToken();
+            return request(app.getHttpServer())
+                .post('/reviews/performers/:performerId')
+                .send({
+                    stars: 5,
+                }).set('Authorization', `Bearer ${userToken}`)
+                .expect(400)
+        })
+
+        it('userToken 이 없을 시 401 코드로 응답한다.', async () => {
+            return request(app.getHttpServer())
+                .post('/reviews/performers/:performerId')
+                .send({
+                    stars: 5,
+                    comment: '친절해요'
+                })
+                .expect(401)
+        })
     })
-
-
 })
