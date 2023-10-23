@@ -21,10 +21,10 @@ export class CategoriesService {
     @Transactional()
     async create(createCategoryRequestDto: CreateCategoryRequestDto) {
         const {name} = createCategoryRequestDto;
-        const isExistCategory = await this.categoryRepository.findOne({
-            where: {name: name}
-        })
+        const isExistCategory = await this.categoryRepository2.findOneByName(name);
+
         if (isExistCategory) throw new ConflictException('이미 존재하는 카테고리입니다.');
+
         const category = new CategoriesEntity({name});
         await this.categoryRepository.save(category);
 
