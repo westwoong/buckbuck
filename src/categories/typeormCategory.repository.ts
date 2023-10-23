@@ -19,6 +19,12 @@ export class TypeormCategoryRepository implements CategoryRepository {
         })
     }
 
+    async findOneByName(name: string): Promise<CategoriesEntity | null> {
+        return await this.categoryRepository.findOne({
+            where: {name: name}
+        })
+    }
+
     async save(category: CategoriesEntity): Promise<CategoriesEntity> {
         return await this.categoryRepository.save(category);
     }
