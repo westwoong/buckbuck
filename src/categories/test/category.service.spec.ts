@@ -1,4 +1,4 @@
-import {ConflictException, INestApplication, ValidationPipe} from '@nestjs/common';
+import {ConflictException, INestApplication, NotFoundException, ValidationPipe} from '@nestjs/common';
 import {Test, TestingModule} from '@nestjs/testing';
 import {AppModule} from '../../app.module';
 import {initializeTransactionalContext} from 'typeorm-transactional';
@@ -31,10 +31,24 @@ describe('CategoryService ', () => {
     });
 
     describe('create Category', () => {
-        it('카테고리명 생성 중 동일한 카테고리명이 있을 시 409에러를 반환한다.', async () => {
+        it('카테고리 생성 중 동일한 카테고리명이 있을 시 409에러를 반환한다.', async () => {
             const category = new CategoriesEntity({name: '해줘'});
             await jest.spyOn(categoryRepository, 'findOneByName').mockResolvedValue(category)
             await expect(categoryService.create(category)).rejects.toThrow(ConflictException);
+        })
+    })
+
+    describe('modify Category', () => {
+        it('기존 카테고리가 없을 때 수정을 할 시 404에러를 반환한다.', async () => {
+            const category = new CategoriesEntity({name: '수정해줘'});
+            await expect(categoryService.modify(1, category)).rejects.toThrow(NotFoundException);
+        })
+
+        it('수정하려는 카테고리 명이 이미 존재할 시 409 에러를 반환한다.', async () => {
+            const category = new CategoriesEntity({name: '수정해줘'});
+            await jest.spyOn(categoryRepository, 'findOneById').mockResolvedValue(category);
+            await jest.spyOn(categoryRepository, 'findOneByName').mockResolvedValue(category);
+            await expect(categoryService.modify(1, category)).rejects.toThrow(ConflictException);
         })
     })
 
