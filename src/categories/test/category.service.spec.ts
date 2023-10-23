@@ -1,4 +1,4 @@
-import {INestApplication, ValidationPipe} from '@nestjs/common';
+import {ConflictException, INestApplication, ValidationPipe} from '@nestjs/common';
 import {Test, TestingModule} from '@nestjs/testing';
 import {AppModule} from '../../app.module';
 import {initializeTransactionalContext} from 'typeorm-transactional';
@@ -7,7 +7,7 @@ import {DataSource} from "typeorm";
 import {CategoriesService} from "../categories.service";
 import {TypeormCategoryRepository} from "../typeormCategory.repository";
 import {CATEGORY_REPOSITORY} from "../../common/injectToken.constant";
-import {CreateCategoryRequestDto} from "../dto/createCategory.request.dto";
+import {CategoriesEntity} from "../Categories.entity";
 
 describe('CategoryService ', () => {
     let app: INestApplication;
@@ -30,29 +30,11 @@ describe('CategoryService ', () => {
         await app.init();
     });
 
-    beforeEach(async () => {
-        await dataSource.dropDatabase();
-        await dataSource.synchronize();
-    })
-
     describe('create Category', () => {
-        it('카테고리 생성 시 201 코드로 응답한다.', async () => {
-            console.log(categoryService);
-            console.log(categoryRepository);
-
-            // jest.spyOn(categoryRepository, 'findOneById').mockResolvedValue();
-
-            // @ts-ignore
-            const temp1 =await jest.spyOn(categoryRepository, 'save').mockResolvedValue('success');
-            console.log(temp1);
-
-            const createCategoryDto = new CreateCategoryRequestDto();
-            createCategoryDto.name = "teststst";
-
-            const test = await categoryService.create(createCategoryDto);
-            console.log(test);
-
-            expect(1).toBe(1);
+        it('카테고리명 생성 중 동일한 카테고리명이 있을 시 409에러를 반환한다.', async () => {
+            const category = new CategoriesEntity({name: '해줘'});
+            await jest.spyOn(categoryRepository, 'findOneByName').mockResolvedValue(category)
+            await expect(categoryService.create(category)).rejects.toThrow(ConflictException);
         })
     })
 
