@@ -37,7 +37,9 @@ export class CategoriesService {
         const {name} = modifyCategoryRequestDto;
         const category = await this.categoryRepository2.findOneById(categoryId);
         if (!category) throw new NotFoundException('해당 카테고리는 존재하지않습니다.');
-        if (category.name === name) throw new ConflictException('이미 존재하는 카테고리입니다.');
+
+        const isExistCategory = await this.categoryRepository2.findOneByName(name);
+        if (isExistCategory) throw new ConflictException('이미 존재하는 카테고리입니다.');
 
         category.name = name;
 
