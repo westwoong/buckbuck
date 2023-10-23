@@ -6,6 +6,7 @@ import {CreateCategoryRequestDto} from "./dto/createCategory.request.dto";
 import {Transactional} from "typeorm-transactional";
 import {CategoryRepository} from "./category.repository";
 import {CATEGORY_REPOSITORY} from "../common/injectToken.constant";
+import {CreateCategoryResponseDto} from "./dto/createCategory.response.dto";
 
 @Injectable()
 export class CategoriesService {
@@ -26,9 +27,9 @@ export class CategoriesService {
         if (isExistCategory) throw new ConflictException('이미 존재하는 카테고리입니다.');
 
         const category = new CategoriesEntity({name});
-        await this.categoryRepository.save(category);
+        await this.categoryRepository2.save(category);
 
-        return category
+        return new CreateCategoryResponseDto(category);
     }
 
     @Transactional()
