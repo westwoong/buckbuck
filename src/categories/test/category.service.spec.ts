@@ -41,7 +41,7 @@ describe('CategoryService ', () => {
     describe('modify Category', () => {
         it('기존 카테고리가 없을 때 수정을 할 시 404에러를 반환한다.', async () => {
             const category = new CategoriesEntity({name: '수정해줘'});
-            await expect(categoryService.modify(1, category)).rejects.toThrow(NotFoundException);
+            await expect(categoryService.modify(123, category)).rejects.toThrow(NotFoundException);
         })
 
         it('수정하려는 카테고리 명이 이미 존재할 시 409 에러를 반환한다.', async () => {
