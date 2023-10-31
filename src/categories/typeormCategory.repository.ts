@@ -13,9 +13,9 @@ export class TypeormCategoryRepository implements CategoryRepository {
     ) {
     }
 
-    async findOneById(id: number): Promise<CategoriesEntity | null> {
+    async findOneById(categoryId: number): Promise<CategoriesEntity | null> {
         return await this.categoryRepository.findOne({
-            where: {id: id}
+            where: {id: categoryId}
         })
     }
 
