@@ -5,5 +5,7 @@ export interface PostRepository {
 
     findOneById(postId: number): Promise<PostEntity | null>
 
+    save(post: PostEntity): Promise<PostEntity>
+
     remove(post: PostEntity): Promise<PostEntity>
 }

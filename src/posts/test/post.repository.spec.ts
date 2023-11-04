@@ -3,18 +3,20 @@ import {Test, TestingModule} from '@nestjs/testing';
 import {AppModule} from '../../app.module';
 import {initializeTransactionalContext} from 'typeorm-transactional';
 import * as dotenv from 'dotenv';
-import {DataSource, Repository} from "typeorm";
+import {DataSource} from "typeorm";
 import {PostEntity} from "../Post.entity";
 import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
 import {UserFinder} from "../../common/testSetup/user/userFinder";
 import {PostFactory} from "../../common/testSetup/post/postFactory";
 import {CommentFactory} from "../../common/testSetup/comment/commentFactory";
 import {CommentEntity} from "../../comments/Comment.entity";
+import {TypeormPostRepository} from "../typeormPost.repository";
+import {POST_REPOSITORY} from "../../common/injectToken.constant";
 
 
 describe('PostRepository (E2E)', () => {
     let app: INestApplication;
-    let postRepository: Repository<PostEntity>
+    let postRepository: TypeormPostRepository;
     let dataSource: DataSource;
 
     beforeAll(async () => {
@@ -25,7 +27,7 @@ describe('PostRepository (E2E)', () => {
         }).compile();
 
         dataSource = moduleRef.get<DataSource>(DataSource);
-        postRepository = dataSource.getRepository<PostEntity>(PostEntity);
+        postRepository = moduleRef.get<TypeormPostRepository>(POST_REPOSITORY);
 
         app = moduleRef.createNestApplication();
         app.useGlobalPipes(new ValidationPipe({transform: true}));
@@ -100,10 +102,7 @@ describe('PostRepository (E2E)', () => {
             const post = await postFactory.createPost();
 
             // when
-            const foundPost = await postRepository.findOne({
-                where: {id: post.id},
-                relations: ['user'],
-            });
+            const foundPost = await postRepository.findPostWithUser(post.id);
 
             // then
             expect(foundPost?.id).toBeDefined();
@@ -118,9 +117,7 @@ describe('PostRepository (E2E)', () => {
             const postFactory = new PostFactory(dataSource, userId);
             const post = await postFactory.createPost();
 
-            const foundPost = await postRepository.findOne({
-                where: {id: post.id},
-            });
+            const foundPost = await postRepository.findOneById(post.id);
 
             expect(foundPost?.title).toBe(post.title);
             expect(foundPost?.content).toBe(post.content);
@@ -143,9 +140,7 @@ describe('PostRepository (E2E)', () => {
 
             await postRepository.remove(post);
 
-            const foundPost = await postRepository.findOne({
-                where: {id: post.id},
-            });
+            const foundPost = await postRepository.findOneById(post.id);
 
             expect(foundPost).toBe(null);
 
@@ -169,9 +164,7 @@ describe('PostRepository (E2E)', () => {
             await dataSource.getRepository<CommentEntity>(CommentEntity).remove(comments)
             await postRepository.remove(post);
 
-            const foundPost = await postRepository.findOne({
-                where: {id: post.id},
-            });
+            const foundPost = await postRepository.findOneById(post.id);
             expect(foundPost).toBe(null);
         })
     })

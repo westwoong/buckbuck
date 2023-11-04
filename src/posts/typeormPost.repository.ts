@@ -26,6 +26,10 @@ export class TypeormPostRepository implements PostRepository {
         })
     }
 
+    async save(post: PostEntity) {
+        return await this.postRepository.save(post);
+    }
+
     async remove(post: PostEntity): Promise<PostEntity> {
         return await this.postRepository.remove(post);
     }
