@@ -3,6 +3,7 @@ import {ReviewRepository} from "./review.repository";
 import {InjectRepository} from "@nestjs/typeorm";
 import {ReviewEntity} from "./Review.entity";
 import {Repository} from "typeorm";
+import {PostEntity} from "../posts/Post.entity";
 
 @Injectable()
 export class TypeormReviewRepository implements ReviewRepository {
@@ -10,6 +11,15 @@ export class TypeormReviewRepository implements ReviewRepository {
         @InjectRepository(ReviewEntity)
         private readonly reviewRepository: Repository<ReviewEntity>,
     ) {
+    }
+
+    async findOneByRequesterIdAndPost(requesterId: number, post: PostEntity): Promise<ReviewEntity | null> {
+        return await this.reviewRepository.findOne({
+            where: {
+                requesterId: {id: requesterId},
+                post: post
+            }
+        })
     }
 
     async save(review: ReviewEntity) {
