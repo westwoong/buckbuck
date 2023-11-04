@@ -1,6 +1,6 @@
 import {
     BadRequestException,
-    ForbiddenException,
+    ForbiddenException, Inject,
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
@@ -12,6 +12,9 @@ import {PostEntity} from "../posts/Post.entity";
 import {Transactional} from "typeorm-transactional";
 import {UserEntity} from "../users/User.entity";
 import {CreateCommentResponseDto} from "./dto/createComment.response.dto";
+import {COMMENT_REPOSITORY, POST_REPOSITORY} from "../common/injectToken.constant";
+import {CommentRepository} from "./comment.repository";
+import {PostRepository} from "../posts/post.repository";
 
 @Injectable()
 export class CommentService {
@@ -19,8 +22,12 @@ export class CommentService {
     constructor(
         @InjectRepository(CommentEntity)
         private readonly commentRepository: Repository<CommentEntity>,
+        @Inject(COMMENT_REPOSITORY)
+        private readonly commentRepository2: CommentRepository,
         @InjectRepository(PostEntity)
         private readonly postRepository: Repository<PostEntity>,
+        @Inject(POST_REPOSITORY)
+        private readonly postRepository2: PostRepository,
         @InjectRepository(UserEntity)
         private readonly userRepository: Repository<UserEntity>,
     ) {
@@ -32,9 +39,7 @@ export class CommentService {
         const user = await this.userRepository.findOne({
             where: {id: userId}
         })
-        const post = await this.postRepository.findOne({
-            where: {id: postId}
-        })
+        const post = await this.postRepository2.findOneByPostId(postId);
         if (!user) throw new BadRequestException('잘못된 접근입니다.')
         if (!post) throw new NotFoundException('해당 게시글은 존재하지 않습니다.');
 
