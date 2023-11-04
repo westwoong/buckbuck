@@ -20,7 +20,7 @@ export class ReviewService {
     }
 
     @Transactional()
-    async create(userId: number, performerId: number, createReviewRequestDto: CreateReviewRequestDto) {
+    async create(requesterId: number, performerId: number, createReviewRequestDto: CreateReviewRequestDto) {
         const {stars, comment} = createReviewRequestDto;
         /*임시 게시글, 추후 프론트(postId 전달) 추가 후 변경 예정*/
         const post = await this.postRepository.findOne({
@@ -31,14 +31,14 @@ export class ReviewService {
         const review = new ReviewEntity({post, stars, comment});
 
         const requester = await this.userRepository.findOne({
-            where: {id: userId}
+            where: {id: requesterId}
         })
         const performer = await this.userRepository.findOne({
             where: {id: performerId}
         })
         const isExistReview = await this.reviewRepository.findOne({
             where: {
-                requesterId: {id: userId},
+                requesterId: {id: requesterId},
                 post: post
             }
         })

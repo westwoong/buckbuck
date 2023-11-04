@@ -17,8 +17,8 @@ export class ReviewController {
         @Param('performerId') performerId: string,
         @Body() createReviewRequestDto: CreateReviewRequestDto
     ) {
-        const userId = req.user.userId;
+        const requesterId = req.user.userId;
         const parsedPerformerId = parseInt(performerId)
-        return this.reviewService.create(userId, parsedPerformerId, createReviewRequestDto);
+        return this.reviewService.create(requesterId, parsedPerformerId, createReviewRequestDto);
     }
 }
