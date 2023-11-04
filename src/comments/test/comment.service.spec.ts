@@ -38,13 +38,13 @@ describe('CommentService', () => {
     });
 
     describe('create Comment', () => {
-        it('userId가 존재하지 않을 시 400 에러를 반환한다', async () => {
+        it('사용자가 존재하지 않을 시 400 에러를 반환한다', async () => {
             const comment = new CommentEntity({content: '테스트 댓글', proposalCost: 1000});
             await jest.spyOn(postRepository, 'findOneById').mockResolvedValue(DUMMY_POST_RESOLVE);
             await expect(commentService.create(1231, 1231, comment)).rejects.toThrow(BadRequestException);
         })
 
-        it('postId가 존재하지 않을 시 404 에러를 반환한다', async () => {
+        it('게시글이 존재하지 않을 시 404 에러를 반환한다', async () => {
             const comment = new CommentEntity({content: '테스트 댓글', proposalCost: 1000});
             await jest.spyOn(userRepository, 'findOneById').mockResolvedValue(DUMMY_USER_RESOLVE);
             await expect(commentService.create(1231, 1231, comment)).rejects.toThrow(NotFoundException);
