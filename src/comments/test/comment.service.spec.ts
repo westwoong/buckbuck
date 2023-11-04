@@ -1,4 +1,4 @@
-import {BadRequestException, INestApplication, ValidationPipe} from "@nestjs/common";
+import {BadRequestException, INestApplication, NotFoundException, ValidationPipe} from "@nestjs/common";
 import {CommentService} from "../comment.service";
 import {TypeormCommentRepository} from "../typeormComment.repository";
 import {DataSource} from "typeorm";
@@ -10,7 +10,7 @@ import {COMMENT_REPOSITORY, POST_REPOSITORY, USER_REPOSITORY} from "../../common
 import {CommentEntity} from "../Comment.entity";
 import {TypeormUserRepository} from "../../users/typeormUser.repository";
 import {TypeormPostRepository} from "../../posts/typeormPost.repository";
-import {DUMMY_POST_RESOLVE} from "../../common/mockDummyResolve";
+import {DUMMY_POST_RESOLVE, DUMMY_USER_RESOLVE} from "../../common/mockDummyResolve";
 
 describe('CommentService', () => {
     let app: INestApplication;
@@ -40,8 +40,14 @@ describe('CommentService', () => {
     describe('create Comment', () => {
         it('userId가 존재하지 않을 시 400 에러를 반환한다', async () => {
             const comment = new CommentEntity({content: '테스트 댓글', proposalCost: 1000});
-            await jest.spyOn(postRepository, 'findOneByPostId').mockResolvedValue(DUMMY_POST_RESOLVE);
+            await jest.spyOn(postRepository, 'findOneById').mockResolvedValue(DUMMY_POST_RESOLVE);
             await expect(commentService.create(1231, 1231, comment)).rejects.toThrow(BadRequestException);
+        })
+
+        it('postId가 존재하지 않을 시 404 에러를 반환한다', async () => {
+            const comment = new CommentEntity({content: '테스트 댓글', proposalCost: 1000});
+            await jest.spyOn(userRepository, 'findOneById').mockResolvedValue(DUMMY_USER_RESOLVE);
+            await expect(commentService.create(1231, 1231, comment)).rejects.toThrow(NotFoundException);
         })
     })
 

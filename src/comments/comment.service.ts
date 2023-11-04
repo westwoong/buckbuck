@@ -12,9 +12,10 @@ import {PostEntity} from "../posts/Post.entity";
 import {Transactional} from "typeorm-transactional";
 import {UserEntity} from "../users/User.entity";
 import {CreateCommentResponseDto} from "./dto/createComment.response.dto";
-import {COMMENT_REPOSITORY, POST_REPOSITORY} from "../common/injectToken.constant";
+import {COMMENT_REPOSITORY, POST_REPOSITORY, USER_REPOSITORY} from "../common/injectToken.constant";
 import {CommentRepository} from "./comment.repository";
 import {PostRepository} from "../posts/post.repository";
+import {UserRepository} from "../users/user.repository";
 
 @Injectable()
 export class CommentService {
@@ -30,16 +31,17 @@ export class CommentService {
         private readonly postRepository2: PostRepository,
         @InjectRepository(UserEntity)
         private readonly userRepository: Repository<UserEntity>,
+        @Inject(USER_REPOSITORY)
+        private readonly userRepository2: UserRepository
     ) {
     }
 
     @Transactional()
     async create(userId: number, postId: number, createCommentRequestDto: CreateCommentRequestDto) {
         const {content, proposalCost} = createCommentRequestDto;
-        const user = await this.userRepository.findOne({
-            where: {id: userId}
-        })
+        const user = await this.userRepository2.findOneById(userId);
         const post = await this.postRepository2.findOneById(postId);
+
         if (!user) throw new BadRequestException('잘못된 접근입니다.')
         if (!post) throw new NotFoundException('해당 게시글은 존재하지 않습니다.');
 
