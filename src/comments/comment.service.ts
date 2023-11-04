@@ -18,19 +18,19 @@ export class CommentService {
 
     constructor(
         @Inject(COMMENT_REPOSITORY)
-        private readonly commentRepository2: CommentRepository,
+        private readonly commentRepository: CommentRepository,
         @Inject(POST_REPOSITORY)
-        private readonly postRepository2: PostRepository,
+        private readonly postRepository: PostRepository,
         @Inject(USER_REPOSITORY)
-        private readonly userRepository2: UserRepository
+        private readonly userRepository: UserRepository
     ) {
     }
 
     @Transactional()
     async create(userId: number, postId: number, createCommentRequestDto: CreateCommentRequestDto) {
         const {content, proposalCost} = createCommentRequestDto;
-        const user = await this.userRepository2.findOneById(userId);
-        const post = await this.postRepository2.findOneById(postId);
+        const user = await this.userRepository.findOneById(userId);
+        const post = await this.postRepository.findOneById(postId);
 
         if (!user) throw new BadRequestException('잘못된 접근입니다.')
         if (!post) throw new NotFoundException('해당 게시글은 존재하지 않습니다.');
@@ -39,25 +39,25 @@ export class CommentService {
         comment.post = post;
         comment.user = user;
 
-        await this.commentRepository2.save(comment);
+        await this.commentRepository.save(comment);
 
         return new CreateCommentResponseDto(comment);
     }
 
     @Transactional()
     async delete(userId: number, commentId: number) {
-        const comment = await this.commentRepository2.findCommentWithUser(commentId);
+        const comment = await this.commentRepository.findCommentWithUser(commentId);
 
         if (!comment) throw new NotFoundException('해당 댓글은 존재하지않습니다')
         if (comment.user.id !== userId) throw new ForbiddenException('본인의 댓글만 삭제가 가능합니다.')
-        await this.commentRepository2.remove(comment);
+        await this.commentRepository.remove(comment);
     }
 
     @Transactional()
     async modify(userId: number, commentId: number, modifyCommentRequestDto: CreateCommentRequestDto) {
         const {content, proposalCost} = modifyCommentRequestDto;
-        const user = await this.userRepository2.findOneById(userId);
-        const comment = await this.commentRepository2.findCommentWithUser(commentId);
+        const user = await this.userRepository.findOneById(userId);
+        const comment = await this.commentRepository.findCommentWithUser(commentId);
 
         if (!user) throw new BadRequestException('잘못된 접근입니다.')
         if (!comment) throw new NotFoundException('해당 댓글은 존재하지않습니다')
@@ -66,7 +66,7 @@ export class CommentService {
         comment.content = content;
         comment.proposalCost = proposalCost;
 
-        await this.commentRepository2.save(comment);
+        await this.commentRepository.save(comment);
         return
     }
 }
