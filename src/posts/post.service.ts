@@ -1,4 +1,4 @@
-import {BadRequestException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {PostEntity} from "./Post.entity";
 import {Repository} from "typeorm";
@@ -7,14 +7,16 @@ import {Transactional} from "typeorm-transactional";
 import {UserEntity} from "../users/User.entity";
 import {CreatePostResponseDto} from "./dto/createPost.response.dto";
 import {CommentEntity} from "../comments/Comment.entity";
+import {USER_REPOSITORY} from "../common/injectToken.constant";
+import {UserRepository} from "../users/user.repository";
 
 @Injectable()
 export class PostService {
     constructor(
         @InjectRepository(PostEntity)
         private readonly postRepository: Repository<PostEntity>,
-        @InjectRepository(UserEntity)
-        private readonly userRepository: Repository<UserEntity>,
+        @Inject(USER_REPOSITORY)
+        private readonly userRepository: UserRepository,
         @InjectRepository(CommentEntity)
         private readonly commentRepository: Repository<CommentEntity>,
     ) {
@@ -24,9 +26,7 @@ export class PostService {
     async create(userId: number, createPostRequestDto: CreatePostRequestDto) {
         const {title, content, cost, level} = createPostRequestDto;
         const post = new PostEntity({title, content, cost, level});
-        const foundUser = await this.userRepository.findOne({
-            where: {id: userId}
-        });
+        const foundUser = await this.userRepository.findOneById(userId);
         if (!foundUser) throw new BadRequestException('사용자가 존재하지 않습니다.');
         post.user = foundUser;
 
@@ -63,9 +63,7 @@ export class PostService {
             relations: ['user'],
         });
 
-        const foundUser = await this.userRepository.findOne({
-            where: {id: userId}
-        });
+        const foundUser = await this.userRepository.findOneById(userId);
 
         if (!post) throw new NotFoundException('해당 게시글은 존재하지 않습니다.');
         if (!foundUser) throw new BadRequestException('사용자가 존재하지 않습니다.');

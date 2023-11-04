@@ -5,17 +5,17 @@ import {PostController} from './post.controller';
 import {PostService} from './post.service';
 import {UserEntity} from "../users/User.entity";
 import {CommentEntity} from "../comments/Comment.entity";
-import {POST_REPOSITORY} from "../common/injectToken.constant";
+import {POST_REPOSITORY, USER_REPOSITORY} from "../common/injectToken.constant";
 import {TypeormPostRepository} from "./typeormPost.repository";
+import {TypeormUserRepository} from "../users/typeormUser.repository";
 
 @Module({
     imports: [TypeOrmModule.forFeature([PostEntity, UserEntity, CommentEntity])],
     controllers: [PostController],
     providers: [
         PostService,
-        {
-            provide: POST_REPOSITORY, useClass: TypeormPostRepository
-        }
+        {provide: POST_REPOSITORY, useClass: TypeormPostRepository},
+        {provide: USER_REPOSITORY, useClass: TypeormUserRepository}
     ]
 })
 export class PostModule {
