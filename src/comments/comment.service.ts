@@ -39,7 +39,7 @@ export class CommentService {
         const user = await this.userRepository.findOne({
             where: {id: userId}
         })
-        const post = await this.postRepository2.findOneByPostId(postId);
+        const post = await this.postRepository2.findOneById(postId);
         if (!user) throw new BadRequestException('잘못된 접근입니다.')
         if (!post) throw new NotFoundException('해당 게시글은 존재하지 않습니다.');
 
