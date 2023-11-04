@@ -22,4 +22,8 @@ export class TypeormCommentRepository implements CommentRepository {
     async save(comment: CommentEntity): Promise<CommentEntity> {
         return await this.commentRepository.save(comment);
     }
+
+    async remove(comment: CommentEntity): Promise<CommentEntity> {
+        return await this.commentRepository.remove(comment);
+    }
 }
