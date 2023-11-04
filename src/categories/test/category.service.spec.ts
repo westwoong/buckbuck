@@ -14,6 +14,7 @@ describe('CategoryService ', () => {
     let categoryService: CategoriesService;
     let categoryRepository: TypeormCategoryRepository;
     let dataSource: DataSource;
+    let categoryId = 1231;
 
     beforeAll(async () => {
         initializeTransactionalContext();
@@ -41,14 +42,14 @@ describe('CategoryService ', () => {
     describe('modify Category', () => {
         it('기존 카테고리가 없을 때 수정을 할 시 404에러를 반환한다.', async () => {
             const category = new CategoriesEntity({name: '수정해줘'});
-            await expect(categoryService.modify(123, category)).rejects.toThrow(NotFoundException);
+            await expect(categoryService.modify(categoryId, category)).rejects.toThrow(NotFoundException);
         })
 
         it('수정하려는 카테고리 명이 이미 존재할 시 409 에러를 반환한다.', async () => {
             const category = new CategoriesEntity({name: '수정해줘'});
             await jest.spyOn(categoryRepository, 'findOneById').mockResolvedValue(category);
             await jest.spyOn(categoryRepository, 'findOneByName').mockResolvedValue(category);
-            await expect(categoryService.modify(1, category)).rejects.toThrow(ConflictException);
+            await expect(categoryService.modify(categoryId, category)).rejects.toThrow(ConflictException);
         })
     })
 
