@@ -20,6 +20,12 @@ export class TypeormPostRepository implements PostRepository {
         })
     }
 
+    async findOneByPostId(postId: number): Promise<PostEntity | null> {
+        return await this.postRepository.findOne({
+            where: {id: postId}
+        })
+    }
+
     async remove(post: PostEntity): Promise<PostEntity> {
         return await this.postRepository.remove(post);
     }
