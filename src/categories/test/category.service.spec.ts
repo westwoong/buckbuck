@@ -3,7 +3,6 @@ import {Test, TestingModule} from '@nestjs/testing';
 import {AppModule} from '../../app.module';
 import {initializeTransactionalContext} from 'typeorm-transactional';
 import * as dotenv from 'dotenv';
-import {DataSource} from "typeorm";
 import {CategoriesService} from "../categories.service";
 import {TypeormCategoryRepository} from "../typeormCategory.repository";
 import {CATEGORY_REPOSITORY} from "../../common/injectToken.constant";
@@ -13,7 +12,6 @@ describe('CategoryService ', () => {
     let app: INestApplication;
     let categoryService: CategoriesService;
     let categoryRepository: TypeormCategoryRepository;
-    let dataSource: DataSource;
     let categoryId = 1231;
 
     beforeAll(async () => {
@@ -23,7 +21,6 @@ describe('CategoryService ', () => {
             imports: [AppModule],
         }).compile();
 
-        dataSource = moduleRef.get<DataSource>(DataSource);
         categoryService = moduleRef.get<CategoriesService>(CategoriesService);
         categoryRepository = moduleRef.get<TypeormCategoryRepository>(CATEGORY_REPOSITORY);
         app = moduleRef.createNestApplication();
