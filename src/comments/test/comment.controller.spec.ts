@@ -4,9 +4,10 @@ import * as dotenv from "dotenv";
 import {Test, TestingModule} from "@nestjs/testing";
 import {AppModule} from "../../app.module";
 import * as request from "supertest";
-import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
 import {DataSource} from "typeorm";
 import {AuthService} from "../../auth/auth.service";
+import {JwtStrategy} from "../../auth/jwtPassport/jwt.strategy";
+import {UserService} from "../../users/user.service";
 
 jest.mock('../comment.service');
 
@@ -14,6 +15,9 @@ describe('CommentController', () => {
     let app: INestApplication;
     let dataSource: DataSource;
     let authService: AuthService;
+    let userService: UserService;
+    let jwtStrategy: JwtStrategy;
+    let postId = 1;
 
     beforeAll(async () => {
         initializeTransactionalContext();
@@ -24,6 +28,8 @@ describe('CommentController', () => {
 
         dataSource = moduleRef.get<DataSource>(DataSource);
         authService = moduleRef.get<AuthService>(AuthService);
+        userService = moduleRef.get<UserService>(UserService);
+        jwtStrategy = moduleRef.get<JwtStrategy>(JwtStrategy);
         app = moduleRef.createNestApplication();
         app.useGlobalPipes(new ValidationPipe({transform: true}));
         await app.init();
@@ -31,10 +37,10 @@ describe('CommentController', () => {
 
     describe('/comments/:postId (POST)', () => {
         it('정상적인 요청 시 201 응답코드를 반환한다.', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
-            return request(app.getHttpServer())
-                .post('/comments/:postId')
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({ userId: 1 })
+            await request(app.getHttpServer())
+                .post(`/comments/${postId}`)
                 .send({
                     content: '테스트 댓글 달아봅니다.',
                     proposalCost: 15000
@@ -43,8 +49,8 @@ describe('CommentController', () => {
         })
 
         it('content 의 값이 비어있을 시 400으로 응답한다.', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({ userId: 1 })
 
             return request(app.getHttpServer())
                 .post(`/comments/:postId`)
@@ -54,8 +60,8 @@ describe('CommentController', () => {
         })
 
         it('proposalCost 의 값이 비어있을 시 400으로 응답한다.', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({ userId: 1 })
 
             return request(app.getHttpServer())
                 .post(`/comments/:postId`)
@@ -77,8 +83,8 @@ describe('CommentController', () => {
 
     describe('/comments/:commentId (PATCH)', () => {
         it('정상적인 요청 시 200 응답코드를 반환한다.', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({ userId: 1 })
 
             return request(app.getHttpServer())
                 .patch(`/comments/:commentId`)
@@ -91,8 +97,8 @@ describe('CommentController', () => {
         })
 
         it('content 의 값이 비어있을 시 400으로 응답한다.', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({ userId: 1 })
 
             return request(app.getHttpServer())
                 .patch(`/comments/:commentId`)
@@ -102,8 +108,8 @@ describe('CommentController', () => {
         })
 
         it('proposalCost 의 값이 비어있을 시 400으로 응답한다.', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({ userId: 1 })
 
             return request(app.getHttpServer())
                 .patch(`/comments/:commentId`)
@@ -125,8 +131,8 @@ describe('CommentController', () => {
 
     describe('/comments/:commentId (DELETE)', () => {
         it('정상적인 요청 시 204 응답코드를 반환한다', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({ userId: 1 })
 
             return request(app.getHttpServer())
                 .delete(`/comments/:commentId`)
