@@ -8,5 +8,7 @@ export interface CommentRepository {
 
     save(comment: CommentEntity): Promise<CommentEntity>
 
-    remove(comment: CommentEntity): Promise<CommentEntity>
+    removeOne(comment: CommentEntity): Promise<CommentEntity>
+
+    removeAll(comment: CommentEntity[]): Promise<CommentEntity[]>
 }

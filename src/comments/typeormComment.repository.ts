@@ -32,7 +32,11 @@ export class TypeormCommentRepository implements CommentRepository {
         return await this.commentRepository.save(comment);
     }
 
-    async remove(comment: CommentEntity): Promise<CommentEntity> {
+    async removeOne(comment: CommentEntity): Promise<CommentEntity> {
+        return await this.commentRepository.remove(comment);
+    }
+
+    async removeAll(comment: CommentEntity[]): Promise<CommentEntity[]> {
         return await this.commentRepository.remove(comment);
     }
 }
