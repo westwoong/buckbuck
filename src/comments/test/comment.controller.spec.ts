@@ -6,7 +6,6 @@ import {AppModule} from "../../app.module";
 import * as request from "supertest";
 import {DataSource} from "typeorm";
 import {AuthService} from "../../auth/auth.service";
-import {JwtStrategy} from "../../auth/jwtPassport/jwt.strategy";
 import {UserService} from "../../users/user.service";
 
 jest.mock('../comment.service');
@@ -16,7 +15,6 @@ describe('CommentController', () => {
     let dataSource: DataSource;
     let authService: AuthService;
     let userService: UserService;
-    let jwtStrategy: JwtStrategy;
     let postId = 1;
 
     beforeAll(async () => {
@@ -29,7 +27,6 @@ describe('CommentController', () => {
         dataSource = moduleRef.get<DataSource>(DataSource);
         authService = moduleRef.get<AuthService>(AuthService);
         userService = moduleRef.get<UserService>(UserService);
-        jwtStrategy = moduleRef.get<JwtStrategy>(JwtStrategy);
         app = moduleRef.createNestApplication();
         app.useGlobalPipes(new ValidationPipe({transform: true}));
         await app.init();

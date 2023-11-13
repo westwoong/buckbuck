@@ -4,9 +4,9 @@ import * as dotenv from "dotenv";
 import {Test, TestingModule} from "@nestjs/testing";
 import {AppModule} from "../../app.module";
 import * as request from "supertest";
-import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
 import {DataSource} from "typeorm";
 import {AuthService} from "../../auth/auth.service";
+import {UserService} from "../../users/user.service";
 
 jest.mock('../post.service');
 
@@ -14,6 +14,7 @@ describe('PostController', () => {
     let app: INestApplication;
     let dataSource: DataSource;
     let authService: AuthService;
+    let userService: UserService;
 
     beforeAll(async () => {
         initializeTransactionalContext();
@@ -24,6 +25,7 @@ describe('PostController', () => {
 
         dataSource = moduleRef.get<DataSource>(DataSource);
         authService = moduleRef.get<AuthService>(AuthService);
+        userService = moduleRef.get<UserService>(UserService);
         app = moduleRef.createNestApplication();
         app.useGlobalPipes(new ValidationPipe({transform: true}));
         await app.init();
@@ -31,8 +33,8 @@ describe('PostController', () => {
 
     describe('/posts (POST)', () => {
         it('정상적인 요청시 201 응답코드를 반환한다.', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({userId: 1})
             return request(app.getHttpServer())
                 .post('/posts')
                 .send({
@@ -45,8 +47,8 @@ describe('PostController', () => {
         })
 
         it('title 의 값이 비어있을 시 400 코드로 응답한다', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
                 .post('/posts')
@@ -60,8 +62,8 @@ describe('PostController', () => {
         })
 
         it('content 의 값이 비어있을 시 400 코드로 응답한다', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
                 .post('/posts')
@@ -75,8 +77,8 @@ describe('PostController', () => {
         })
 
         it('level 의 값이 비어있을 시 400 코드로 응답한다', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
                 .post('/posts')
@@ -104,8 +106,8 @@ describe('PostController', () => {
 
     describe('/posts/:postId (PATCH)', () => {
         it('정상적인 요청 시 200 응답코드를 반환한다.', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({userId: 1})
             return request(app.getHttpServer())
                 .patch('/posts/1')
                 .send({
@@ -118,8 +120,8 @@ describe('PostController', () => {
         })
 
         it('title 의 값이 비어있을 시 400 코드로 응답한다', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
                 .patch(`/posts/1`)
@@ -133,8 +135,8 @@ describe('PostController', () => {
         })
 
         it('content 의 값이 비어있을 시 400 코드로 응답한다', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
                 .patch('/posts/1')
@@ -148,8 +150,8 @@ describe('PostController', () => {
         })
 
         it('level 의 값이 비어있을 시 400 코드로 응답한다', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
                 .patch('/posts/1')
@@ -177,8 +179,8 @@ describe('PostController', () => {
 
     describe('/posts/:postId (DELETE)', () => {
         it('httpcode 204로 응답한다.', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({userId: 1})
             return request(app.getHttpServer())
                 .delete('/posts/1')
                 .send()
