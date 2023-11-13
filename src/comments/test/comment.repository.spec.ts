@@ -3,7 +3,7 @@ import {Test, TestingModule} from '@nestjs/testing';
 import {AppModule} from '../../app.module';
 import {initializeTransactionalContext} from 'typeorm-transactional';
 import * as dotenv from 'dotenv';
-import {DataSource, Repository} from "typeorm";
+import {DataSource} from "typeorm";
 import {CommentEntity} from "../Comment.entity";
 import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
 import {UserFinder} from "../../common/testSetup/user/userFinder";
@@ -30,7 +30,6 @@ describe('CommentRepository (E2E)', () => {
 
         app = moduleRef.createNestApplication();
         app.useGlobalPipes(new ValidationPipe({transform: true}));
-        await app.init();
     });
 
     beforeEach(async () => {

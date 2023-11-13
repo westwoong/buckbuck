@@ -9,7 +9,6 @@ import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
 import {UserFinder} from "../../common/testSetup/user/userFinder";
 import {PostFactory} from "../../common/testSetup/post/postFactory";
 import {CommentFactory} from "../../common/testSetup/comment/commentFactory";
-import {CommentEntity} from "../../comments/Comment.entity";
 import {TypeormPostRepository} from "../typeormPost.repository";
 import {COMMENT_REPOSITORY, POST_REPOSITORY} from "../../common/injectToken.constant";
 import {TypeormCommentRepository} from "../../comments/typeormComment.repository";
@@ -34,7 +33,6 @@ describe('PostRepository (E2E)', () => {
 
         app = moduleRef.createNestApplication();
         app.useGlobalPipes(new ValidationPipe({transform: true}));
-        await app.init();
     });
 
     beforeEach(async () => {
