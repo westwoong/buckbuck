@@ -9,11 +9,13 @@ import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
 import {UserFinder} from "../../common/testSetup/user/userFinder";
 import {PostFactory} from "../../common/testSetup/post/postFactory";
 import {CommentFactory} from "../../common/testSetup/comment/commentFactory";
+import {TypeormCommentRepository} from "../typeormComment.repository";
+import {COMMENT_REPOSITORY} from "../../common/injectToken.constant";
 
 
 describe('CommentRepository (E2E)', () => {
     let app: INestApplication;
-    let commentRepository: Repository<CommentEntity>
+    let commentRepository: TypeormCommentRepository
     let dataSource: DataSource;
 
     beforeAll(async () => {
@@ -24,7 +26,7 @@ describe('CommentRepository (E2E)', () => {
         }).compile();
 
         dataSource = moduleRef.get<DataSource>(DataSource);
-        commentRepository = dataSource.getRepository<CommentEntity>(CommentEntity);
+        commentRepository = moduleRef.get<TypeormCommentRepository>(COMMENT_REPOSITORY);
 
         app = moduleRef.createNestApplication();
         app.useGlobalPipes(new ValidationPipe({transform: true}));
@@ -86,8 +88,8 @@ describe('CommentRepository (E2E)', () => {
         })
     })
 
-    describe('findOne()', () => {
-        it('relations 사용 시 댓글과 사용자의 데이터를 가져온다', async () => {
+    describe('findCommentWithUser()', () => {
+        it('댓글과 사용자의 데이터를 가져온다', async () => {
             const userTokenFactory = new UserTokenFactory(dataSource);
             await userTokenFactory.createUser()
             const userFinder = new UserFinder(dataSource);
@@ -97,10 +99,7 @@ describe('CommentRepository (E2E)', () => {
             const commentFactory = new CommentFactory(dataSource, userId, post.id);
             const comment = await commentFactory.createComment();
 
-            const foundComment = await commentRepository.findOne({
-                where: {id: comment.id},
-                relations: ['user']
-            })
+            const foundComment = await commentRepository.findCommentWithUser(comment.id)
 
             expect(foundComment?.id).toBeDefined();
             expect(foundComment?.user).toBeDefined();
@@ -120,9 +119,7 @@ describe('CommentRepository (E2E)', () => {
 
             await commentRepository.remove(comment);
 
-            const foundComment = await commentRepository.findOne({
-                where: {id: comment.id}
-            })
+            const foundComment = await commentRepository.findCommentWithUser(comment.id);
 
             expect(foundComment).toBe(null);
         })
