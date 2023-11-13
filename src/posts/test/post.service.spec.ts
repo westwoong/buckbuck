@@ -8,7 +8,6 @@ import {AppModule} from "../../app.module";
 import {POST_REPOSITORY, USER_REPOSITORY} from "../../common/injectToken.constant";
 import {PostEntity} from "../Post.entity";
 import {TypeormUserRepository} from "../../users/typeormUser.repository";
-import {DUMMY_USER_RESOLVE} from "../../common/mockDummyResolve";
 
 describe('PostService', () => {
     let app: INestApplication;
@@ -29,7 +28,6 @@ describe('PostService', () => {
         userRepository = moduleRef.get<TypeormUserRepository>(USER_REPOSITORY);
         app = moduleRef.createNestApplication();
         app.useGlobalPipes(new ValidationPipe({transform: true}));
-        await app.init();
     })
 
     describe('create Post', () => {
@@ -42,9 +40,5 @@ describe('PostService', () => {
             })
             await expect(postService.create(userId, post)).rejects.toThrow(BadRequestException);
         })
-    })
-
-    afterAll(async () => {
-        await app.close();
     })
 })

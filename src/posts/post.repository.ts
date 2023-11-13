@@ -1,7 +1,7 @@
 import {PostEntity} from "./Post.entity";
 
 export interface PostRepository {
-    findPostWithUser(postId: number): Promise<PostEntity | null>
+    findPostWithUserByPostId(postId: number): Promise<PostEntity | null>
 
     findOneById(postId: number): Promise<PostEntity | null>
 

@@ -13,7 +13,7 @@ export class TypeormPostRepository implements PostRepository {
     ) {
     }
 
-    async findPostWithUser(postId: number): Promise<PostEntity | null> {
+    async findPostWithUserByPostId(postId: number): Promise<PostEntity | null> {
         return await this.postRepository.findOne({
             where: {id: postId},
             relations: ['user']

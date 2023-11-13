@@ -4,17 +4,17 @@ import {PostEntity} from "./Post.entity";
 import {Repository} from "typeorm";
 import {CreatePostRequestDto} from "./dto/createPost.request.dto";
 import {Transactional} from "typeorm-transactional";
-import {UserEntity} from "../users/User.entity";
 import {CreatePostResponseDto} from "./dto/createPost.response.dto";
 import {CommentEntity} from "../comments/Comment.entity";
-import {USER_REPOSITORY} from "../common/injectToken.constant";
+import {POST_REPOSITORY, USER_REPOSITORY} from "../common/injectToken.constant";
 import {UserRepository} from "../users/user.repository";
+import {PostRepository} from "./post.repository";
 
 @Injectable()
 export class PostService {
     constructor(
-        @InjectRepository(PostEntity)
-        private readonly postRepository: Repository<PostEntity>,
+        @Inject(POST_REPOSITORY)
+        private readonly postRepository: PostRepository,
         @Inject(USER_REPOSITORY)
         private readonly userRepository: UserRepository,
         @InjectRepository(CommentEntity)
@@ -37,10 +37,7 @@ export class PostService {
 
     @Transactional()
     async delete(userId: number, postId: number) {
-        const post = await this.postRepository.findOne({
-            where: {id: postId},
-            relations: ['user'],
-        });
+        const post = await this.postRepository.findPostWithUserByPostId(postId);
 
         if (!post) throw new NotFoundException('해당 게시글은 존재하지 않습니다.');
 
@@ -58,10 +55,7 @@ export class PostService {
     @Transactional()
     async modify(userId: number, postId: number, modifyPostRequestDto: CreatePostRequestDto) {
         const {title, content, cost, level} = modifyPostRequestDto;
-        const post = await this.postRepository.findOne({
-            where: {id: postId},
-            relations: ['user'],
-        });
+        const post = await this.postRepository.findPostWithUserByPostId(postId);
 
         const foundUser = await this.userRepository.findOneById(userId);
 

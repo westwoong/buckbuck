@@ -93,7 +93,7 @@ describe('PostRepository (E2E)', () => {
 
     })
 
-    describe('findPostWithUser()', () => {
+    describe('findPostWithUserByPostId()', () => {
         it('게시글 검색 시 사용자의 정보도 같이 조회한다', async () => {
             const userTokenFactory = new UserTokenFactory(dataSource)
             await userTokenFactory.createUser();
@@ -102,7 +102,7 @@ describe('PostRepository (E2E)', () => {
             const postFactory = new PostFactory(dataSource, userId);
             const post = await postFactory.createPost();
 
-            const foundPost = await postRepository.findPostWithUser(post.id);
+            const foundPost = await postRepository.findPostWithUserByPostId(post.id);
 
             expect(foundPost?.id).toBeDefined();
             expect(foundPost?.user).toBeDefined()
