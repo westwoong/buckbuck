@@ -7,6 +7,7 @@ import {CategoriesService} from "../categories.service";
 import {TypeormCategoryRepository} from "../typeormCategory.repository";
 import {CATEGORY_REPOSITORY} from "../../common/injectToken.constant";
 import {CategoriesEntity} from "../Categories.entity";
+import {DUMMY_CATEGORY_RESOLVE} from "../../common/mockDummyResolve";
 
 describe('CategoryService ', () => {
     let app: INestApplication;
@@ -25,7 +26,6 @@ describe('CategoryService ', () => {
         categoryRepository = moduleRef.get<TypeormCategoryRepository>(CATEGORY_REPOSITORY);
         app = moduleRef.createNestApplication();
         app.useGlobalPipes(new ValidationPipe({transform: true}));
-        await app.init();
     });
 
     describe('create Category', () => {
@@ -51,7 +51,11 @@ describe('CategoryService ', () => {
         })
     })
 
-    afterAll(async () => {
-        await app.close();
-    });
+    describe('delete Category', () => {
+        it('삭제 하려는 카테고리가 존재하지 않을 시 404 에러를 반환한다.', async () => {
+            await jest.spyOn(categoryRepository, 'findOneById').mockResolvedValue(null)
+            await jest.spyOn(categoryRepository, 'removeOne').mockResolvedValue(DUMMY_CATEGORY_RESOLVE)
+            await expect(categoryService.delete(categoryId)).rejects.toThrow(NotFoundException);
+        })
+    })
 })
