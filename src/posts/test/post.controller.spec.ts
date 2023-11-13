@@ -4,7 +4,6 @@ import * as dotenv from "dotenv";
 import {Test, TestingModule} from "@nestjs/testing";
 import {AppModule} from "../../app.module";
 import * as request from "supertest";
-import {DataSource} from "typeorm";
 import {AuthService} from "../../auth/auth.service";
 import {UserService} from "../../users/user.service";
 
@@ -12,7 +11,6 @@ jest.mock('../post.service');
 
 describe('PostController', () => {
     let app: INestApplication;
-    let dataSource: DataSource;
     let authService: AuthService;
     let userService: UserService;
 
@@ -23,7 +21,6 @@ describe('PostController', () => {
             imports: [AppModule],
         }).compile();
 
-        dataSource = moduleRef.get<DataSource>(DataSource);
         authService = moduleRef.get<AuthService>(AuthService);
         userService = moduleRef.get<UserService>(UserService);
         app = moduleRef.createNestApplication();
