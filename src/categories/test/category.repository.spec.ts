@@ -84,4 +84,17 @@ describe('CategoryRepository', () => {
             expect(modifiedCategory?.name).toBe('변경해줘');
         })
     })
+
+    describe('removeOne()', () => {
+        it('카테고리를 정상적으로 삭제한다', async () => {
+            const categoryFactory = new CategoryFactory(dataSource);
+            const category = await categoryFactory.createCategory()
+
+            await categoryRepository.removeOne(category);
+
+            const foundCategory = await categoryRepository.findOneById(category.id);
+
+            expect(foundCategory).toBe(null);
+        })
+    })
 })
