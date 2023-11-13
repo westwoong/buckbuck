@@ -3,6 +3,7 @@ import {CommentRepository} from "./comment.repository";
 import {InjectRepository} from "@nestjs/typeorm";
 import {CommentEntity} from "./Comment.entity";
 import {Repository} from "typeorm";
+import {PostEntity} from "../posts/Post.entity";
 
 @Injectable()
 export class TypeormCommentRepository implements CommentRepository {
@@ -17,6 +18,14 @@ export class TypeormCommentRepository implements CommentRepository {
             where: {id: commentId},
             relations: ['user']
         })
+    }
+
+    async findAllByPost(post: PostEntity): Promise<CommentEntity[]> {
+        return await this.commentRepository.find(
+            {
+                where: {post: post}
+            }
+        );
     }
 
     async save(comment: CommentEntity): Promise<CommentEntity> {
