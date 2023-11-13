@@ -5,7 +5,6 @@ import {initializeTransactionalContext} from "typeorm-transactional";
 import * as dotenv from "dotenv";
 import {Test, TestingModule} from "@nestjs/testing";
 import {AppModule} from "../../app.module";
-import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
 import * as request from "supertest";
 
 jest.mock('../user.service');
@@ -31,9 +30,6 @@ describe('UserController', () => {
 
     describe('/users/signup (POST)', () => {
         it('정상적인 요청시 201 응답코드를 반환한다.', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource, authService);
-            const userToken = await userTokenFactory.createUserToken();
-
             return request(app.getHttpServer())
                 .post('/users/signup')
                 .send({
@@ -43,7 +39,7 @@ describe('UserController', () => {
                     email: "test11r@example.com",
                     phoneNumber: "01052828282",
                     nickName: "빨리점11"
-                }).set('Authorization', `Bearer ${userToken}`)
+                })
                 .expect(201)
         })
 
