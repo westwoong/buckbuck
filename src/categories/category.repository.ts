@@ -6,4 +6,6 @@ export interface CategoryRepository {
     findOneByName(name: string): Promise<CategoriesEntity | null>
 
     save(category: CategoriesEntity): Promise<CategoriesEntity>
+
+    removeOne(category: CategoriesEntity): Promise<CategoriesEntity>
 }

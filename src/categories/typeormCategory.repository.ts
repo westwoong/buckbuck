@@ -28,4 +28,8 @@ export class TypeormCategoryRepository implements CategoryRepository {
     async save(category: CategoriesEntity): Promise<CategoriesEntity> {
         return await this.categoryRepository.save(category);
     }
+
+    async removeOne(category: CategoriesEntity): Promise<CategoriesEntity> {
+        return await this.categoryRepository.remove(category);
+    }
 }
