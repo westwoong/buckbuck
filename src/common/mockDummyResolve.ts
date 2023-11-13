@@ -2,6 +2,7 @@ import {UserEntity} from "../users/User.entity";
 import {PostEntity} from "../posts/Post.entity";
 import {CommentEntity} from "../comments/Comment.entity";
 import {ReviewEntity} from "../reviews/Review.entity";
+import {CategoriesEntity} from "../categories/Categories.entity";
 
 export const DUMMY_USER_RESOLVE = new UserEntity({
     account: "xptmxmlqslek123",
@@ -10,6 +11,10 @@ export const DUMMY_USER_RESOLVE = new UserEntity({
     email: "test11r@example.com",
     phoneNumber: "01052828282",
     nickName: "빨리점11"
+})
+
+export const DUMMY_CATEGORY_RESOLVE = new CategoriesEntity({
+    name: '테스트카테고리'
 })
 
 export const DUMMY_POST_RESOLVE = new PostEntity({
