@@ -50,7 +50,7 @@ export class CommentService {
 
         if (!comment) throw new NotFoundException('해당 댓글은 존재하지않습니다')
         if (comment.user.id !== userId) throw new ForbiddenException('본인의 댓글만 삭제가 가능합니다.')
-        await this.commentRepository.remove(comment);
+        await this.commentRepository.removeOne(comment);
     }
 
     @Transactional()

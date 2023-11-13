@@ -117,7 +117,7 @@ describe('CommentRepository (E2E)', () => {
             const commentFactory = new CommentFactory(dataSource, userId, post.id);
             const comment = await commentFactory.createComment();
 
-            await commentRepository.remove(comment);
+            await commentRepository.removeOne(comment);
 
             const foundComment = await commentRepository.findCommentWithUser(comment.id);
 

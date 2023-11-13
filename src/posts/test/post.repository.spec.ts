@@ -11,12 +11,14 @@ import {PostFactory} from "../../common/testSetup/post/postFactory";
 import {CommentFactory} from "../../common/testSetup/comment/commentFactory";
 import {CommentEntity} from "../../comments/Comment.entity";
 import {TypeormPostRepository} from "../typeormPost.repository";
-import {POST_REPOSITORY} from "../../common/injectToken.constant";
+import {COMMENT_REPOSITORY, POST_REPOSITORY} from "../../common/injectToken.constant";
+import {TypeormCommentRepository} from "../../comments/typeormComment.repository";
 
 
 describe('PostRepository (E2E)', () => {
     let app: INestApplication;
     let postRepository: TypeormPostRepository;
+    let commentRepository: TypeormCommentRepository;
     let dataSource: DataSource;
 
     beforeAll(async () => {
@@ -28,6 +30,7 @@ describe('PostRepository (E2E)', () => {
 
         dataSource = moduleRef.get<DataSource>(DataSource);
         postRepository = moduleRef.get<TypeormPostRepository>(POST_REPOSITORY);
+        commentRepository = moduleRef.get<TypeormCommentRepository>(COMMENT_REPOSITORY);
 
         app = moduleRef.createNestApplication();
         app.useGlobalPipes(new ValidationPipe({transform: true}));
@@ -92,8 +95,8 @@ describe('PostRepository (E2E)', () => {
 
     })
 
-    describe('findOne()', () => {
-        it('relations 옵션 사용 시 게시글과 사용자의 데이터를 가져온다', async () => {
+    describe('findPostWithUser()', () => {
+        it('게시글 검색 시 사용자의 정보도 같이 조회한다', async () => {
             const userTokenFactory = new UserTokenFactory(dataSource)
             await userTokenFactory.createUser();
             const userFinder = new UserFinder(dataSource);
@@ -101,15 +104,15 @@ describe('PostRepository (E2E)', () => {
             const postFactory = new PostFactory(dataSource, userId);
             const post = await postFactory.createPost();
 
-            // when
             const foundPost = await postRepository.findPostWithUser(post.id);
 
-            // then
             expect(foundPost?.id).toBeDefined();
             expect(foundPost?.user).toBeDefined()
         })
+    })
 
-        it('findOne 사용 시 게시글의 데이터를 가져온다.', async () => {
+    describe('findOneById()', () => {
+        it('게시글의 데이터를 가져온다.', async () => {
             const userTokenFactory = new UserTokenFactory(dataSource)
             await userTokenFactory.createUser();
             const userFinder = new UserFinder(dataSource);
@@ -123,8 +126,6 @@ describe('PostRepository (E2E)', () => {
             expect(foundPost?.content).toBe(post.content);
             expect(foundPost?.cost).toBe(post.cost);
             expect(foundPost?.level).toBe(post.level);
-
-
         })
     })
 
@@ -156,12 +157,9 @@ describe('PostRepository (E2E)', () => {
             const commentFactory = new CommentFactory(dataSource, userId, post.id);
             await commentFactory.createComment();
 
-            const comments = await dataSource.getRepository<CommentEntity>(CommentEntity).find({
-                where: {
-                    post: post
-                }
-            })
-            await dataSource.getRepository<CommentEntity>(CommentEntity).remove(comments)
+            const comments = await commentRepository.findAllByPost(post);
+
+            await commentRepository.removeAll(comments);
             await postRepository.remove(post);
 
             const foundPost = await postRepository.findOneById(post.id);
