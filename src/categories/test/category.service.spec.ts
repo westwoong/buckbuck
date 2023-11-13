@@ -32,6 +32,7 @@ describe('CategoryService ', () => {
         it('카테고리 생성 중 동일한 카테고리명이 있을 시 409에러를 반환한다.', async () => {
             const category = new CategoriesEntity({name: '해줘'});
             await jest.spyOn(categoryRepository, 'findOneByName').mockResolvedValue(category)
+            await jest.spyOn(categoryRepository, 'save').mockResolvedValue(category)
             await expect(categoryService.create(category)).rejects.toThrow(ConflictException);
         })
     })
