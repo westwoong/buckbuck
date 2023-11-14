@@ -1,5 +1,4 @@
 import {
-    BadRequestException,
     ForbiddenException, Inject,
     Injectable,
     NotFoundException,
@@ -29,15 +28,13 @@ export class CommentService {
     @Transactional()
     async create(userId: number, postId: number, createCommentRequestDto: CreateCommentRequestDto) {
         const {content, proposalCost} = createCommentRequestDto;
-        const user = await this.userRepository.findOneById(userId);
         const post = await this.postRepository.findOneById(postId);
 
-        if (!user) throw new BadRequestException('잘못된 접근입니다.')
         if (!post) throw new NotFoundException('해당 게시글은 존재하지 않습니다.');
 
         const comment = new CommentEntity({content, proposalCost});
         comment.post = post;
-        comment.user = user;
+        comment.userId = userId;
 
         await this.commentRepository.save(comment);
 
@@ -49,19 +46,17 @@ export class CommentService {
         const comment = await this.commentRepository.findCommentWithUser(commentId);
 
         if (!comment) throw new NotFoundException('해당 댓글은 존재하지않습니다')
-        if (comment.user.id !== userId) throw new ForbiddenException('본인의 댓글만 삭제가 가능합니다.')
+        if (comment.userId !== userId) throw new ForbiddenException('본인의 댓글만 삭제가 가능합니다.')
         await this.commentRepository.removeOne(comment);
     }
 
     @Transactional()
     async modify(userId: number, commentId: number, modifyCommentRequestDto: CreateCommentRequestDto) {
         const {content, proposalCost} = modifyCommentRequestDto;
-        const user = await this.userRepository.findOneById(userId);
         const comment = await this.commentRepository.findCommentWithUser(commentId);
 
-        if (!user) throw new BadRequestException('잘못된 접근입니다.')
         if (!comment) throw new NotFoundException('해당 댓글은 존재하지않습니다')
-        if (comment.user.id !== userId) throw new ForbiddenException('본인의 댓글만 수정이 가능합니다.')
+        if (comment.userId !== userId) throw new ForbiddenException('본인의 댓글만 수정이 가능합니다.')
 
         comment.content = content;
         comment.proposalCost = proposalCost;
