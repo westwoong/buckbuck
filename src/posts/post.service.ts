@@ -1,4 +1,4 @@
-import {BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException} from '@nestjs/common';
+import {ForbiddenException, Inject, Injectable, NotFoundException} from '@nestjs/common';
 import {PostEntity} from "./Post.entity";
 import {CreatePostRequestDto} from "./dto/createPost.request.dto";
 import {Transactional} from "typeorm-transactional";
@@ -24,9 +24,7 @@ export class PostService {
     async create(userId: number, createPostRequestDto: CreatePostRequestDto) {
         const {title, content, cost, level} = createPostRequestDto;
         const post = new PostEntity({title, content, cost, level});
-        const foundUser = await this.userRepository.findOneById(userId);
-        if (!foundUser) throw new BadRequestException('사용자가 존재하지 않습니다.');
-        post.user = foundUser;
+        post.userId = userId;
 
         await this.postRepository.save(post);
 
@@ -39,7 +37,7 @@ export class PostService {
 
         if (!post) throw new NotFoundException('해당 게시글은 존재하지 않습니다.');
 
-        if (post.user.id !== userId) throw new ForbiddenException('본인의 게시글만 삭제가 가능합니다.');
+        if (post.userId !== userId) throw new ForbiddenException('본인의 게시글만 삭제가 가능합니다.');
 
         const comments = await this.commentRepository.findAllByPost(post);
 
@@ -52,11 +50,9 @@ export class PostService {
         const {title, content, cost, level} = modifyPostRequestDto;
         const post = await this.postRepository.findPostWithUserByPostId(postId);
 
-        const foundUser = await this.userRepository.findOneById(userId);
-
         if (!post) throw new NotFoundException('해당 게시글은 존재하지 않습니다.');
-        if (!foundUser) throw new BadRequestException('사용자가 존재하지 않습니다.');
-        if (post.user.id !== userId) throw new ForbiddenException('본인의 게시글만 수정 가능합니다.')
+
+        if (post.userId !== userId) throw new ForbiddenException('본인의 게시글만 수정 가능합니다.')
 
         post.title = title;
         post.content = content;
