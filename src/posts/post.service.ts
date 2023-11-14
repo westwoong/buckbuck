@@ -1,14 +1,12 @@
 import {BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException} from '@nestjs/common';
-import {InjectRepository} from "@nestjs/typeorm";
 import {PostEntity} from "./Post.entity";
-import {Repository} from "typeorm";
 import {CreatePostRequestDto} from "./dto/createPost.request.dto";
 import {Transactional} from "typeorm-transactional";
 import {CreatePostResponseDto} from "./dto/createPost.response.dto";
-import {CommentEntity} from "../comments/Comment.entity";
-import {POST_REPOSITORY, USER_REPOSITORY} from "../common/injectToken.constant";
+import {COMMENT_REPOSITORY, POST_REPOSITORY, USER_REPOSITORY} from "../common/injectToken.constant";
 import {UserRepository} from "../users/user.repository";
 import {PostRepository} from "./post.repository";
+import {CommentRepository} from "../comments/comment.repository";
 
 @Injectable()
 export class PostService {
@@ -17,8 +15,8 @@ export class PostService {
         private readonly postRepository: PostRepository,
         @Inject(USER_REPOSITORY)
         private readonly userRepository: UserRepository,
-        @InjectRepository(CommentEntity)
-        private readonly commentRepository: Repository<CommentEntity>,
+        @Inject(COMMENT_REPOSITORY)
+        private readonly commentRepository: CommentRepository
     ) {
     }
 
@@ -43,12 +41,9 @@ export class PostService {
 
         if (post.user.id !== userId) throw new ForbiddenException('본인의 게시글만 삭제가 가능합니다.');
 
-        const comments = await this.commentRepository.find({
-                where: {post: post}
-            })
-        ;
+        const comments = await this.commentRepository.findAllByPost(post);
 
-        await this.commentRepository.remove(comments);
+        await this.commentRepository.removeAll(comments);
         await this.postRepository.remove(post);
     }
 
