@@ -153,4 +153,7 @@ describe('UserController', () => {
         })
     })
 
+    afterAll(async () => {
+        await app.close();
+    })
 })

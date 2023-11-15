@@ -63,4 +63,8 @@ describe('CategoryController', () => {
                 .expect(204)
         })
     })
+
+    afterAll(async () => {
+        await app.close();
+    })
 })

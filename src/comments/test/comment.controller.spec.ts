@@ -142,6 +142,9 @@ describe('CommentController', () => {
                 .delete(`/comments/:commentId`)
                 .expect(401);
         })
+    })
 
+    afterAll(async () => {
+        await app.close();
     })
 });
