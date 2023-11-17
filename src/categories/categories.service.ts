@@ -1,38 +1,41 @@
-import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
-import {InjectRepository} from "@nestjs/typeorm";
+import {ConflictException, Inject, Injectable, NotFoundException} from '@nestjs/common';
 import {CategoriesEntity} from "./Categories.entity";
-import {Repository} from "typeorm";
 import {CreateCategoryRequestDto} from "./dto/createCategory.request.dto";
 import {Transactional} from "typeorm-transactional";
+import {CategoryRepository} from "./category.repository";
+import {CATEGORY_REPOSITORY} from "../common/injectToken.constant";
+import {CreateCategoryResponseDto} from "./dto/createCategory.response.dto";
 
 @Injectable()
 export class CategoriesService {
 
     constructor(
-        @InjectRepository(CategoriesEntity)
-        private readonly categoryRepository: Repository<CategoriesEntity>) {
+        @Inject(CATEGORY_REPOSITORY)
+        private readonly categoryRepository: CategoryRepository
+    ) {
     }
 
     @Transactional()
     async create(createCategoryRequestDto: CreateCategoryRequestDto) {
         const {name} = createCategoryRequestDto;
+        const isExistCategory = await this.categoryRepository.findOneByName(name);
+
+        if (isExistCategory) throw new ConflictException('이미 존재하는 카테고리입니다.');
+
         const category = new CategoriesEntity({name});
         await this.categoryRepository.save(category);
-        if (category.name === name) throw new ConflictException('이미 존재하는 카테고리입니다.');
 
-        return category;
+        return new CreateCategoryResponseDto(category);
     }
 
     @Transactional()
     async modify(categoryId: number, modifyCategoryRequestDto: CreateCategoryRequestDto) {
         const {name} = modifyCategoryRequestDto;
-        const category = await this.categoryRepository.findOne({
-            where: {
-                id: categoryId
-            }
-        })
+        const category = await this.categoryRepository.findOneById(categoryId);
         if (!category) throw new NotFoundException('해당 카테고리는 존재하지않습니다.');
-        if (category.name === name) throw new ConflictException('이미 존재하는 카테고리입니다.');
+
+        const isExistCategory = await this.categoryRepository.findOneByName(name);
+        if (isExistCategory) throw new ConflictException('이미 존재하는 카테고리입니다.');
 
         category.name = name;
 
@@ -42,13 +45,9 @@ export class CategoriesService {
 
     @Transactional()
     async delete(categoryId: number) {
-        const category = await this.categoryRepository.findOne({
-            where: {
-                id: categoryId
-            }
-        })
+        const category = await this.categoryRepository.findOneById(categoryId);
         if (!category) throw new NotFoundException('해당 카테고리는 존재하지않습니다.');
-        await this.categoryRepository.remove(category);
+        await this.categoryRepository.removeOne(category);
         return
     }
 

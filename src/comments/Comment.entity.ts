@@ -1,4 +1,4 @@
-import {Column, Entity, ManyToOne} from "typeorm";
+import {Column, Entity, ManyToOne, RelationId} from "typeorm";
 import {DefaultEntityColumn} from "../config/default.entity";
 import {UserEntity} from "../users/User.entity";
 import {PostEntity} from "../posts/Post.entity";
@@ -12,11 +12,19 @@ export class CommentEntity extends DefaultEntityColumn {
     @Column()
     proposalCost: number;
 
-    @ManyToOne(() => UserEntity, (user) => user.comment)
+    @ManyToOne(() => UserEntity, (user) => user.comment, {nullable: false})
     user: UserEntity;
 
-    @ManyToOne(() => PostEntity, (post) => post.comment)
+    @Column()
+    @RelationId((comment: CommentEntity) => comment.user)
+    userId: number;
+
+    @ManyToOne(() => PostEntity, (post) => post.comment, {nullable: false})
     post: PostEntity;
+
+    @Column()
+    @RelationId((comment: CommentEntity) => comment.post)
+    postId: number;
 
     constructor(createCommentRequestDto: CreateCommentRequestDto) {
         super();

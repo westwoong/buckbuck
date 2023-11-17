@@ -7,7 +7,6 @@ export class AuthService {
     }
 
     signInWithJwt(payload: object) {
-        console.log(payload)
         return this.jwtService.sign(payload);
     }
 }

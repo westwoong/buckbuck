@@ -6,7 +6,7 @@ export class SignUpRequestDto {
     @IsString()
     @Length(5, 20)
     @IsOnlyLowerCaseAndNumber()
-    readonly account: string;
+    account: string;
 
     @IsNotEmpty()
     @IsString()
@@ -14,20 +14,22 @@ export class SignUpRequestDto {
     @Matches(/^[A-Za-z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/,
         {message: '비밀번호는 영문 대소문자, 숫자, 공백을 제외한 특수문자만 입력이 가능합니다'}
     )
-    readonly password: string;
+    password: string;
 
     @IsNotEmpty()
     @IsString()
     @Length(2, 10)
-    readonly name: string;
+    @Matches(/^[가-힣]+$/, {message: '이름은 한글만 입력이 가능합니다.'})
+    name: string;
 
     @IsNotEmpty()
     @IsEmail()
-    readonly email: string;
+    email: string;
 
     @IsNotEmpty()
+    @IsString()
     @Matches(/^010\d{8}$/, {message: '- 을 제외한 핸드폰 번호 11자리를 입력해주세요 (예: 01012345678)'})
-    readonly phoneNumber: string;
+    phoneNumber: string;
 
     @IsNotEmpty()
     @IsString()
@@ -35,6 +37,6 @@ export class SignUpRequestDto {
     @Matches(/^[A-Za-z0-9\uac00-\ud7af]+$/, {
         message: '닉네임은 영문 대소문자, 숫자, 한글로만 이루어져야 합니다.'
     })
-    readonly nickName: string;
+    nickName: string;
 
 }
