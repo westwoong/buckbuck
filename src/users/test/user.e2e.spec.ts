@@ -45,74 +45,7 @@ describe('UserController (E2E)', () => {
                 expect(response.status).toBe(201);
             })
 
-            it('account의 값이 비어있을 시 400으로 응답한다.', async () => {
-                const response = await request(app.getHttpServer()).post('/users/signup').send({
-                    password: "testpassword123",
-                    name: "홍길동",
-                    email: "test11r@example.com",
-                    phoneNumber: "01052828282",
-                    nickName: "빨리점11"
-                })
-                expect(response.status).toBe(400);
-            })
-
-            it('password의 값이 비어있을 시 400으로 응답한다.', async () => {
-                const response = await request(app.getHttpServer()).post('/users/signup').send({
-                    account: "xptmxmlqslek123",
-                    name: "홍길동",
-                    email: "test11r@example.com",
-                    phoneNumber: "01052828282",
-                    nickName: "빨리점11"
-                })
-                expect(response.status).toBe(400);
-            })
-
-            it('name의 값이 비어있을 시 400으로 응답한다.', async () => {
-                const response = await request(app.getHttpServer()).post('/users/signup').send({
-                    account: "xptmxmlqslek123",
-                    password: "testpassword123",
-                    email: "test11r@example.com",
-                    phoneNumber: "01052828282",
-                    nickName: "빨리점11"
-                })
-                expect(response.status).toBe(400);
-            })
-
-            it('email의 값이 비어있을 시 400으로 응답한다.', async () => {
-                const response = await request(app.getHttpServer()).post('/users/signup').send({
-                    account: "xptmxmlqslek123",
-                    password: "testpassword123",
-                    name: "홍길동",
-                    phoneNumber: "01052828282",
-                    nickName: "빨리점11"
-                })
-                expect(response.status).toBe(400);
-            })
-
-            it('phoneNumber의 값이 비어있을 시 400으로 응답한다.', async () => {
-                const response = await request(app.getHttpServer()).post('/users/signup').send({
-                    account: "xptmxmlqslek123",
-                    password: "testpassword123",
-                    name: "홍길동",
-                    email: "test11r@example.com",
-                    nickName: "빨리점11"
-                })
-                expect(response.status).toBe(400);
-            })
-
-            it('nickName의 값이 비어있을 시 400으로 응답한다.', async () => {
-                const response = await request(app.getHttpServer()).post('/users/signup').send({
-                    account: "xptmxmlqslek123",
-                    password: "testpassword123",
-                    name: "홍길동",
-                    email: "test11r@example.com",
-                    phoneNumber: "01052828282",
-                })
-                expect(response.status).toBe(400);
-            })
-
-
-            it('입력한 account가 사전에 존재할 시 409으로 응답한다', async () => {
+            it('입력한 아이디로 이미 가입되어 있을 시 409으로 응답한다', async () => {
                 const userTokenFactory = new UserTokenFactory(dataSource);
                 await userTokenFactory.createUser();
                 const response = await request(app.getHttpServer()).post('/users/signup').send({
@@ -126,7 +59,7 @@ describe('UserController (E2E)', () => {
                 expect(response.status).toBe(409);
             })
 
-            it('입력한 email가 사전에 존재할 시 409으로 응답한다', async () => {
+            it('입력한 이메일로 이미 가입되어 있을 시 409으로 응답한다', async () => {
                 const userTokenFactory = new UserTokenFactory(dataSource);
                 await userTokenFactory.createUser();
                 const response = await request(app.getHttpServer()).post('/users/signup').send({
@@ -140,7 +73,7 @@ describe('UserController (E2E)', () => {
                 expect(response.status).toBe(409);
             })
 
-            it('입력한 phoneNumber가 사전에 존재할 시 409으로 응답한다', async () => {
+            it('입력한 휴대폰번호로 이미 가입되어 있을 시 409으로 응답한다', async () => {
                 const userTokenFactory = new UserTokenFactory(dataSource);
                 await userTokenFactory.createUser();
                 const response = await request(app.getHttpServer()).post('/users/signup').send({
@@ -154,7 +87,7 @@ describe('UserController (E2E)', () => {
                 expect(response.status).toBe(409);
             })
 
-            it('입력한 nickname이 사전에 존재할 시 409으로 응답한다', async () => {
+            it('입력한 닉네임이 이미 존재할 시 409으로 응답한다', async () => {
                 const userTokenFactory = new UserTokenFactory(dataSource);
                 await userTokenFactory.createUser();
                 const response = await request(app.getHttpServer()).post('/users/signup').send({

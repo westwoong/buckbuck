@@ -3,19 +3,32 @@ import {CreateCategoryRequestDto} from "../dto/createCategory.request.dto";
 
 
 describe('CreateCategoryRequestDto', () => {
-    describe('name 유효성 검사', () => {
+    describe('name 필드 validator 테스트 성공 검사', () => {
         const createCategoryRequestDto = new CreateCategoryRequestDto();
         it.each([
-            ['해줘', true],
-            ['줘', false],
-            ['', false],
-            ['카테고리명이 10글자를 넘어가면 오류가 발생합니다', false]
-        ])('name 값이 유효하지않을 시 에러를 반환한다', async (name, isValid) => {
+            ['해줘'],
+            ['도와줘'],
+            ['팔아줘'],
+            ['가르쳐줘'],
+        ])('입력한 name 값이 정상일 시 error 의 길이가 0이여야한다', async (name) => {
             createCategoryRequestDto.name = name;
             const errors = await validate(createCategoryRequestDto, {skipMissingProperties: true});
 
-            if (isValid) expect(errors).toHaveLength(0);
-            if (!isValid) expect(errors).not.toHaveLength(0);
+            expect(errors).toHaveLength(0);
+        })
+    })
+
+    describe('name 필드 validator 테스트 실패 검사', () => {
+        const createCategoryRequestDto = new CreateCategoryRequestDto();
+        it.each([
+            [''],
+            ['줘'],
+            ['카테고리명이 10글자를 넘어가면 오류가 발생합니다']
+        ])('입력한 name 값이 validator 에 위반될 시 에러가 발생한다 ', async (name) => {
+            createCategoryRequestDto.name = name;
+            const errors = await validate(createCategoryRequestDto, {skipMissingProperties: true});
+
+            expect(errors).not.toHaveLength(0);
         })
     })
 })

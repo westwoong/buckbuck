@@ -18,7 +18,7 @@ import * as process from 'process';
           database: process.env.DB_NAME,
           autoLoadEntities: true,
           synchronize: true,
-          logging: true,
+          logging: process.env.SERVER === 'local',
           namingStrategy: new SnakeNamingStrategy(),
         };
       },

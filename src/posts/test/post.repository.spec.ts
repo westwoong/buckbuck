@@ -3,18 +3,21 @@ import {Test, TestingModule} from '@nestjs/testing';
 import {AppModule} from '../../app.module';
 import {initializeTransactionalContext} from 'typeorm-transactional';
 import * as dotenv from 'dotenv';
-import {DataSource, Repository} from "typeorm";
+import {DataSource} from "typeorm";
 import {PostEntity} from "../Post.entity";
 import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
 import {UserFinder} from "../../common/testSetup/user/userFinder";
 import {PostFactory} from "../../common/testSetup/post/postFactory";
 import {CommentFactory} from "../../common/testSetup/comment/commentFactory";
-import {CommentEntity} from "../../comments/Comment.entity";
+import {TypeormPostRepository} from "../typeormPost.repository";
+import {COMMENT_REPOSITORY, POST_REPOSITORY} from "../../common/injectToken.constant";
+import {TypeormCommentRepository} from "../../comments/typeormComment.repository";
 
 
 describe('PostRepository (E2E)', () => {
     let app: INestApplication;
-    let postRepository: Repository<PostEntity>
+    let postRepository: TypeormPostRepository;
+    let commentRepository: TypeormCommentRepository;
     let dataSource: DataSource;
 
     beforeAll(async () => {
@@ -25,11 +28,11 @@ describe('PostRepository (E2E)', () => {
         }).compile();
 
         dataSource = moduleRef.get<DataSource>(DataSource);
-        postRepository = dataSource.getRepository<PostEntity>(PostEntity);
+        postRepository = moduleRef.get<TypeormPostRepository>(POST_REPOSITORY);
+        commentRepository = moduleRef.get<TypeormCommentRepository>(COMMENT_REPOSITORY);
 
         app = moduleRef.createNestApplication();
         app.useGlobalPipes(new ValidationPipe({transform: true}));
-        await app.init();
     });
 
     beforeEach(async () => {
@@ -90,8 +93,8 @@ describe('PostRepository (E2E)', () => {
 
     })
 
-    describe('findOne()', () => {
-        it('relations 옵션 사용 시 게시글과 사용자의 데이터를 가져온다', async () => {
+    describe('findPostWithUserByPostId()', () => {
+        it('게시글 검색 시 사용자의 정보도 같이 조회한다', async () => {
             const userTokenFactory = new UserTokenFactory(dataSource)
             await userTokenFactory.createUser();
             const userFinder = new UserFinder(dataSource);
@@ -99,18 +102,15 @@ describe('PostRepository (E2E)', () => {
             const postFactory = new PostFactory(dataSource, userId);
             const post = await postFactory.createPost();
 
-            // when
-            const foundPost = await postRepository.findOne({
-                where: {id: post.id},
-                relations: ['user'],
-            });
+            const foundPost = await postRepository.findPostWithUserByPostId(post.id);
 
-            // then
             expect(foundPost?.id).toBeDefined();
             expect(foundPost?.user).toBeDefined()
         })
+    })
 
-        it('findOne 사용 시 게시글의 데이터를 가져온다.', async () => {
+    describe('findOneById()', () => {
+        it('게시글의 데이터를 가져온다.', async () => {
             const userTokenFactory = new UserTokenFactory(dataSource)
             await userTokenFactory.createUser();
             const userFinder = new UserFinder(dataSource);
@@ -118,16 +118,12 @@ describe('PostRepository (E2E)', () => {
             const postFactory = new PostFactory(dataSource, userId);
             const post = await postFactory.createPost();
 
-            const foundPost = await postRepository.findOne({
-                where: {id: post.id},
-            });
+            const foundPost = await postRepository.findOneById(post.id);
 
             expect(foundPost?.title).toBe(post.title);
             expect(foundPost?.content).toBe(post.content);
             expect(foundPost?.cost).toBe(post.cost);
             expect(foundPost?.level).toBe(post.level);
-
-
         })
     })
 
@@ -143,9 +139,7 @@ describe('PostRepository (E2E)', () => {
 
             await postRepository.remove(post);
 
-            const foundPost = await postRepository.findOne({
-                where: {id: post.id},
-            });
+            const foundPost = await postRepository.findOneById(post.id);
 
             expect(foundPost).toBe(null);
 
@@ -161,17 +155,12 @@ describe('PostRepository (E2E)', () => {
             const commentFactory = new CommentFactory(dataSource, userId, post.id);
             await commentFactory.createComment();
 
-            const comments = await dataSource.getRepository<CommentEntity>(CommentEntity).find({
-                where: {
-                    post: post
-                }
-            })
-            await dataSource.getRepository<CommentEntity>(CommentEntity).remove(comments)
+            const comments = await commentRepository.findAllByPost(post);
+
+            await commentRepository.removeAll(comments);
             await postRepository.remove(post);
 
-            const foundPost = await postRepository.findOne({
-                where: {id: post.id},
-            });
+            const foundPost = await postRepository.findOneById(post.id);
             expect(foundPost).toBe(null);
         })
     })
