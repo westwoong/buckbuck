@@ -43,16 +43,16 @@ export class UserEntity extends DefaultEntityColumn {
     address?: string;
 
     @OneToMany(() => PostEntity, (post) => post.user)
-    post?: PostEntity[];
+    post: PostEntity[];
 
     @OneToMany(() => CommentEntity, (comment) => comment.user)
-    comment?: CommentEntity[];
+    comment: CommentEntity[];
 
-    @OneToMany(() => ReviewEntity, (review) => review.requesterId)
-    requesterId?: ReviewEntity[];
+    @OneToMany(() => ReviewEntity, (review) => review.requester)
+    requester: ReviewEntity[];
 
-    @OneToMany(() => ReviewEntity, (review) => review.performerId)
-    performerId?: ReviewEntity[];
+    @OneToMany(() => ReviewEntity, (review) => review.performer)
+    performer: ReviewEntity[];
 
 
     constructor(user: IUserConstructor) {

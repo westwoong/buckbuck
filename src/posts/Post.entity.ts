@@ -40,7 +40,7 @@ export class PostEntity extends DefaultEntityColumn {
     @OneToMany(() => PostToCategoriesEntity, (postToCategory) => postToCategory.post)
     postToCategories: PostToCategoriesEntity[];
 
-    @OneToMany(() => ReviewEntity, (review) => review.post)
+    @OneToMany(() => ReviewEntity, (review) => review.postId)
     review: ReviewEntity[];
 
     constructor(post: IPostConstructor) {
