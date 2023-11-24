@@ -22,7 +22,8 @@ export const DUMMY_POST_RESOLVE = new PostEntity({
     title: '테스트 제목입니다.',
     content: '테스트 내용입니다.',
     cost: 10500,
-    level: '고수'
+    level: '고수',
+    userId: 8282
 })
 
 export const DUMMY_COMMENT_RESOLVE = new CommentEntity({
