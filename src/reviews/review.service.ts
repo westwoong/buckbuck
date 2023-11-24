@@ -1,7 +1,5 @@
 import {BadRequestException, Inject, Injectable, NotFoundException} from '@nestjs/common';
-import {InjectRepository} from "@nestjs/typeorm";
 import {ReviewEntity} from "./Review.entity";
-import {Repository} from "typeorm";
 import {Transactional} from "typeorm-transactional";
 import {CreateReviewRequestDto} from "./dto/createReview.request.dto";
 import {POST_REPOSITORY, REVIEW_REPOSITORY, USER_REPOSITORY} from "../common/injectToken.constant";
@@ -31,8 +29,6 @@ export class ReviewService {
 
         if (!post) throw new NotFoundException('해당 게시글은 존재하지않습니다.');
 
-        const review = new ReviewEntity({post, stars, comment});
-
         const requester = await this.userRepository.findOneById(requesterId);
         const performer = await this.userRepository.findOneById(performerId);
 
@@ -41,9 +37,7 @@ export class ReviewService {
         if (isExistReview) throw new BadRequestException('이미 리뷰를 작성했습니다.')
         if (!performer || !requester) throw new NotFoundException('해당 사용자는 존재하지않습니다.');
 
-        review.requesterId = requester;
-        review.performerId = performer;
-
+        const review = new ReviewEntity({postId: post.id, stars, comment, requesterId, performerId});
         await this.reviewRepository.save(review);
 
         return

@@ -32,7 +32,9 @@ export const DUMMY_COMMENT_RESOLVE = new CommentEntity({
 })
 
 export const DUMMY_REVIEW_RESOLVE = new ReviewEntity({
-    post: DUMMY_POST_RESOLVE,
+    postId: 1,
     stars: 5,
-    comment: '친절해요'
+    comment: '친절해요',
+    requesterId: 55,
+    performerId: 66,
 })
