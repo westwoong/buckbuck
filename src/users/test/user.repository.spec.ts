@@ -97,6 +97,7 @@ describe('UserRepository (E2E)', () => {
             const signUp = new UserEntity({
                 account: "xptmxmlqslek123",
                 password: "testpassword123",
+                salt: "testPasswordSalt",
                 name: '홍길동',
                 email: "test11r@example.com",
                 phoneNumber: "01052828282",
