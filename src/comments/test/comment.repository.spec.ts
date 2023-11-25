@@ -48,10 +48,10 @@ describe('CommentRepository (E2E)', () => {
 
             const comment = new CommentEntity({
                 content: '테스트 댓글 달아봅니다.',
-                proposalCost: 15000
+                proposalCost: 15000,
+                userId: userId,
+                postId: post.id
             })
-            comment.postId = post.id;
-            comment.userId = userId;
 
             const savedComment = await commentRepository.save(comment);
 

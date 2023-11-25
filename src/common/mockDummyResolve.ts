@@ -28,7 +28,9 @@ export const DUMMY_POST_RESOLVE = new PostEntity({
 
 export const DUMMY_COMMENT_RESOLVE = new CommentEntity({
     content: '테스트 댓글 달아봅니다.',
-    proposalCost: 15000
+    proposalCost: 15000,
+    userId: 8282,
+    postId: 1111
 })
 
 export const DUMMY_REVIEW_RESOLVE = new ReviewEntity({
