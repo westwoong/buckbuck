@@ -32,9 +32,7 @@ export class CommentService {
 
         if (!post) throw new NotFoundException('해당 게시글은 존재하지 않습니다.');
 
-        const comment = new CommentEntity({content, proposalCost});
-        comment.post = post;
-        comment.userId = userId;
+        const comment = new CommentEntity({content, proposalCost, userId, postId: post.id});
 
         await this.commentRepository.save(comment);
 
