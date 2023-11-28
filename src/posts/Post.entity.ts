@@ -3,8 +3,15 @@ import {DefaultEntityColumn} from "../config/default.entity";
 import {UserEntity} from "../users/User.entity";
 import {CommentEntity} from "../comments/Comment.entity";
 import {PostToCategoriesEntity} from "../categories/PostToCategories.entity";
-import {CreatePostRequestDto} from "./dto/createPost.request.dto";
 import {ReviewEntity} from "../reviews/Review.entity";
+
+interface IPostConstructor {
+    title: string;
+    content: string;
+    cost: number;
+    level: string;
+    userId: number;
+}
 
 @Entity('posts')
 export class PostEntity extends DefaultEntityColumn {
@@ -33,16 +40,17 @@ export class PostEntity extends DefaultEntityColumn {
     @OneToMany(() => PostToCategoriesEntity, (postToCategory) => postToCategory.post)
     postToCategories: PostToCategoriesEntity[];
 
-    @OneToMany(() => ReviewEntity, (review) => review.post)
+    @OneToMany(() => ReviewEntity, (review) => review.postId)
     review: ReviewEntity[];
 
-    constructor(createPostRequestDto: CreatePostRequestDto) {
+    constructor(post: IPostConstructor) {
         super();
-        if (createPostRequestDto) {
-            this.title = createPostRequestDto.title;
-            this.content = createPostRequestDto.content;
-            this.cost = createPostRequestDto.cost;
-            this.level = createPostRequestDto.level;
+        if (post) {
+            this.title = post.title;
+            this.content = post.content;
+            this.cost = post.cost;
+            this.level = post.level;
+            this.userId = post.userId;
         }
     }
 }

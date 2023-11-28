@@ -49,9 +49,9 @@ describe('PostRepository (E2E)', () => {
                 title: '테스트 제목입니다.',
                 content: '테스트 내용입니다.',
                 cost: 10500,
-                level: '고수'
+                level: '고수',
+                userId: user.id
             })
-            post.userId = user.id;
 
             const savedPost = await postRepository.save(post);
             expect(savedPost.title).toBe(post.title);

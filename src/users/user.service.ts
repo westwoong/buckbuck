@@ -30,7 +30,6 @@ export class UserService {
     @Transactional()
     async signUp(signUpRequestDto: SignUpRequestDto) {
         const {account, password, name, email, phoneNumber, nickName} = signUpRequestDto;
-        const user = new UserEntity({account, password, name, email, phoneNumber, nickName});
 
         const isDuplicateEmail = await this.userRepository.findByEmail(email);
         if (isDuplicateEmail) throw new ConflictException('해당 메일로 가입된 계정이 존재합니다');
@@ -46,8 +45,8 @@ export class UserService {
 
         const salt = crypto.randomBytes(64).toString('base64');
         const hashedPassword = await this.hashPassword(password, salt);
-        user.salt = salt;
-        user.password = hashedPassword;
+
+        const user = new UserEntity({account, password: hashedPassword, salt, name, email, phoneNumber, nickName})
 
         await this.userRepository.save(user);
         return
@@ -64,7 +63,7 @@ export class UserService {
         });
     }
 
-    async signIn(signInRequestDto: SignInRequestDto) {
+    async signIn(signInRequestDto: SignInRequestDto): Promise<string> {
         const {account, password} = signInRequestDto;
 
         const user = await this.userRepository.findByAccount(account);

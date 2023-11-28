@@ -2,7 +2,13 @@ import {Column, Entity, ManyToOne, RelationId} from "typeorm";
 import {DefaultEntityColumn} from "../config/default.entity";
 import {UserEntity} from "../users/User.entity";
 import {PostEntity} from "../posts/Post.entity";
-import {CreateCommentRequestDto} from "./dto/createComment.request.dto";
+
+interface ICommentConstructor {
+    content: string;
+    proposalCost: number;
+    postId: number;
+    userId: number;
+}
 
 @Entity('comments')
 export class CommentEntity extends DefaultEntityColumn {
@@ -26,11 +32,13 @@ export class CommentEntity extends DefaultEntityColumn {
     @RelationId((comment: CommentEntity) => comment.post)
     postId: number;
 
-    constructor(createCommentRequestDto: CreateCommentRequestDto) {
+    constructor(comment: ICommentConstructor) {
         super();
-        if (createCommentRequestDto) {
-            this.content = createCommentRequestDto.content;
-            this.proposalCost = createCommentRequestDto.proposalCost;
+        if (comment) {
+            this.content = comment.content;
+            this.proposalCost = comment.proposalCost;
+            this.userId = comment.userId;
+            this.postId = comment.postId;
         }
     }
 

@@ -23,8 +23,7 @@ export class PostService {
     @Transactional()
     async create(userId: number, createPostRequestDto: CreatePostRequestDto) {
         const {title, content, cost, level} = createPostRequestDto;
-        const post = new PostEntity({title, content, cost, level});
-        post.userId = userId;
+        const post = new PostEntity({title, content, cost, level, userId});
 
         await this.postRepository.save(post);
 

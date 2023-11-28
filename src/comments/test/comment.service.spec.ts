@@ -53,7 +53,7 @@ describe('CommentService', () => {
 
     describe('create Comment', () => {
         it('게시글이 존재하지 않을 시 404 에러를 반환한다', async () => {
-            const comment = new CommentEntity({content: '테스트 댓글', proposalCost: 1000});
+            const comment = new CommentEntity({content: '테스트 댓글', proposalCost: 1000, postId, userId});
             await jest.spyOn(postRepository, 'findOneById').mockResolvedValue(null);
             await expect(commentService.create(userId, postId, comment)).rejects.toThrow(NotFoundException);
         })
@@ -61,14 +61,13 @@ describe('CommentService', () => {
 
     describe('modify Comment', () => {
         it('수정할 댓글이 존재하지 않을 시 404 에러를 반환한다', async () => {
-            const comment = new CommentEntity({content: '테스트 댓글', proposalCost: 1000});
+            const comment = new CommentEntity({content: '테스트 댓글', proposalCost: 1000, postId, userId});
             await jest.spyOn(commentRepository, 'findCommentWithUser').mockResolvedValue(null);
             await expect(commentService.modify(userId, commentId, comment)).rejects.toThrow(NotFoundException);
         })
 
         it('수정 요청을 하는 userId가 댓글의 userId 값과 같지 않으면 403에러를 반환한다', async () => {
-            const comment = new CommentEntity({content: '테스트 댓글', proposalCost: 1000});
-            comment.userId = 5555;
+            const comment = new CommentEntity({content: '테스트 댓글', proposalCost: 1000, userId, postId});
             await jest.spyOn(commentRepository, 'findCommentWithUser').mockResolvedValue(DUMMY_COMMENT_RESOLVE);
             await expect(commentService.modify(userId, commentId, comment)).rejects.toThrow(ForbiddenException);
         })

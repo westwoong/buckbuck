@@ -36,9 +36,11 @@ describe('ReviewService', () => {
     describe('create Review', () => {
         it('리뷰를 작성할 게시글이 존재하지 않을경우 404 에러를 반환한다', async () => {
             const review = new ReviewEntity({
-                post: DUMMY_POST_RESOLVE,
+                postId: 1,
                 stars: 5,
-                comment: '친절해요'
+                comment: '친절해요',
+                requesterId,
+                performerId
             })
             await jest.spyOn(reviewRepository, 'findOneByRequesterIdAndPost').mockResolvedValue(DUMMY_REVIEW_RESOLVE);
             await jest.spyOn(userRepository, 'findOneById').mockResolvedValue(DUMMY_USER_RESOLVE);

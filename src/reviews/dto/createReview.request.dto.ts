@@ -1,8 +1,7 @@
-import {PostEntity} from "../../posts/Post.entity";
 import {IsInt, IsNotEmpty, IsString, Length, Max, Min} from "class-validator";
 
 export class CreateReviewRequestDto {
-    post: PostEntity;
+    postId: number;
 
     @IsNotEmpty()
     @IsInt()
