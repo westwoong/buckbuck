@@ -1,4 +1,4 @@
-import {Body, Controller, HttpCode, Post} from '@nestjs/common';
+import {Body, Controller, Get, HttpCode, Post} from '@nestjs/common';
 import {UserService} from "./user.service";
 import {SignUpRequestDto} from "./dto/signUp.request.dto";
 import {SignInRequestDto} from "./dto/signIn.request.dto";
@@ -19,4 +19,11 @@ export class UserController {
     signIn(@Body() signInRequestDto: SignInRequestDto) {
         return this.userService.signIn(signInRequestDto);
     }
+
+    @Get('/')
+    @HttpCode(200)
+    helloTest() {
+        return 'docker successes'
+    }
+
 }
