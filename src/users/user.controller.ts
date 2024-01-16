@@ -22,8 +22,7 @@ export class UserController {
 
     @Get('/')
     @HttpCode(200)
-    helloTest() {
-        return 'docker successes'
+    getUsers() {
+        return this.userService.getUsers()
     }
-
 }

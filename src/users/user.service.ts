@@ -14,6 +14,7 @@ import {AuthService} from "../auth/auth.service";
 import {FindUserIdResponseDto} from "./dto/findUserId.response.dto";
 import {USER_REPOSITORY} from "../common/injectToken.constant";
 import {UserRepository} from "./user.repository";
+import {FindUsersResponseDto} from "./dto/findUsers.response.dto";
 
 const ITERATIONS = 105820;
 const KEY_LENGTH = 64;
@@ -80,6 +81,11 @@ export class UserService {
                 }
             });
         });
+    }
+
+    async getUsers(): Promise<FindUsersResponseDto> {
+        const users =  await this.userRepository.findAll()
+        return new FindUsersResponseDto(users);
     }
 
     async findOneById(userId: number) {
