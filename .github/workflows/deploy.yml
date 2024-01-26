@@ -19,18 +19,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.1.1
 
-      - name: test
-        run : echo ${{ secrets.DB_NAME }}
+      - name: install dependencies
+        run: npm install
 
-#      - name: install dependencies
-#        run: npm install
-#
-#      - name: run E2E Test
-#        run: npm run test:e2e
-#
-#      - name: run Unit Test
-#        run: npm run test:unit
-#
-#      - name: run ls -al
-#        if: ${{ success() }}
-#        run: ls -al
+      - name: run E2E Test
+        run: npm run test:e2e
+
+      - name: run Unit Test
+        run: npm run test:unit
+
+      - name: run ls -al
+        if: ${{ success() }}
+        run: ls -al
