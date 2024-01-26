@@ -29,6 +29,9 @@ describe('UserController', () => {
     });
 
     describe('/users/signup (POST)', () => {
+        it('github actions 테스트 실패 케이스', async () => {
+            expect(1).toBe(2);
+        })
         it('정상적인 요청시 201 응답코드를 반환한다.', async () => {
             return request(app.getHttpServer())
                 .post('/users/signup')
