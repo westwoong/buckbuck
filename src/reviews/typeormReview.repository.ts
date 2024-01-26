@@ -16,7 +16,7 @@ export class TypeormReviewRepository implements ReviewRepository {
     async findOneByRequesterIdAndPost(requesterId: number, post: PostEntity): Promise<ReviewEntity | null> {
         return await this.reviewRepository.findOne({
             where: {
-                requesterId: {id: requesterId},
+                requesterId: requesterId,
                 post: post
             }
         })

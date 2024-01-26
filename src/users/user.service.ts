@@ -14,6 +14,7 @@ import {AuthService} from "../auth/auth.service";
 import {FindUserIdResponseDto} from "./dto/findUserId.response.dto";
 import {USER_REPOSITORY} from "../common/injectToken.constant";
 import {UserRepository} from "./user.repository";
+import {FindUsersResponseDto} from "./dto/findUsers.response.dto";
 
 const ITERATIONS = 105820;
 const KEY_LENGTH = 64;
@@ -30,7 +31,6 @@ export class UserService {
     @Transactional()
     async signUp(signUpRequestDto: SignUpRequestDto) {
         const {account, password, name, email, phoneNumber, nickName} = signUpRequestDto;
-        const user = new UserEntity({account, password, name, email, phoneNumber, nickName});
 
         const isDuplicateEmail = await this.userRepository.findByEmail(email);
         if (isDuplicateEmail) throw new ConflictException('해당 메일로 가입된 계정이 존재합니다');
@@ -46,8 +46,8 @@ export class UserService {
 
         const salt = crypto.randomBytes(64).toString('base64');
         const hashedPassword = await this.hashPassword(password, salt);
-        user.salt = salt;
-        user.password = hashedPassword;
+
+        const user = new UserEntity({account, password: hashedPassword, salt, name, email, phoneNumber, nickName})
 
         await this.userRepository.save(user);
         return
@@ -64,7 +64,7 @@ export class UserService {
         });
     }
 
-    async signIn(signInRequestDto: SignInRequestDto) {
+    async signIn(signInRequestDto: SignInRequestDto): Promise<string> {
         const {account, password} = signInRequestDto;
 
         const user = await this.userRepository.findByAccount(account);
@@ -81,6 +81,11 @@ export class UserService {
                 }
             });
         });
+    }
+
+    async getUsers(): Promise<FindUsersResponseDto> {
+        const users =  await this.userRepository.findAll()
+        return new FindUsersResponseDto(users);
     }
 
     async findOneById(userId: number) {

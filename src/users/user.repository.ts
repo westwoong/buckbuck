@@ -1,6 +1,8 @@
 import {UserEntity} from "./User.entity";
 
 export interface UserRepository {
+    findAll(): Promise<UserEntity[]>
+
     findOneById(userId: number): Promise<UserEntity | null>
 
     findByEmail(email: string): Promise<UserEntity | null>

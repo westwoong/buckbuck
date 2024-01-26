@@ -12,6 +12,10 @@ export class TypeormUserRepository implements UserRepository {
     ) {
     }
 
+    async findAll(): Promise<UserEntity[]> {
+        return await this.userRepository.find()
+    }
+
     async findOneById(userId: number): Promise<UserEntity | null> {
         return await this.userRepository.findOne({
             where: {id: userId}

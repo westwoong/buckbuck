@@ -1,10 +1,20 @@
-import {Column, Entity, JoinColumn, OneToMany} from "typeorm";
+import {Column, Entity, OneToMany} from "typeorm";
 import {DefaultEntityColumn} from "../config/default.entity";
 import {PostEntity} from "../posts/Post.entity";
 import {CommentEntity} from "../comments/Comment.entity";
-import {SignUpRequestDto} from "./dto/signUp.request.dto";
 import {ReviewEntity} from "../reviews/Review.entity";
 
+
+interface IUserConstructor {
+    account: string;
+    password: string
+    salt: string;
+    address?: string;
+    name: string;
+    email: string;
+    phoneNumber: string;
+    nickName: string;
+}
 
 @Entity('users')
 export class UserEntity extends DefaultEntityColumn {
@@ -30,7 +40,7 @@ export class UserEntity extends DefaultEntityColumn {
     nickName: string;
 
     @Column({nullable: true})
-    address: string;
+    address?: string;
 
     @OneToMany(() => PostEntity, (post) => post.user)
     post: PostEntity[];
@@ -38,22 +48,24 @@ export class UserEntity extends DefaultEntityColumn {
     @OneToMany(() => CommentEntity, (comment) => comment.user)
     comment: CommentEntity[];
 
-    @OneToMany(() => ReviewEntity, (review) => review.requesterId)
-    requesterId: ReviewEntity[];
+    @OneToMany(() => ReviewEntity, (review) => review.requester)
+    requester: ReviewEntity[];
 
-    @OneToMany(() => ReviewEntity, (review) => review.performerId)
-    performerId: ReviewEntity[];
+    @OneToMany(() => ReviewEntity, (review) => review.performer)
+    performer: ReviewEntity[];
 
 
-    constructor(signUpRequestDto: SignUpRequestDto) {
+    constructor(user: IUserConstructor) {
         super();
-        if (signUpRequestDto) {
-            this.account = signUpRequestDto.account;
-            this.password = signUpRequestDto.password;
-            this.name = signUpRequestDto.name;
-            this.email = signUpRequestDto.email;
-            this.phoneNumber = signUpRequestDto.phoneNumber;
-            this.nickName = signUpRequestDto.nickName;
+        if (user) {
+            this.account = user.account;
+            this.password = user.password;
+            this.salt = user.salt;
+            this.name = user.name;
+            this.email = user.email;
+            this.phoneNumber = user.phoneNumber;
+            this.nickName = user.nickName;
+            this.address = user.address;
         }
     }
 }

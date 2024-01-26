@@ -59,9 +59,10 @@ describe('PostService', () => {
                 title: '수정용 제목',
                 content: '테스트 내용입니다.',
                 cost: 10500,
-                level: '고수'
+                level: '고수',
+                userId
             })
-            post.userId = userId;
+
             await jest.spyOn(postRepository, 'findPostWithUserByPostId').mockResolvedValue(null);
             await jest.spyOn(userRepository, 'findOneById').mockResolvedValue(DUMMY_USER_RESOLVE);
             await jest.spyOn(postRepository, 'save').mockResolvedValue(DUMMY_POST_RESOLVE);
@@ -74,9 +75,9 @@ describe('PostService', () => {
                 title: '수정용 제목',
                 content: '테스트 내용입니다.',
                 cost: 10500,
-                level: '고수'
+                level: '고수',
+                userId: 5
             })
-            post.userId = 5;
             await jest.spyOn(postRepository, 'findPostWithUserByPostId').mockResolvedValue(post);
             await jest.spyOn(postRepository, 'save').mockResolvedValue(DUMMY_POST_RESOLVE);
             await expect(postService.modify(userId, postId, DUMMY_POST_RESOLVE)).rejects.toThrow(ForbiddenException);
