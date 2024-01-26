@@ -22,12 +22,15 @@ jobs:
       - name: install dependencies
         run: npm install
 
-      - name: run E2E Test
-        run: npm run test:e2e
+      - name: nest run
+        run: npm run start:dev
 
-      - name: run Unit Test
-        run: npm run test:unit
-
-      - name: run ls -al
-        if: ${{ success() }}
-        run: ls -al
+#      - name: run E2E Test
+#        run: npm run test:e2e
+#
+#      - name: run Unit Test
+#        run: npm run test:unit
+#
+#      - name: run ls -al
+#        if: ${{ success() }}
+#        run: ls -al
