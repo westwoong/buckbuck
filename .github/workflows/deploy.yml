@@ -20,7 +20,8 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-        run: echo "DB_HOST=$DB_HOST" >> .env && echo "DB_USER=$DB_USER" >> .env && echo "DB_PASSWORD=$DB_PASSWORD" >> .env && echo "DB_NAME=$DB_NAME" >> .env echo "JWT_SECRET_KEY=$JWT_SECRET_KEY" >> .env
+        run: echo "DB_HOST=${{ secrets.DB_HOST }}" && echo "DB_USER=${{ secrets.DB_USER }}" && echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" && echo "DB_NAME=${{ secrets.DB_NAME }}" && echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" && echo "DB_HOST='${DB_HOST}'" >> .env && echo "DB_USER='${DB_USER}'" >> .env && echo "DB_PASSWORD='${DB_PASSWORD}'" >> .env && echo "DB_NAME='${DB_NAME}'" >> .env && echo "JWT_SECRET_KEY='${JWT_SECRET_KEY}'" >> .env
+
 
       - name: install dependencies
         run: npm install
