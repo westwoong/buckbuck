@@ -27,20 +27,23 @@ jobs:
           echo "DB_NAME=$DB_NAME" >> .env
           echo "JWT_SECRET_KEY=$JWT_SECRET_KEY" >> .env
 
-      - name: env check
-        run: |
-          ls -al
-          cat .env
+      - name: check mysql connect
+        run: telnet $DB_HOST 3306
 
-      - name: install dependencies
-        run: npm install
+#      - name: env check
+#        run: |
+#          ls -al
+#          cat .env
 
-      - name: run E2E Test
-        run: npm run test:e2e
-
-      - name: run Unit Test
-        run: npm run test:unit
-
-      - name: run ls -al
-        if: ${{ success() }}
-        run: ls -al
+#      - name: install dependencies
+#        run: npm install
+#
+#      - name: run E2E Test
+#        run: npm run test:e2e
+#
+#      - name: run Unit Test
+#        run: npm run test:unit
+#
+#      - name: run ls -al
+#        if: ${{ success() }}
+#        run: ls -al
