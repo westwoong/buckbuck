@@ -15,16 +15,8 @@ jobs:
 
       - name: env setup
         env:
-#          DB_HOST: ${{ secrets.DB_HOST }}
-#          DB_USER: ${{ secrets.DB_USER }}
-#          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-#          DB_NAME: ${{ secrets.DB_NAME }}
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         run: |
-#          echo "DB_HOST=$DB_HOST" >> .env
-#          echo "DB_USER=$DB_USER" >> .env
-#          echo "DB_PASSWORD=$DB_PASSWORD" >> .env
-#          echo "DB_NAME=$DB_NAME" >> .env
           echo "JWT_SECRET_KEY=$JWT_SECRET_KEY" >> .env
 
       - name: install dependencies
@@ -36,17 +28,17 @@ jobs:
       - name: server start test
         run : node dist/main
 
-#      - name: env check
-#        run: |
-#          ls -al
-#          cat .env
+      - name: env check
+        run: |
+          ls -al
+          cat .env
 #
-#      - name: run E2E Test
-#        run: npm run test:e2e
-#
-#      - name: run Unit Test
-#        run: npm run test:unit
-#
-#      - name: run ls -al
-#        if: ${{ success() }}
-#        run: ls -al
+      - name: run E2E Test
+        run: npm run test:e2e
+
+      - name: run Unit Test
+        run: npm run test:unit
+
+      - name: run ls -al
+        if: ${{ success() }}
+        run: ls -al
