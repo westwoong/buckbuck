@@ -34,20 +34,9 @@ jobs:
 #          echo "DB_NAME=$DB_NAME" >> .env
 #          echo "JWT_SECRET_KEY=$JWT_SECRET_KEY" >> .env
 
-      - name: server start test
-        run : node dist/main
+      - name : Run Testing
+        run : npm test
 
-#      - name: env check
-#        run: |
-#          ls -al
-#          cat .env
-#
-#      - name: run E2E Test
-#        run: npm run test:e2e
-#
-#      - name: run Unit Test
-#        run: npm run test:unit
-#
-#      - name: run ls -al
-#        if: ${{ success() }}
-#        run: ls -al
+      - name: run ls -al
+        if: ${{ success() }}
+        run: ls -al
