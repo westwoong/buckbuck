@@ -26,7 +26,6 @@ import * as process from 'process';
         if (!options) {
           throw new Error('옵션 설정 에러');
         }
-        console.log(options);
         return addTransactionalDataSource(new DataSource(options));
       },
     }),
