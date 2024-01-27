@@ -11,13 +11,12 @@ import * as process from 'process';
       useFactory() {
         return {
           type: 'mysql',
-          host: process.env.DB_HOST,
+          host: '54.180.107.141',
           port: 3306,
-          entities: ["dist/**/*.entity.js"],
-          username: process.env.DB_USER,
-          password: process.env.DB_PASSWORD,
-          database: process.env.DB_NAME,
-          // autoLoadEntities: true,
+          username: 'root',
+          password: 'testpassword123',
+          database: 'test',
+          autoLoadEntities: true,
           synchronize: process.env.SERVER === 'local',
           logging: process.env.SERVER === 'local',
           namingStrategy: new SnakeNamingStrategy(),
