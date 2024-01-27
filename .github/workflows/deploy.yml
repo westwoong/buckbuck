@@ -19,23 +19,17 @@ jobs:
           node-version: 20
       - run: npm ci
       - run: npm run build --if-present
-#
-#      - name: env setup
-#        env:
-#          DB_HOST: ${{ secrets.DB_HOST }}
-#          DB_USER: ${{ secrets.DB_USER }}
-#          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-#          DB_NAME: ${{ secrets.DB_NAME }}
-#          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-#        run: |
-#          echo "DB_HOST=$DB_HOST" >> .env
-#          echo "DB_USER=$DB_USER" >> .env
-#          echo "DB_PASSWORD=$DB_PASSWORD" >> .env
-#          echo "DB_NAME=$DB_NAME" >> .env
-#          echo "JWT_SECRET_KEY=$JWT_SECRET_KEY" >> .env
 
-      - name : Run unit Testing
-        run : npm run test:unit
+      - name: env setup
+        run: |
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+          echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
+
+      - name : Run Testing
+        run : npm test
 
       - name: run ls -al
         if: ${{ success() }}

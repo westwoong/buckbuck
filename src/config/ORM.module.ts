@@ -11,11 +11,11 @@ import * as process from 'process';
       useFactory() {
         return {
           type: 'mysql',
-          host: '54.180.107.141',
+          host: process.env.DB_HOST,
           port: 3306,
-          username: 'root',
-          password: 'testpassword123',
-          database: 'test',
+          username: process.env.DB_USER,
+          password: process.env.DB_PASSWORD,
+          database: process.env.DB_NAME,
           autoLoadEntities: true,
           synchronize: process.env.SERVER === 'local',
           logging: process.env.SERVER === 'local',
