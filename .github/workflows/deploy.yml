@@ -30,8 +30,11 @@ jobs:
       - name: install dependencies
         run: npm install
 
-      - name: npm run
-        run: npm run start
+      - name: build
+        run: npm run build
+
+      - name: server start test
+        run : node dist/main
 
 #      - name: env check
 #        run: |
