@@ -16,7 +16,7 @@ async function bootstrap() {
 
 try{
 bootstrap();
-
+console.log('test11');
 } catch (err){
     console.log(err)
 }
