@@ -40,4 +40,6 @@ jobs:
 
       - name: run ls -al
         if: ${{ success() }}
-        run: ls -al
+        run: |
+          ls -al
+          echo "testing"
