@@ -45,9 +45,6 @@ describe('UserService', () => {
     })
 
     describe('signUp()', () => {
-        it('워크플로우 테스트 실패용 테스트', async () => {
-            expect(1).toBe(2);
-        })
         it('중복된 이메일이 있을 시 409 에러를 반환한다', async () => {
             await jest.spyOn(userRepository, 'findByEmail').mockResolvedValue(DUMMY_USER_RESOLVE);
             await jest.spyOn(userRepository, 'findByPhoneNumber').mockResolvedValue(null);
