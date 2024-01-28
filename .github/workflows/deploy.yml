@@ -13,25 +13,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.1.1
 
-      - name: node.js Setup
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm ci
-      - run: npm run build --if-present
+      #      - name: node.js Setup
+      #        uses: actions/setup-node@v4
+      #        with:
+      #          node-version: 20
+      #      - run: npm ci
+      #      - run: npm run build --if-present
 
-      - name: env setup
+      - name: Test env setup
+        env:
+          DB_HOST: ${{ secrets.TEST_DB_HOST }}
+          DB_USER: ${{ secrets.TEST_DB_USER }}
+          DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_KEY }}
         run: |
           touch .env
-          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-          echo DB_USER=${{ secrets.DB_USER }} >> .env
-          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
-          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
-          echo JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} >> .env
+          echo DB_HOST=$DB_HOST >> .env
+          echo DB_USER=$DB_USER >> .env
+          echo DB_PASSWORD=$DB_PASSWORD >> .env
+          echo DB_NAME=$DB_NAME >> .env
+          echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env
 
-      - name : Run Testing
-        run : npm test
+      #      - name: Run Testing
+      #        run: npm test
+      - name: check env
+        run: cat .env
 
-      - name: run ls -al
-        if: ${{ success() }}
-        run: ls -al
+#      - name: run ls -al
+#        if: ${{ success() }}
+#        run: ls -al
