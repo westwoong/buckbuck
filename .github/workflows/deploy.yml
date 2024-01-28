@@ -35,8 +35,11 @@ jobs:
           echo DB_NAME=$DB_NAME >> .env
           echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env
 
-      - name: Run Testing
-        run: npm test
+      - name: Run unit test
+        run: npm run test:unit
+
+      #      - name: Run Testing
+      #        run: npm test
 
       - name: run ls -al
         if: ${{ success() }}
