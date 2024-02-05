@@ -6,7 +6,7 @@ on:
 
 jobs:
   deployment:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     timeout-minutes: 10
 
     steps:
@@ -38,6 +38,10 @@ jobs:
       - name: Run unit test
         id: unit-test
         run: npm run test:unit
+
+      - name: whoami test
+        if: success()
+        run: whoami
 
       - name: test success
         if: steps.unit-test.outcome == 'success'
