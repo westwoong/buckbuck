@@ -32,10 +32,8 @@ describe('PostController (E2E)', () => {
     });
 
     beforeEach(async () => {
-        console.time('drop database')
         await dataSource.dropDatabase();
         await dataSource.synchronize();
-        console.timeEnd('drop database');
     })
 
     describe('create Post', () => {
