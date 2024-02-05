@@ -39,7 +39,10 @@ jobs:
         id: test
         run: npm test
 
-      - name: whoami test
+      - name: echo
+        run: echo 'hello'
+
+      - name: who am i test
         if: success()
         run: whoami
 
