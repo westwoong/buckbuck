@@ -39,7 +39,6 @@ describe('PostController (E2E)', () => {
     describe('create Post', () => {
         describe('게시글 작성 시 httpcode 응답 값이 정상인지 확인한다.', () => {
             it('게시글을 작성 시 201 코드로 응답한다.', async () => {
-                console.time('start test')
                 const userTokenFactory = new UserTokenFactory(dataSource, authService);
                 const userToken = await userTokenFactory.createUserToken();
 
@@ -56,7 +55,6 @@ describe('PostController (E2E)', () => {
                     .set('Authorization', `Bearer ${userToken}`);
 
                 expect(response.status).toBe(201);
-                console.timeEnd('start test')
             })
         })
 
