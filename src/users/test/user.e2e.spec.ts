@@ -33,6 +33,9 @@ describe('UserController (E2E)', () => {
 
     describe('/users/signup (POST)', () => {
         describe('회원가입 시 httpcode 응답 값이 정상인지 확인한다.', () => {
+            it('의도적으로 테스트에 실패한다 ', ()=>{
+                expect(1).toBe(2);
+            })
             it('회원가입에 성공하면 201로 응답한다.', async () => {
                 const response = await request(app.getHttpServer()).post('/users/signup').send({
                     account: "xptmxmlqslek123",
