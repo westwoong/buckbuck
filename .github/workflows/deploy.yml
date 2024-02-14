@@ -36,8 +36,15 @@ jobs:
           echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env
 
       - name: Run test
+        id: test
+        run: | 
+          npm test > test_result.json || true
+
+      - name: check result file
+        run: cat test_result.json
+
+      - name: Check Test result
         run: |
-          npm test > test_result.json
           if grep '"numFailedTests":0' test_result.json; then
             ${{ secrets.TEST_SUCCESS_WEBHOOK }}
             echo "테스트 성공"
@@ -46,9 +53,6 @@ jobs:
             echo "테스트 실패케이스 존재"
             exit 1
           fi
-
-      - name: check result file
-        run: cat test_result.json
 
       - name: whoami
         run: whoami
