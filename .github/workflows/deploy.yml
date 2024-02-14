@@ -37,19 +37,18 @@ jobs:
 
       - name: Run test
         id: test
-        run: npm test
+        run: npm test > test_result.json
 
-      - name: echo
-        run: echo 'hello'
-
-      - name: who am i test
-        run: whoami
-
-      - name: test success
-        if: steps.test.outcome == 'success'
+      - name: Check Test result
         run: |
-          echo "성공"
+          if grep '"numFailedTests":0' test_result.json; then
+            ${{ secrets.TEST_SUCCESS_WEBHOOK }}
+            echo "테스트 성공"
+          else
+            ${{ secrets.TEST_FAIL_WEBHOOK }}
+            echo "테스트 실패케이스 존재"
+            exit 1
+          fi
 
-      - name: test fail
-        if: steps.test.outcome != 'success'
-        run: exit 1
+      - name: whoami
+        run: whoami
