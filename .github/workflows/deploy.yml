@@ -83,3 +83,4 @@ jobs:
             docker rm $(docker ps -a)
             docker run -d --name buckbuck -p 80:3000 ${{ steps.login-ecr.outputs.registry }}/buckbuck:latest
             ${{ secrets.DEPLOY_SUCCESS_HOOK }}
+            echo "test"
