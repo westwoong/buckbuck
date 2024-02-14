@@ -39,6 +39,9 @@ jobs:
         id: test
         run: npm test > test_result.json
 
+      - name: check result file
+        run: cat test_result.json
+
       - name: Check Test result
         run: |
           if grep '"numFailedTests":0' test_result.json; then
