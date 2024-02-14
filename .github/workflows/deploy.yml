@@ -36,7 +36,6 @@ jobs:
           echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env
 
       - name: Run test
-        id: test
         run: | 
           npm test > test_result.json || true
 
