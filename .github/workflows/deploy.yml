@@ -6,7 +6,7 @@ on:
 
 jobs:
   deployment:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     timeout-minutes: 10
 
     steps:
@@ -20,18 +20,83 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
 
-      - name: env setup
+      - name: Testing env setup
+        env:
+          TEST_DB_HOST: ${{ secrets.TEST_DB_HOST }}
+          TEST_DB_USER: ${{ secrets.TEST_DB_USER }}
+          TEST_DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         run: |
           touch .env
-          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-          echo DB_USER=${{ secrets.DB_USER }} >> .env
-          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
-          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
-          echo JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} >> .env
+          echo DB_HOST=$TEST_DB_HOST >> .env
+          echo DB_USER=$TEST_DB_USER >> .env
+          echo DB_PASSWORD=$TEST_DB_PASSWORD >> .env
+          echo DB_NAME=$DB_NAME >> .env
+          echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env
 
-      - name : Run Testing
-        run : npm test
+      - name: Run test
+        run: | 
+          npm test > test_result.json || true
 
-      - name: run ls -al
-        if: ${{ success() }}
-        run: ls -al
+      - name: Check Test result
+        run: |
+          if grep '"numFailedTests":0' test_result.json; then
+            echo "테스트 성공"
+            rm -rfv .env
+          else
+            ${{ secrets.TEST_FAIL_WEBHOOK }}
+            echo "테스트 실패케이스 존재"
+            exit 1
+          fi
+
+      - name: product env setup
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+        run: |
+          touch .env
+          echo DB_HOST=$DB_HOST >> .env
+          echo DB_USER=$DB_USER >> .env
+          echo DB_PASSWORD=$DB_PASSWORD >> .env
+          echo DB_NAME=$DB_NAME >> .env
+          echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: ECR Login
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: buckbuck
+          IMAGE_TAG: latest
+        run: |
+          docker build -t $REPOSITORY .
+          docker tag $REPOSITORY $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            docker pull ${{ steps.login-ecr.outputs.registry }}/buckbuck:latest || true
+            docker stop $(docker ps -a)
+            docker rm $(docker ps -a)
+            docker run -d --name buckbuck -p 80:3000 ${{ steps.login-ecr.outputs.registry }}/buckbuck:latest
+            ${{ secrets.DEPLOY_SUCCESS_HOOK }}
+            echo "test1"
