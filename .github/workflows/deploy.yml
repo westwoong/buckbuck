@@ -49,6 +49,22 @@ jobs:
             exit 1
           fi
 
+      - name: product env setup
+        env:
+          DB_HOST: ${{ secrets.TEST_DB_HOST }}
+          DB_USER: ${{ secrets.TEST_DB_USER }}
+          DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+        run: |
+          rm -r .env
+          touch .env
+          echo DB_HOST=$DB_HOST >> .env
+          echo DB_USER=$DB_USER >> .env
+          echo DB_PASSWORD=$DB_PASSWORD >> .env
+          echo DB_NAME=$DB_NAME >> .env
+          echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
