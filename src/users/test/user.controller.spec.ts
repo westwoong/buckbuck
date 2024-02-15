@@ -6,13 +6,15 @@ import * as dotenv from "dotenv";
 import {Test, TestingModule} from "@nestjs/testing";
 import {AppModule} from "../../app.module";
 import * as request from "supertest";
+import * as module from "module";
+import {UserService} from "../user.service";
 
 jest.mock('../user.service');
 
 describe('UserController', () => {
     let app: INestApplication;
-    let dataSource: DataSource;
     let authService: AuthService;
+    let userService: UserService;
 
     beforeAll(async () => {
         initializeTransactionalContext();
@@ -21,8 +23,9 @@ describe('UserController', () => {
             imports: [AppModule],
         }).compile();
 
-        dataSource = moduleRef.get<DataSource>(DataSource);
         authService = moduleRef.get<AuthService>(AuthService);
+        userService = moduleRef.get<UserService>(UserService);
+
         app = moduleRef.createNestApplication();
         app.useGlobalPipes(new ValidationPipe({transform: true}));
         await app.init();
@@ -150,6 +153,18 @@ describe('UserController', () => {
                     account: "xptmxmlqslek123"
                 })
                 .expect(400)
+        })
+    })
+
+    describe('/users (GET)', () => {
+        it('조회 시 200 코드로 응답한다', async () => {
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({userId: 1})
+            return request(app.getHttpServer()).get('/users').set('Authorization', `Bearer ${userToken}`).expect(200);
+        })
+
+        it('userToken 이 없을 시 401 코드로 응답한다.', async () => {
+            return request(app.getHttpServer()).get('/users').expect(401);
         })
     })
 
