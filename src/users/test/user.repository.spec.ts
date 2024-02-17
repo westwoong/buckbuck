@@ -113,6 +113,17 @@ describe('UserRepository (E2E)', () => {
                 expect(user).toHaveProperty('address');
             })
         })
+        it('가져오는 사용자의 데이터는 최대 50개여야 한다.', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource);
+            for (let i = 0; i <= 50; i++) {
+                await userTokenFactory.createUser();
+                await userTokenFactory.createSecondUser();
+            }
+
+            const getUsers = await userRepository.findAll();
+
+            expect(getUsers.length).toBeLessThanOrEqual(50);
+        })
     })
 
     describe('save()', () => {
