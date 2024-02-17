@@ -13,7 +13,12 @@ export class TypeormUserRepository implements UserRepository {
     }
 
     async findAll(): Promise<UserEntity[]> {
-        return await this.userRepository.find()
+        let limit = 50;
+        return await this.userRepository.find({
+            order: {
+                createdAt: "DESC"
+            }, take: limit
+        })
     }
 
     async findOneById(userId: number): Promise<UserEntity | null> {
