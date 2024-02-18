@@ -11,6 +11,7 @@ import {PostFactory} from "../../common/testSetup/post/postFactory";
 import {CommentFactory} from "../../common/testSetup/comment/commentFactory";
 import {TypeormCommentRepository} from "../typeormComment.repository";
 import {COMMENT_REPOSITORY} from "../../common/injectToken.constant";
+import {SearchCommentResponseDto} from "../dto/searchComment.response.dto";
 
 
 describe('CommentRepository (E2E)', () => {
@@ -102,6 +103,22 @@ describe('CommentRepository (E2E)', () => {
 
             expect(foundComment?.id).toBeDefined();
             expect(foundComment?.user).toBeDefined();
+        })
+
+        it('가져온 댓글의 데이터에 사용자의 비밀번호 정보가 없어야한다.', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource);
+            await userTokenFactory.createUser()
+            const userFinder = new UserFinder(dataSource);
+            const userId = await userFinder.userId();
+            const postFactory = new PostFactory(dataSource, userId);
+            const post = await postFactory.createPost();
+            const commentFactory = new CommentFactory(dataSource, userId, post.id);
+            const comment = await commentFactory.createComment();
+
+            const searchedComment = await commentRepository.findCommentWithUser(comment.id)
+            const foundComment = new SearchCommentResponseDto(searchedComment!)
+
+            expect(foundComment.comment.user).not.toHaveProperty('password');
         })
     })
 
