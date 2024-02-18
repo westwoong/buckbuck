@@ -87,4 +87,11 @@ describe('CommentService', () => {
             await expect(commentService.delete(userId, commentId)).rejects.toThrow(ForbiddenException);
         })
     })
+
+    describe('searchByCommentId()', () => {
+        it('검색한 댓글이 존재하지 않을 시 404 에러를 반환한다', async () => {
+            await jest.spyOn(commentRepository, 'findCommentWithUser').mockResolvedValue(null);
+            await expect(commentService.searchByCommentId(commentId)).rejects.toThrow(NotFoundException);
+        })
+    })
 })
