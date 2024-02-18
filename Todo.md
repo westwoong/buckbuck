@@ -1,6 +1,8 @@
 ## 처리 중
+- GET /comments/:commentId
 
 ## 처리 완료
+- GET /users API (테스트 O)
 
 ## TODO
 - 각 API 유효성 검증 분리하기
