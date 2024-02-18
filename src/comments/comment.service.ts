@@ -11,6 +11,7 @@ import {COMMENT_REPOSITORY, POST_REPOSITORY, USER_REPOSITORY} from "../common/in
 import {CommentRepository} from "./comment.repository";
 import {PostRepository} from "../posts/post.repository";
 import {UserRepository} from "../users/user.repository";
+import {SearchCommentResponseDto} from "./dto/searchComment.response.dto";
 
 @Injectable()
 export class CommentService {
@@ -61,5 +62,12 @@ export class CommentService {
 
         await this.commentRepository.save(comment);
         return
+    }
+
+    @Transactional()
+    async searchByCommentId(commentId: number) {
+        const comment = await this.commentRepository.findCommentWithUser(commentId);
+        if (!comment) throw new NotFoundException('해당 댓글은 존재하지 않습니다.');
+        return new SearchCommentResponseDto(comment);
     }
 }
