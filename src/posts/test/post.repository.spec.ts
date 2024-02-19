@@ -12,6 +12,7 @@ import {CommentFactory} from "../../common/testSetup/comment/commentFactory";
 import {TypeormPostRepository} from "../typeormPost.repository";
 import {COMMENT_REPOSITORY, POST_REPOSITORY} from "../../common/injectToken.constant";
 import {TypeormCommentRepository} from "../../comments/typeormComment.repository";
+import {GetPostsResponseDto} from "../dto/getPosts.response.dto";
 
 
 describe('PostRepository (E2E)', () => {
@@ -91,6 +92,24 @@ describe('PostRepository (E2E)', () => {
             expect(post.level).toBe(modifyPost.level);
         })
 
+    })
+
+    describe('getPostsSortedDescending()', () => {
+        it('게시글 조회 시 nickName, commentCount 필드가 포함되어있어야한다.', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource)
+            await userTokenFactory.createUser();
+            const userFinder = new UserFinder(dataSource);
+            const userId = await userFinder.userId();
+            const postFactory = new PostFactory(dataSource, userId);
+            await postFactory.createPost();
+
+            let page = 1
+            const posts = await postRepository.getPostsSortedDescending(page);
+            const formatterPosts = new GetPostsResponseDto(posts);
+
+            expect(formatterPosts.posts[0]).toHaveProperty('nickName');
+            expect(formatterPosts.posts[0]).toHaveProperty('commentCount')
+        })
     })
 
     describe('findPostWithUserByPostId()', () => {
