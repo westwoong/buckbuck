@@ -28,8 +28,16 @@ describe('PostController', () => {
         await app.init();
     });
 
+    describe('/posts (GET)', ()=> {
+        it('정상적인 요청 시 200 응답코드를 반환한다.', async ()=> {
+            return request(app.getHttpServer())
+                .get('/posts?page=1')
+                .expect(200);
+        })
+    })
+
     describe('/posts (POST)', () => {
-        it('정상적인 요청시 201 응답코드를 반환한다.', async () => {
+        it('정상적인 요청 시 201 응답코드를 반환한다.', async () => {
             await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             return request(app.getHttpServer())
