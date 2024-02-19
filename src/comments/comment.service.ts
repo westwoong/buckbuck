@@ -64,7 +64,6 @@ export class CommentService {
         return
     }
 
-    @Transactional()
     async searchByCommentId(commentId: number) {
         const comment = await this.commentRepository.findCommentWithUser(commentId);
         if (!comment) throw new NotFoundException('해당 댓글은 존재하지 않습니다.');
