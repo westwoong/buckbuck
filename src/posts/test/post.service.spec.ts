@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
     ForbiddenException,
     INestApplication,
     NotFoundException,
@@ -51,6 +52,13 @@ describe('PostService', () => {
 
         app = moduleRef.createNestApplication();
         app.useGlobalPipes(new ValidationPipe({transform: true}));
+    })
+
+    describe('get Posts', () => {
+        it('게시글 전체 조회 시 page 값이 없으면 400 에러를 반환한다', async () => {
+            // @ts-ignore
+            await expect(postService.getPosts(null)).rejects.toThrow(BadRequestException)
+        })
     })
 
     describe('modify Post', () => {
