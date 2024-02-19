@@ -7,7 +7,7 @@ import {
     Patch,
     Request,
     Post,
-    UseGuards,
+    UseGuards, Get, Query,
 } from '@nestjs/common';
 import {PostService} from "./post.service";
 import {CreatePostRequestDto} from "./dto/createPost.request.dto";
@@ -18,6 +18,13 @@ import {UserIdRequest} from "../common/userId.request.interface";
 export class PostController {
 
     constructor(private readonly postService: PostService) {
+    }
+
+    @Get()
+    @HttpCode(200)
+    getPosts(@Query('page') page: string) {
+        const parsedPageNumber = parseInt(page);
+        return this.postService.getPosts(parsedPageNumber);
     }
 
     @Post()
