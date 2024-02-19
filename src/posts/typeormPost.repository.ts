@@ -13,6 +13,17 @@ export class TypeormPostRepository implements PostRepository {
     ) {
     }
 
+    async getPostsSortedDescending(page: number): Promise<PostEntity[]> {
+        let limit = 50;
+        const skip = (page - 1) * limit
+        return await this.postRepository.find({
+            relations: ['user', 'comment'],
+            order: {createdAt: 'DESC'},
+            take: limit,
+            skip: skip
+        })
+    }
+
     async findPostWithUserByPostId(postId: number): Promise<PostEntity | null> {
         return await this.postRepository.findOne({
             where: {id: postId},
