@@ -2,7 +2,7 @@ import {CommentEntity} from "../Comment.entity";
 
 export class GetCommentByPostIdResponseDto {
     comments: Array<{
-        nickname: string,
+        nickName: string,
         proposalCost: number,
         content: string,
         createdAt: Date,
@@ -10,7 +10,7 @@ export class GetCommentByPostIdResponseDto {
 
     constructor(comments: CommentEntity[]) {
         this.comments = comments.map(comment => ({
-            nickname: comment.user.nickName,
+            nickName: comment.user.nickName,
             proposalCost: comment.proposalCost,
             content: comment.content,
             createdAt: comment.createdAt
