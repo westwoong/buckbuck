@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
     ForbiddenException, Inject,
     Injectable,
     NotFoundException,
@@ -12,6 +13,7 @@ import {CommentRepository} from "./comment.repository";
 import {PostRepository} from "../posts/post.repository";
 import {UserRepository} from "../users/user.repository";
 import {SearchCommentResponseDto} from "./dto/searchComment.response.dto";
+import {GetCommentByPostIdResponseDto} from "./dto/getCommentByPostId.response.dto";
 
 @Injectable()
 export class CommentService {
@@ -68,5 +70,15 @@ export class CommentService {
         const comment = await this.commentRepository.findCommentWithUser(commentId);
         if (!comment) throw new NotFoundException('해당 댓글은 존재하지 않습니다.');
         return new SearchCommentResponseDto(comment);
+    }
+
+    async searchCommentByPostId(postId: number, commentPage: number) {
+        const post = await this.postRepository.findOneById(postId);
+        if (!post) throw new NotFoundException('해당 게시글은 존재하지 않습니다.');
+        if (!commentPage) throw new BadRequestException('page 가 존재하지 않습니다.');
+
+        const comments = await this.commentRepository.getCommentByPostIdSortedDescending(postId, commentPage);
+
+        return new GetCommentByPostIdResponseDto(comments);
     }
 }
