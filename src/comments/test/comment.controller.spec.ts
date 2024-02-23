@@ -40,7 +40,7 @@ describe('CommentController', () => {
             await request(app.getHttpServer())
                 .get(`/comments/post/${postId}`)
                 .set('Authorization', `Bearer ${userToken}`)
-                .expect(202)
+                .expect(200)
         })
 
         it('userToken 이 없을 시 401 코드로 응답한다', async () => {
