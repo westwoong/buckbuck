@@ -8,12 +8,12 @@ export class GetCommentByPostIdResponseDto {
         createdAt: Date,
     }>
 
-    constructor(comments: CommentEntity[]) {
-        this.comments = comments.map(comment => ({
+    constructor(comments: CommentEntity[] | null) {
+        this.comments = comments ? comments.map(comment => ({
             nickName: comment.user.nickName,
             proposalCost: comment.proposalCost,
             content: comment.content,
             createdAt: comment.createdAt
-        }))
+        })) : [];
     }
 }
