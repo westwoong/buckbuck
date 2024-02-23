@@ -12,7 +12,7 @@ import {COMMENT_REPOSITORY, POST_REPOSITORY, USER_REPOSITORY} from "../../common
 import {CommentEntity} from "../Comment.entity";
 import {TypeormUserRepository} from "../../users/typeormUser.repository";
 import {TypeormPostRepository} from "../../posts/typeormPost.repository";
-import {DUMMY_COMMENT_RESOLVE} from "../../common/mockDummyResolve";
+import {DUMMY_COMMENT_RESOLVE, DUMMY_POST_RESOLVE} from "../../common/mockDummyResolve";
 
 jest.mock('../typeormComment.repository');
 jest.mock('../../users/typeormUser.repository');
@@ -32,6 +32,7 @@ describe('CommentService', () => {
     let userId = 1231;
     let commentId = 1231;
     let postId = 1231;
+    let page = 1;
 
     beforeAll(async () => {
         dotenv.config();
@@ -92,6 +93,23 @@ describe('CommentService', () => {
         it('검색한 댓글이 존재하지 않을 시 404 에러를 반환한다', async () => {
             await jest.spyOn(commentRepository, 'findCommentWithUser').mockResolvedValue(null);
             await expect(commentService.searchByCommentId(commentId)).rejects.toThrow(NotFoundException);
+        })
+    })
+
+    describe('searchCommentByPostId', () => {
+        it('댓글을 조회할 게시글이 존재하지 않을 시 404 에러를 반환한다.', async () => {
+            await jest.spyOn(postRepository, 'findOneById').mockResolvedValue(null);
+            await expect(commentService.searchCommentByPostId(postId, page)).rejects.toThrow(NotFoundException)
+        })
+
+        it('해당 게시글에 댓글이 존재하지 않을 시 "comments"가 빈 배열이여야 한다.', async () => {
+            await jest.spyOn(postRepository, 'findOneById').mockResolvedValue(DUMMY_POST_RESOLVE);
+            await jest.spyOn(commentRepository, 'getCommentByPostIdSortedDescending').mockResolvedValue(null);
+            await expect(commentService.searchCommentByPostId(postId, page))
+                .resolves
+                .toEqual({
+                    "comments": []
+                });
         })
     })
 })
