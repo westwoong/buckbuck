@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Request, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query, Request, UseGuards} from '@nestjs/common';
 import {CommentService} from "./comment.service";
 import {CreateCommentRequestDto} from "./dto/createComment.request.dto";
 import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
@@ -51,5 +51,17 @@ export class CommentController {
     search(@Param('commentId') commentId: string) {
         const parsedCommentId = parseInt(commentId)
         return this.commentService.searchByCommentId(parsedCommentId);
+    }
+
+    @Get('/post/:postId')
+    @HttpCode(200)
+    @UseGuards(JwtAuthGuard)
+    searchCommentByPostId(
+        @Param('postId') postId: string,
+        @Query('commentPage') commentPage: string,
+    ) {
+        const parsedPostId = parseInt(postId)
+        const parsedCommentPage = parseInt(commentPage);
+        return this.commentService.searchCommentByPostId(parsedPostId, parsedCommentPage);
     }
 }
