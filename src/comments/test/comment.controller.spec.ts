@@ -33,6 +33,23 @@ describe('CommentController', () => {
         await app.init();
     });
 
+    describe('/comments/post/:postId (GET)', () => {
+        it('검색 권한이 있을 시 200 코드로 응답한다.', async () => {
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({userId: 1})
+            await request(app.getHttpServer())
+                .get(`/comments/post/${postId}`)
+                .set('Authorization', `Bearer ${userToken}`)
+                .expect(202)
+        })
+
+        it('userToken 이 없을 시 401 코드로 응답한다', async () => {
+            await request(app.getHttpServer())
+                .get(`/comments/post/${postId}`)
+                .expect(401);
+        })
+    })
+
     describe('/comments/:commentId (GET)', () => {
         it('검색 권한이 있을 시 200 코드로 응답한다.', async () => {
             await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
@@ -44,7 +61,9 @@ describe('CommentController', () => {
         })
 
         it('userToken 이 없을 시 401 코드로 응답한다', async () => {
-            await request(app.getHttpServer()).get(`/comments/${commentId}`).expect(401);
+            await request(app.getHttpServer())
+                .get(`/comments/${commentId}`)
+                .expect(401);
         })
     })
 
