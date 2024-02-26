@@ -7,7 +7,7 @@ import {
     Patch,
     Request,
     Post,
-    UseGuards, Get, Query,
+    UseGuards, Get, Query, ParseIntPipe,
 } from '@nestjs/common';
 import {PostService} from "./post.service";
 import {CreatePostRequestDto} from "./dto/createPost.request.dto";
@@ -22,18 +22,19 @@ export class PostController {
 
     @Get()
     @HttpCode(200)
-    getPosts(@Query('page') page: string) {
-        const parsedPageNumber = parseInt(page);
-        return this.postService.getPosts(parsedPageNumber);
+    getPosts(@Query('page', ParseIntPipe) page: number) {
+        return this.postService.getPosts(page);
     }
 
     @Post()
     @HttpCode(201)
     @UseGuards(JwtAuthGuard)
-    create(@Request() req: UserIdRequest, @Body() createPostRequestDto: CreatePostRequestDto) {
+    create(
+        @Request() req: UserIdRequest,
+        @Body() createPostRequestDto: CreatePostRequestDto
+    ) {
         const userId = req.user.userId;
         return this.postService.create(userId, createPostRequestDto);
-
     }
 
     @Delete(':postId')
