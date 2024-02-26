@@ -28,11 +28,17 @@ describe('PostController', () => {
         await app.init();
     });
 
-    describe('/posts (GET)', ()=> {
-        it('정상적인 요청 시 200 응답코드를 반환한다.', async ()=> {
+    describe('/posts (GET)', () => {
+        it('정상적인 요청 시 200 응답코드를 반환한다.', async () => {
             return request(app.getHttpServer())
                 .get('/posts?page=1')
                 .expect(200);
+        })
+
+        it('page 파라미터에 숫자가 아닌 타입을 넣으면 400 응답코드 반환한다.', async () => {
+            return request(app.getHttpServer())
+                .get(`/posts?page=isTestFail`)
+                .expect(400)
         })
     })
 
