@@ -1,4 +1,4 @@
-import {Body, Controller, HttpCode, Param, Post, Request, UseGuards} from '@nestjs/common';
+import {Body, Controller, HttpCode, Param, ParseIntPipe, Post, Request, UseGuards} from '@nestjs/common';
 import {ReviewService} from "./review.service";
 import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
 import {UserIdRequest} from "../common/userId.request.interface";
@@ -14,11 +14,10 @@ export class ReviewController {
     @UseGuards(JwtAuthGuard)
     create(
         @Request() req: UserIdRequest,
-        @Param('performerId') performerId: string,
+        @Param('performerId', ParseIntPipe) performerId: number,
         @Body() createReviewRequestDto: CreateReviewRequestDto
     ) {
         const requesterId = req.user.userId;
-        const parsedPerformerId = parseInt(performerId)
-        return this.reviewService.create(requesterId, parsedPerformerId, createReviewRequestDto);
+        return this.reviewService.create(requesterId, performerId, createReviewRequestDto);
     }
 }
