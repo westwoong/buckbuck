@@ -1,4 +1,17 @@
-import {Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query, Request, UseGuards} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpCode,
+    Param,
+    ParseIntPipe,
+    Patch,
+    Post,
+    Query,
+    Request,
+    UseGuards
+} from '@nestjs/common';
 import {CommentService} from "./comment.service";
 import {CreateCommentRequestDto} from "./dto/createComment.request.dto";
 import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
@@ -14,11 +27,10 @@ export class CommentController {
     @UseGuards(JwtAuthGuard)
     create(
         @Request() req: UserIdRequest,
-        @Param('postId') postId: string,
+        @Param('postId', ParseIntPipe) postId: number,
         @Body() createCommentRequestDto: CreateCommentRequestDto) {
         const userId = req.user.userId;
-        const parsedPostId = parseInt(postId);
-        return this.commentService.create(userId, parsedPostId, createCommentRequestDto);
+        return this.commentService.create(userId, postId, createCommentRequestDto);
 
     }
 
@@ -27,10 +39,9 @@ export class CommentController {
     @UseGuards(JwtAuthGuard)
     delete(
         @Request() req: UserIdRequest,
-        @Param('commentId') commentId: string) {
+        @Param('commentId', ParseIntPipe) commentId: number) {
         const userId = req.user.userId;
-        const parsedCommentId = parseInt(commentId);
-        return this.commentService.delete(userId, parsedCommentId);
+        return this.commentService.delete(userId, commentId);
     }
 
     @Patch(':commentId')
@@ -38,30 +49,26 @@ export class CommentController {
     @UseGuards(JwtAuthGuard)
     modify(
         @Request() req: UserIdRequest,
-        @Param('commentId') commentId: string,
+        @Param('commentId', ParseIntPipe) commentId: number,
         @Body() modifyCommentRequestDto: CreateCommentRequestDto) {
         const userId = req.user.userId;
-        const parsedCommentId = parseInt(commentId);
-        return this.commentService.modify(userId, parsedCommentId, modifyCommentRequestDto);
+        return this.commentService.modify(userId, commentId, modifyCommentRequestDto);
     }
 
     @Get(':commentId')
     @HttpCode(200)
     @UseGuards(JwtAuthGuard)
-    search(@Param('commentId') commentId: string) {
-        const parsedCommentId = parseInt(commentId)
-        return this.commentService.searchByCommentId(parsedCommentId);
+    search(@Param('commentId', ParseIntPipe) commentId: number) {
+        return this.commentService.searchByCommentId(commentId);
     }
 
     @Get('/post/:postId')
     @HttpCode(200)
     @UseGuards(JwtAuthGuard)
     searchCommentByPostId(
-        @Param('postId') postId: string,
-        @Query('commentPage') commentPage: string,
+        @Param('postId', ParseIntPipe) postId: number,
+        @Query('commentPage', ParseIntPipe) commentPage: number,
     ) {
-        const parsedPostId = parseInt(postId)
-        const parsedCommentPage = parseInt(commentPage);
-        return this.commentService.searchCommentByPostId(parsedPostId, parsedCommentPage);
+        return this.commentService.searchCommentByPostId(postId, commentPage);
     }
 }
