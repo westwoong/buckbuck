@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, HttpCode, Param, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, HttpCode, Param, ParseIntPipe, Patch, Post} from '@nestjs/common';
 import {CategoriesService} from "./categories.service";
 import {CreateCategoryRequestDto} from "./dto/createCategory.request.dto";
 
@@ -15,17 +15,15 @@ export class CategoriesController {
 
     @Patch(':categoryId')
     @HttpCode(200)
-    modify(@Param('categoryId') categoryId: string,
+    modify(@Param('categoryId', ParseIntPipe) categoryId: number,
            @Body() modifyCategoryRequestDto: CreateCategoryRequestDto
     ) {
-        const parsedCategoryId = parseInt(categoryId);
-        return this.categoryService.modify(parsedCategoryId, modifyCategoryRequestDto);
+        return this.categoryService.modify(categoryId, modifyCategoryRequestDto);
     }
 
     @Delete(':categoryId')
     @HttpCode(204)
-    delete(@Param('categoryId') categoryId: string) {
-        const parsedCategoryId = parseInt(categoryId);
-        return this.categoryService.delete(parsedCategoryId);
+    delete(@Param('categoryId', ParseIntPipe) categoryId: number) {
+        return this.categoryService.delete(categoryId);
     }
 }
