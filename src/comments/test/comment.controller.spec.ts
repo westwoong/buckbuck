@@ -38,9 +38,27 @@ describe('CommentController', () => {
             await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             await request(app.getHttpServer())
-                .get(`/comments/post/${postId}`)
+                .get(`/comments/post/${postId}?commentPage=1`)
                 .set('Authorization', `Bearer ${userToken}`)
                 .expect(200)
+        })
+
+        it('commentPage 값이 정수형이 아닌경우 400 코드로 응답한다', async () => {
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({userId: 1})
+            await request(app.getHttpServer())
+                .get(`/comments/post/${postId}?commentPage=pageNumber`)
+                .set('Authorization', `Bearer ${userToken}`)
+                .expect(400)
+        })
+
+        it('postId 값이 정수형이 아닌경우 400 코드로 응답한다.', async () => {
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({userId: 1})
+            await request(app.getHttpServer())
+                .get(`/comments/post/thisIsPostId?commentPage=1`)
+                .set('Authorization', `Bearer ${userToken}`)
+                .expect(400)
         })
 
         it('userToken 이 없을 시 401 코드로 응답한다', async () => {
@@ -58,6 +76,15 @@ describe('CommentController', () => {
                 .get(`/comments/${commentId}`)
                 .set('Authorization', `Bearer ${userToken}`)
                 .expect(200)
+        })
+
+        it('commentId 값이 정수형이 아닌경우 400 코드로 응답한다.', async () => {
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({userId: 1})
+            await request(app.getHttpServer())
+                .get(`/comments/thisIsCommentId}`)
+                .set('Authorization', `Bearer ${userToken}`)
+                .expect(400)
         })
 
         it('userToken 이 없을 시 401 코드로 응답한다', async () => {
@@ -78,6 +105,18 @@ describe('CommentController', () => {
                     proposalCost: 15000
                 }).set('Authorization', `Bearer ${userToken}`)
                 .expect(201)
+        })
+
+        it('postId 값이 정수형이 아닐 시 400 응답코드를 반환한다.', async () => {
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({userId: 1})
+            await request(app.getHttpServer())
+                .post(`/comments/thisIsPostId`)
+                .send({
+                    content: '테스트 댓글 달아봅니다.',
+                    proposalCost: 15000
+                }).set('Authorization', `Bearer ${userToken}`)
+                .expect(400)
         })
 
         it('content 의 값이 비어있을 시 400으로 응답한다.', async () => {
@@ -119,13 +158,27 @@ describe('CommentController', () => {
             const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
-                .patch(`/comments/:commentId`)
+                .patch(`/comments/${commentId}`)
                 .send({
                     content: '테스트 댓글 수정해봅니다.',
                     proposalCost: 50500
                 })
                 .set('Authorization', `Bearer ${userToken}`)
                 .expect(200);
+        })
+
+        it('commentId 값이 정수형이 아닐 시 400 응답코드를 반환한다.', async () => {
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({userId: 1})
+
+            return request(app.getHttpServer())
+                .patch(`/comments/thisIsCommentId`)
+                .send({
+                    content: '테스트 댓글 수정해봅니다.',
+                    proposalCost: 50500
+                })
+                .set('Authorization', `Bearer ${userToken}`)
+                .expect(400);
         })
 
         it('content 의 값이 비어있을 시 400으로 응답한다.', async () => {
@@ -167,9 +220,19 @@ describe('CommentController', () => {
             const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
-                .delete(`/comments/:commentId`)
+                .delete(`/comments/${commentId}`)
                 .set('Authorization', `Bearer ${userToken}`)
                 .expect(204)
+        })
+
+        it('commentId 값이 정수형이 아닐 시 400 응답코드를 반환한다', async () => {
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({userId: 1})
+
+            return request(app.getHttpServer())
+                .delete(`/comments/thisIsCommentId`)
+                .set('Authorization', `Bearer ${userToken}`)
+                .expect(400)
         })
 
         it('userToken 이 없을 시 401 코드로 응답한다.', async () => {
