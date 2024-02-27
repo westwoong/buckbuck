@@ -37,12 +37,24 @@ describe('ReviewController', () => {
             await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({ userId: 1 })
             return request(app.getHttpServer())
-                .post('/reviews/performers/:performerId')
+                .post('/reviews/performers/1')
                 .send({
                     stars: 5,
                     comment: '친절해요'
                 }).set('Authorization', `Bearer ${userToken}`)
                 .expect(201)
+        })
+
+        it('performerId 파라미터 값이 정수형이 아닐 시 400 응답코드를 반환한다.', async () => {
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({ userId: 1 })
+            return request(app.getHttpServer())
+                .post('/reviews/performers/thisIsPerformerId')
+                .send({
+                    stars: 5,
+                    comment: '친절해요'
+                }).set('Authorization', `Bearer ${userToken}`)
+                .expect(400)
         })
 
         it('stars 값의 타입이 문자열일 시 400으로 응답한다.', async () => {
