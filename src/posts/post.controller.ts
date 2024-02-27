@@ -42,11 +42,10 @@ export class PostController {
     @UseGuards(JwtAuthGuard)
     delete(
         @Request() req: UserIdRequest,
-        @Param('postId') postId: string
+        @Param('postId', ParseIntPipe) postId: number
     ) {
         const userId = req.user.userId;
-        const parsedPostId = parseInt(postId);
-        return this.postService.delete(userId, parsedPostId);
+        return this.postService.delete(userId, postId);
     }
 
     @Patch(':postId')
@@ -54,11 +53,10 @@ export class PostController {
     @UseGuards(JwtAuthGuard)
     modify(
         @Request() req: UserIdRequest,
-        @Param('postId') postId: string,
+        @Param('postId', ParseIntPipe) postId: number,
         @Body() modifyPostRequestDto: CreatePostRequestDto
     ) {
         const userId = req.user.userId;
-        const parsedPostId = parseInt(postId);
-        return this.postService.modify(userId, parsedPostId, modifyPostRequestDto)
+        return this.postService.modify(userId, postId, modifyPostRequestDto)
     }
 }
