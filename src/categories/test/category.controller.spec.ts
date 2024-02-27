@@ -49,6 +49,15 @@ describe('CategoryController', () => {
                 .expect(200)
         })
 
+        it('categoryId 값이 정수형이 아닐 시 400 응답코드를 반환한다', async () => {
+            return request(app.getHttpServer())
+                .patch(`/categories/thisIsCategoryId`)
+                .send({
+                    name: '수정해줘줘'
+                })
+                .expect(400)
+        })
+
         it('name 의 값이 비어있을 시 400 코드로 응답한다', async () => {
             return request(app.getHttpServer())
                 .patch(`/categories/${categoryId}`)
@@ -61,6 +70,12 @@ describe('CategoryController', () => {
             return request(app.getHttpServer())
                 .delete(`/categories/${categoryId}`)
                 .expect(204)
+        })
+
+        it('categoryId 값이 정수형이 아닐 시 400 응답코드를 반환한다', async () => {
+            return request(app.getHttpServer())
+                .delete(`/categories/thisIsCategoryId`)
+                .expect(400)
         })
     })
 
