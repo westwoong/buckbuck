@@ -73,7 +73,7 @@ jobs:
           REPOSITORY: buckbuck
           IMAGE_TAG: latest
         run: |
-          docker build -t $REPOSITORY .
+          docker build --no-cache -t $REPOSITORY .
           docker tag $REPOSITORY $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
@@ -91,4 +91,4 @@ jobs:
             docker rm $(docker ps -a)
             docker run -d --name buckbuck -p 80:3000 ${{ steps.login-ecr.outputs.registry }}/buckbuck:latest
             ${{ secrets.DEPLOY_SUCCESS_HOOK }}
-            echo "done1"
+            echo "done"
