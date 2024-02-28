@@ -112,4 +112,8 @@ describe('CommentService', () => {
                 });
         })
     })
+
+    afterAll(async () => {
+        await app.close();
+    })
 })

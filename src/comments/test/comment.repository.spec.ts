@@ -161,4 +161,8 @@ describe('CommentRepository (E2E)', () => {
             expect(foundComment).toBe(null);
         })
     })
+
+    afterAll(async () => {
+        await app.close();
+    })
 })

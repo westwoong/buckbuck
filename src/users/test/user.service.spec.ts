@@ -96,4 +96,8 @@ describe('UserService', () => {
             await expect(userService.findOneById(userId)).rejects.toThrow(NotFoundException);
         })
     })
+
+    afterAll(async () => {
+        await app.close();
+    })
 })

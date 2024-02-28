@@ -110,4 +110,8 @@ describe('PostService', () => {
             await expect(postService.delete(userId, postId)).rejects.toThrow(ForbiddenException);
         })
     })
+
+    afterAll(async () => {
+        await app.close();
+    })
 })

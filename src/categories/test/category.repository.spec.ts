@@ -97,4 +97,8 @@ describe('CategoryRepository', () => {
             expect(foundCategory).toBe(null);
         })
     })
+
+    afterAll(async () => {
+        await app.close();
+    })
 })

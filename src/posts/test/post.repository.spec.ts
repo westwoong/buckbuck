@@ -183,4 +183,8 @@ describe('PostRepository (E2E)', () => {
             expect(foundPost).toBe(null);
         })
     })
+
+    afterAll(async () => {
+        await app.close();
+    })
 })
