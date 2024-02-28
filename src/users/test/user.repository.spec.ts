@@ -145,4 +145,8 @@ describe('UserRepository (E2E)', () => {
             expect(foundUser).toBeDefined();
         })
     })
+
+    afterAll(async () => {
+        await app.close();
+    })
 })

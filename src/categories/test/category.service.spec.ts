@@ -58,4 +58,8 @@ describe('CategoryService ', () => {
             await expect(categoryService.delete(categoryId)).rejects.toThrow(NotFoundException);
         })
     })
+
+    afterAll(async () => {
+        await app.close();
+    })
 })

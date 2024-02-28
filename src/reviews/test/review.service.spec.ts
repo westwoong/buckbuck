@@ -47,4 +47,8 @@ describe('ReviewService', () => {
             await expect(reviewService.create(requesterId, performerId, review)).rejects.toThrow(NotFoundException);
         })
     })
+
+    afterAll(async () => {
+        await app.close();
+    })
 })
