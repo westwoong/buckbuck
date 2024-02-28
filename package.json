@@ -13,7 +13,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest --runInBand --json --detectOpenHandles --testTimeout=30000 --forceExit",
+    "test": "jest --runInBand",
     "test:dev": "jest --runInBand --detectOpenHandles --forceExit",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage --runInBand --forceExit --coveragePathIgnorePatterns src/coverage/",
