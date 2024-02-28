@@ -54,6 +54,7 @@ jobs:
           echo DB_PASSWORD=$DB_PASSWORD >> .env
           echo DB_NAME=$DB_NAME >> .env
           echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env
+          cat .env
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
