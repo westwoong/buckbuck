@@ -7,7 +7,7 @@ import {
     Patch,
     Request,
     Post,
-    UseGuards,
+    UseGuards, Get, Query, ParseIntPipe,
 } from '@nestjs/common';
 import {PostService} from "./post.service";
 import {CreatePostRequestDto} from "./dto/createPost.request.dto";
@@ -20,13 +20,21 @@ export class PostController {
     constructor(private readonly postService: PostService) {
     }
 
+    @Get()
+    @HttpCode(200)
+    getPosts(@Query('page', ParseIntPipe) page: number) {
+        return this.postService.getPosts(page);
+    }
+
     @Post()
     @HttpCode(201)
     @UseGuards(JwtAuthGuard)
-    create(@Request() req: UserIdRequest, @Body() createPostRequestDto: CreatePostRequestDto) {
+    create(
+        @Request() req: UserIdRequest,
+        @Body() createPostRequestDto: CreatePostRequestDto
+    ) {
         const userId = req.user.userId;
         return this.postService.create(userId, createPostRequestDto);
-
     }
 
     @Delete(':postId')
@@ -34,11 +42,10 @@ export class PostController {
     @UseGuards(JwtAuthGuard)
     delete(
         @Request() req: UserIdRequest,
-        @Param('postId') postId: string
+        @Param('postId', ParseIntPipe) postId: number
     ) {
         const userId = req.user.userId;
-        const parsedPostId = parseInt(postId);
-        return this.postService.delete(userId, parsedPostId);
+        return this.postService.delete(userId, postId);
     }
 
     @Patch(':postId')
@@ -46,11 +53,10 @@ export class PostController {
     @UseGuards(JwtAuthGuard)
     modify(
         @Request() req: UserIdRequest,
-        @Param('postId') postId: string,
+        @Param('postId', ParseIntPipe) postId: number,
         @Body() modifyPostRequestDto: CreatePostRequestDto
     ) {
         const userId = req.user.userId;
-        const parsedPostId = parseInt(postId);
-        return this.postService.modify(userId, parsedPostId, modifyPostRequestDto)
+        return this.postService.modify(userId, postId, modifyPostRequestDto)
     }
 }

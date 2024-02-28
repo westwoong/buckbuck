@@ -1,4 +1,4 @@
-import {ForbiddenException, Inject, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException} from '@nestjs/common';
 import {PostEntity} from "./Post.entity";
 import {CreatePostRequestDto} from "./dto/createPost.request.dto";
 import {Transactional} from "typeorm-transactional";
@@ -7,6 +7,7 @@ import {COMMENT_REPOSITORY, POST_REPOSITORY, USER_REPOSITORY} from "../common/in
 import {UserRepository} from "../users/user.repository";
 import {PostRepository} from "./post.repository";
 import {CommentRepository} from "../comments/comment.repository";
+import {GetPostsResponseDto} from "./dto/getPosts.response.dto";
 
 @Injectable()
 export class PostService {
@@ -18,6 +19,12 @@ export class PostService {
         @Inject(COMMENT_REPOSITORY)
         private readonly commentRepository: CommentRepository
     ) {
+    }
+
+    async getPosts(page: number) {
+        if (!page) throw new BadRequestException('page 값이 존재하지 않습니다.');
+        const posts = await this.postRepository.getPostsSortedDescending(page);
+        return new GetPostsResponseDto(posts);
     }
 
     @Transactional()

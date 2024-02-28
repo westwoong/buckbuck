@@ -11,6 +11,8 @@ import {PostFactory} from "../../common/testSetup/post/postFactory";
 import {CommentFactory} from "../../common/testSetup/comment/commentFactory";
 import {TypeormCommentRepository} from "../typeormComment.repository";
 import {COMMENT_REPOSITORY} from "../../common/injectToken.constant";
+import {SearchCommentResponseDto} from "../dto/searchComment.response.dto";
+import {GetCommentByPostIdResponseDto} from "../dto/getCommentByPostId.response.dto";
 
 
 describe('CommentRepository (E2E)', () => {
@@ -35,6 +37,26 @@ describe('CommentRepository (E2E)', () => {
     beforeEach(async () => {
         await dataSource.dropDatabase();
         await dataSource.synchronize();
+    })
+
+    describe('getCommentByPostIdSortedDescending()', () => {
+        it('게시글에 달린 댓글 조회시 nickName 속성이 포함되어야한다.', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource);
+            await userTokenFactory.createUser()
+            const userFinder = new UserFinder(dataSource);
+            const userId = await userFinder.userId();
+            const postFactory = new PostFactory(dataSource, userId);
+            const post = await postFactory.createPost();
+            const commentFactory = new CommentFactory(dataSource, userId, post.id);
+            await commentFactory.createComment();
+            await commentFactory.createSecondComment();
+
+            let page = 1
+            const searchedComment = await commentRepository.getCommentByPostIdSortedDescending(post.id, page);
+            const formatterComment = new GetCommentByPostIdResponseDto(searchedComment!);
+
+            expect(formatterComment.comments[0]).toHaveProperty('nickName')
+        })
     })
 
     describe('save()', () => {
@@ -102,6 +124,22 @@ describe('CommentRepository (E2E)', () => {
 
             expect(foundComment?.id).toBeDefined();
             expect(foundComment?.user).toBeDefined();
+        })
+
+        it('가져온 댓글의 데이터에 사용자의 비밀번호 정보가 없어야한다.', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource);
+            await userTokenFactory.createUser()
+            const userFinder = new UserFinder(dataSource);
+            const userId = await userFinder.userId();
+            const postFactory = new PostFactory(dataSource, userId);
+            const post = await postFactory.createPost();
+            const commentFactory = new CommentFactory(dataSource, userId, post.id);
+            const comment = await commentFactory.createComment();
+
+            const searchedComment = await commentRepository.findCommentWithUser(comment.id)
+            const foundComment = new SearchCommentResponseDto(searchedComment!)
+
+            expect(foundComment.comment.user).not.toHaveProperty('password');
         })
     })
 

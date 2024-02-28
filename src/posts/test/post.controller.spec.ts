@@ -28,8 +28,22 @@ describe('PostController', () => {
         await app.init();
     });
 
+    describe('/posts (GET)', () => {
+        it('정상적인 요청 시 200 응답코드를 반환한다.', async () => {
+            return request(app.getHttpServer())
+                .get('/posts?page=1')
+                .expect(200);
+        })
+
+        it('page 파라미터에 숫자가 아닌 타입을 넣으면 400 응답코드 반환한다.', async () => {
+            return request(app.getHttpServer())
+                .get(`/posts?page=isTestFail`)
+                .expect(400)
+        })
+    })
+
     describe('/posts (POST)', () => {
-        it('정상적인 요청시 201 응답코드를 반환한다.', async () => {
+        it('정상적인 요청 시 201 응답코드를 반환한다.', async () => {
             await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             return request(app.getHttpServer())
@@ -116,6 +130,20 @@ describe('PostController', () => {
                 .expect(200)
         })
 
+        it('postId의 값이 정수형이 아닐 시 400 응답코드를 반환한다.', async () => {
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({userId: 1})
+            return request(app.getHttpServer())
+                .patch('/posts/thisIsPostId')
+                .send({
+                    title: '수정 테스트 입니다..',
+                    content: '내용도 수정해볼게요',
+                    cost: 50000,
+                    level: '초급'
+                }).set('Authorization', `Bearer ${userToken}`)
+                .expect(400)
+        })
+
         it('title 의 값이 비어있을 시 400 코드로 응답한다', async () => {
             await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
@@ -175,7 +203,7 @@ describe('PostController', () => {
     })
 
     describe('/posts/:postId (DELETE)', () => {
-        it('httpcode 204로 응답한다.', async () => {
+        it('정상적인 삭제 요청 시 204 응답코드를 반환한다.', async () => {
             await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             return request(app.getHttpServer())
@@ -183,6 +211,16 @@ describe('PostController', () => {
                 .send()
                 .set('Authorization', `Bearer ${userToken}`)
                 .expect(204)
+        })
+
+        it('삭제하려는 postId의 값이 정수형이 아닐 시 400 응답코드를 반환한다.', async () => {
+            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            const userToken = authService.signInWithJwt({userId: 1})
+            return request(app.getHttpServer())
+                .delete('/posts/deletePostId')
+                .send()
+                .set('Authorization', `Bearer ${userToken}`)
+                .expect(400)
         })
     })
 

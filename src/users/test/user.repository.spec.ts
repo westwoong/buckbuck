@@ -92,6 +92,40 @@ describe('UserRepository (E2E)', () => {
         })
     })
 
+    describe('findAll()', () => {
+        it('모든 유저의 객체 속성이 존재해야한다.', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource);
+            await userTokenFactory.createUser();
+            await userTokenFactory.createSecondUser();
+
+            const getUsers = await userRepository.findAll();
+
+            getUsers.forEach(user => {
+                expect(user).toHaveProperty('id');
+                expect(user).toHaveProperty('createdAt');
+                expect(user).toHaveProperty('updatedAt');
+                expect(user).toHaveProperty('account');
+                expect(user).toHaveProperty('password');
+                expect(user).toHaveProperty('name');
+                expect(user).toHaveProperty('email');
+                expect(user).toHaveProperty('phoneNumber');
+                expect(user).toHaveProperty('nickName');
+                expect(user).toHaveProperty('address');
+            })
+        })
+        it('가져오는 사용자의 데이터는 최대 50개여야 한다.', async () => {
+            const userTokenFactory = new UserTokenFactory(dataSource);
+            for (let i = 0; i <= 50; i++) {
+                await userTokenFactory.createUser();
+                await userTokenFactory.createSecondUser();
+            }
+
+            const getUsers = await userRepository.findAll();
+
+            expect(getUsers.length).toBeLessThanOrEqual(50);
+        })
+    })
+
     describe('save()', () => {
         it('입력받은 회원가입 정보를 저장한다', async () => {
             const signUp = new UserEntity({

@@ -23,6 +23,17 @@ export class UserTokenFactory {
         });
     }
 
+    public async createSecondUser() {
+        return await this.dataSource.getRepository(UserEntity).save({
+            account: "xptmxmlqslek1234",
+            password: "testpassword1234",
+            name: '길동이',
+            email: "test1234@example.com",
+            phoneNumber: "01082825252",
+            nickName: "빨리점22",
+        });
+    }
+
     public async createUserToken() {
         const user = await this.dataSource.getRepository(UserEntity).save({
             account: "xptmxmlqslek123",

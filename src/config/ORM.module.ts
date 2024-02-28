@@ -17,6 +17,7 @@ import * as process from 'process';
           password: process.env.DB_PASSWORD,
           database: process.env.DB_NAME,
           autoLoadEntities: true,
+          timezone: "+09:00",
           synchronize: process.env.SERVER === 'local',
           logging: process.env.SERVER === 'local',
           namingStrategy: new SnakeNamingStrategy(),

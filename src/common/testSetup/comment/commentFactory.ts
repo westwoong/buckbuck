@@ -20,4 +20,13 @@ export class CommentFactory {
             postId: this.postId,
         })
     }
+
+    public async createSecondComment() {
+        return await this.dataSource.getRepository(CommentEntity).save({
+            content: '두번 째 테스트 댓글입니다',
+            proposalCost: 20000,
+            userId: this.userId,
+            postId: this.postId,
+        })
+    }
 }
