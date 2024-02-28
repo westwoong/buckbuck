@@ -37,18 +37,19 @@ jobs:
 
       - name: Run test
         run: | 
-          npm test > test_result.json || true
-
-      - name: Check Test result
-        run: |
-          if grep '"numFailedTests":0' test_result.json; then
-            echo "테스트 성공"
-            rm -rfv .env
-          else
-            ${{ secrets.TEST_FAIL_WEBHOOK }}
-            echo "테스트 실패케이스 존재"
-            exit 1
-          fi
+          npm test
+#          > test_result.json || true
+#
+#      - name: Check Test result
+#        run: |
+#          if grep '"numFailedTests":0' test_result.json; then
+#            echo "테스트 성공"
+#            rm -rfv .env
+#          else
+#            ${{ secrets.TEST_FAIL_WEBHOOK }}
+#            echo "테스트 실패케이스 존재"
+#            exit 1
+#          fi
 
       - name: product env setup
         env:
