@@ -30,6 +30,11 @@ describe('UserController', () => {
         app.useGlobalPipes(new ValidationPipe({transform: true}));
         await app.init();
     });
+    describe('테스트 코드 실패 배포 테스트', () => {
+        it('의도적으로 테스트에 실패한다', () => {
+            expect(1).toBe(2);
+        })
+    })
 
     describe('/users/signup (POST)', () => {
         it('정상적인 요청시 201 응답코드를 반환한다.', async () => {
