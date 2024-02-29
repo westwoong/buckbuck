@@ -4,7 +4,7 @@ import {CreateCategoryRequestDto} from "./dto/createCategory.request.dto";
 import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {CreateCategoryResponseDto} from "./dto/createCategory.response.dto";
 
-@ApiTags('게시글 카테고리 API')
+@ApiTags('카테고리 API')
 @Controller('categories')
 export class CategoriesController {
     constructor(private readonly categoryService: CategoriesService) {
