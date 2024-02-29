@@ -18,7 +18,7 @@ import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
 import {UserIdRequest} from "../common/userId.request.interface";
 import {ApiBearerAuth, ApiHeader, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {CreateCommentResponseDto} from "./dto/createComment.response.dto";
-import {GetCommentByPostIdResponseDto} from "./dto/getCommentByPostId.response.dto";
+import {GetCommentsByPostIdResponseDto} from "./dto/getCommentByPostId.response.dto";
 import {SearchCommentResponseDto} from "./dto/searchComment.response.dto";
 
 @ApiTags('댓글 API')
@@ -121,7 +121,7 @@ export class CommentController {
 
     @Get('/post/:postId')
     @ApiOperation({summary: '댓글 조회 API', description: '해당 게시글의 댓글들을 조회한다.'})
-    @ApiResponse({status: 200, description: '게시글에 달린 댓글을 반환한다.', type: GetCommentByPostIdResponseDto})
+    @ApiResponse({status: 200, description: '게시글에 달린 댓글을 반환한다.', type: GetCommentsByPostIdResponseDto})
     @ApiParam({
         name: 'postId',
         description: '댓글을 조회할 postId 값을 입력한다',

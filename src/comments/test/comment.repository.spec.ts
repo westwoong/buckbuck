@@ -12,7 +12,7 @@ import {CommentFactory} from "../../common/testSetup/comment/commentFactory";
 import {TypeormCommentRepository} from "../typeormComment.repository";
 import {COMMENT_REPOSITORY} from "../../common/injectToken.constant";
 import {SearchCommentResponseDto} from "../dto/searchComment.response.dto";
-import {GetCommentByPostIdResponseDto} from "../dto/getCommentByPostId.response.dto";
+import {GetCommentsByPostIdResponseDto} from "../dto/getCommentByPostId.response.dto";
 
 
 describe('CommentRepository (E2E)', () => {
@@ -53,7 +53,7 @@ describe('CommentRepository (E2E)', () => {
 
             let page = 1
             const searchedComment = await commentRepository.getCommentByPostIdSortedDescending(post.id, page);
-            const formatterComment = new GetCommentByPostIdResponseDto(searchedComment!);
+            const formatterComment = new GetCommentsByPostIdResponseDto(searchedComment!);
 
             expect(formatterComment.comments[0]).toHaveProperty('nickName')
         })

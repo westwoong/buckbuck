@@ -1,7 +1,7 @@
 import {CommentEntity} from "../Comment.entity";
 import {ApiProperty} from "@nestjs/swagger";
 
-export class GetCommentByPostIdResponseDto {
+export class GetCommentsByPostIdResponseDto {
     @ApiProperty({
         description: '검색한 게시글에 작성되어있는 댓글 목록',
         example: [
