@@ -3,7 +3,8 @@ import {UserService} from "./user.service";
 import {SignUpRequestDto} from "./dto/signUp.request.dto";
 import {SignInRequestDto} from "./dto/signIn.request.dto";
 import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
-import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiHeader, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {GetUsersResponseDto} from "./dto/findUsers.response.dto";
 
 @ApiTags('사용자 API')
 @Controller('users')
@@ -27,9 +28,17 @@ export class UserController {
         return this.userService.signIn(signInRequestDto);
     }
 
+    @ApiBearerAuth()
     @Get('/')
+    @ApiOperation({summary: '전체 사용자 조회 API', description: '전체 사용자를 조회한다'})
+    @ApiResponse({status: 200, description: '전체 사용자를 조회한다.', type: GetUsersResponseDto})
     @HttpCode(200)
     @UseGuards(JwtAuthGuard)
+    @ApiHeader({
+        name: 'Authorization',
+        description: 'JWT 토큰을 입력하세요. 예: Bearer <"token">',
+        required: true,
+    })
     getUsers() {
         return this.userService.getUsers()
     }
