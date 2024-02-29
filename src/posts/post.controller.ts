@@ -13,7 +13,7 @@ import {PostService} from "./post.service";
 import {CreatePostRequestDto} from "./dto/createPost.request.dto";
 import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
 import {UserIdRequest} from "../common/userId.request.interface";
-import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {GetPostsResponseDto} from "./dto/getPosts.response.dto";
 import {CreatePostResponseDto} from "./dto/createPost.response.dto";
 
@@ -27,6 +27,11 @@ export class PostController {
     @Get()
     @ApiOperation({summary: '전체 게시글 조회 API', description: '전체 게시글을 조회한다.'})
     @ApiResponse({status: 200, description: '게시글 목록을 반환한다.', type: GetPostsResponseDto})
+    @ApiQuery({
+        name: 'page',
+        description: 'pagiNation 값을 입력한다',
+        type: 'number'
+    })
     @HttpCode(200)
     getPosts(@Query('page', ParseIntPipe) page: number) {
         return this.postService.getPosts(page);
@@ -48,6 +53,11 @@ export class PostController {
     @Delete(':postId')
     @ApiOperation({summary: '게시글 삭제 API', description: '게시글을 삭제한다.'})
     @ApiResponse({status: 204, description: 'No Content'})
+    @ApiParam({
+        name: 'postId',
+        description: '게시글 번호',
+        type: 'number'
+    })
     @HttpCode(204)
     @UseGuards(JwtAuthGuard)
     delete(
@@ -61,6 +71,11 @@ export class PostController {
     @Patch(':postId')
     @ApiOperation({summary: '게시글 수정 API', description: '게시글을 수정한다.'})
     @ApiResponse({status: 200, description: 'No Content'})
+    @ApiParam({
+        name: 'postId',
+        description: '게시글 번호',
+        type: 'number'
+    })
     @HttpCode(200)
     @UseGuards(JwtAuthGuard)
     modify(
