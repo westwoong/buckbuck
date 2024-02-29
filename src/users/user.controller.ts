@@ -20,6 +20,8 @@ export class UserController {
     }
 
     @Post('/signin')
+    @ApiOperation({summary: '로그인 API', description: '아이디 비밀번호를 입력해 로그인한다'})
+    @ApiResponse({status: 200, description: 'JWT 토큰을 발급받는다'})
     @HttpCode(200)
     signIn(@Body() signInRequestDto: SignInRequestDto) {
         return this.userService.signIn(signInRequestDto);
