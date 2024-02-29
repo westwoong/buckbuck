@@ -8,11 +8,7 @@ export class SearchCommentResponseDto {
         content: string,
         createdAt: Date,
         updatedAt: Date,
-        user: {
-            nickname: string,
-            createdAt: Date,
-            updatedAt: Date
-        }
+        nickName :string,
     }
 
     constructor(commentEntity: CommentEntity) {
@@ -23,11 +19,7 @@ export class SearchCommentResponseDto {
             content: commentEntity.content,
             createdAt: commentEntity.createdAt,
             updatedAt: commentEntity.updatedAt,
-            user: {
-                nickname: commentEntity.user.nickName,
-                createdAt: commentEntity.user.createdAt,
-                updatedAt: commentEntity.user.updatedAt
-            }
+            nickName: commentEntity.user.nickName,
         };
     }
 }

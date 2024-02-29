@@ -139,7 +139,7 @@ describe('CommentRepository (E2E)', () => {
             const searchedComment = await commentRepository.findCommentWithUser(comment.id)
             const foundComment = new SearchCommentResponseDto(searchedComment!)
 
-            expect(foundComment.comment.user).not.toHaveProperty('password');
+            expect(foundComment.comment).not.toHaveProperty('password');
         })
     })
 
