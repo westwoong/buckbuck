@@ -19,6 +19,7 @@ import {UserIdRequest} from "../common/userId.request.interface";
 import {ApiBearerAuth, ApiHeader, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {CreateCommentResponseDto} from "./dto/createComment.response.dto";
 import {GetCommentByPostIdResponseDto} from "./dto/getCommentByPostId.response.dto";
+import {SearchCommentResponseDto} from "./dto/searchComment.response.dto";
 
 @ApiTags('댓글 API')
 @Controller('comments')
@@ -101,7 +102,7 @@ export class CommentController {
     @Get(':commentId')
     @ApiBearerAuth()
     @ApiOperation({summary: '댓글 검색 API', description: '해당 댓글 1개를 검색한다'})
-    @ApiResponse({status: 200, description: '검색한 댓글을 반환한다.'})
+    @ApiResponse({status: 200, description: '검색한 댓글을 반환한다.', type: SearchCommentResponseDto})
     @ApiParam({
         name: 'commentId',
         description: '조회할 commentId 값을 입력한다',
