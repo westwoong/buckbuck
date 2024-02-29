@@ -16,7 +16,9 @@ import {CommentService} from "./comment.service";
 import {CreateCommentRequestDto} from "./dto/createComment.request.dto";
 import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
 import {UserIdRequest} from "../common/userId.request.interface";
+import {ApiTags} from "@nestjs/swagger";
 
+@ApiTags('댓글 API')
 @Controller('comments')
 export class CommentController {
     constructor(private readonly commentService: CommentService) {

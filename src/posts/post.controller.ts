@@ -13,7 +13,9 @@ import {PostService} from "./post.service";
 import {CreatePostRequestDto} from "./dto/createPost.request.dto";
 import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
 import {UserIdRequest} from "../common/userId.request.interface";
+import {ApiTags} from "@nestjs/swagger";
 
+@ApiTags('게시글 API')
 @Controller('posts')
 export class PostController {
 
