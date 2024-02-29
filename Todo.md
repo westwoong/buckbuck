@@ -1,5 +1,7 @@
 ## 처리 중
-
+- Swagger 문서화 하기
+  - requestDTO 추가하기
+  - responseDTO 추가하기
   
 
 ## 처리 완료
@@ -16,7 +18,6 @@
   - RequestDto 대신 Pipe 적용
 
 ## TODO
-- Swagger 문서화 하기
 - Logging 적용하기
   - 운영서버일 때만 로깅해야함, 로컬에선 off
 - 부하테스트 해보기 (Web, DB)
