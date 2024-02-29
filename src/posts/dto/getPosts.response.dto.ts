@@ -1,10 +1,9 @@
 import {PostEntity} from "../Post.entity";
-import {format} from "date-fns";
 
 export class GetPostsResponseDto {
     posts: Array<{
         id: number;
-        createdAt: string;
+        createdAt: Date;
         title: string;
         content: string;
         cost: number;
@@ -20,7 +19,7 @@ export class GetPostsResponseDto {
             cost: post.cost,
             level: post.level,
             nickName: post.user.nickName,
-            createdAt: format(post.createdAt, 'yyyy-MM-dd HH:mm:ss'),
+            createdAt: post.createdAt,
             commentCount: post.comment.length
         }));
     }
