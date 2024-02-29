@@ -13,7 +13,7 @@ import {PostService} from "./post.service";
 import {CreatePostRequestDto} from "./dto/createPost.request.dto";
 import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
 import {UserIdRequest} from "../common/userId.request.interface";
-import {ApiTags} from "@nestjs/swagger";
+import {ApiOperation, ApiTags} from "@nestjs/swagger";
 
 @ApiTags('게시글 API')
 @Controller('posts')
@@ -23,12 +23,14 @@ export class PostController {
     }
 
     @Get()
+    @ApiOperation({summary: '전체 게시글 조회 API', description: '전체 게시글을 조회한다.'})
     @HttpCode(200)
     getPosts(@Query('page', ParseIntPipe) page: number) {
         return this.postService.getPosts(page);
     }
 
     @Post()
+    @ApiOperation({summary: '게시글 작성 API', description: '게시글을 작성한다.'})
     @HttpCode(201)
     @UseGuards(JwtAuthGuard)
     create(
@@ -40,6 +42,7 @@ export class PostController {
     }
 
     @Delete(':postId')
+    @ApiOperation({summary: '게시글 삭제 API', description: '게시글을 삭제한다.'})
     @HttpCode(204)
     @UseGuards(JwtAuthGuard)
     delete(
@@ -51,6 +54,7 @@ export class PostController {
     }
 
     @Patch(':postId')
+    @ApiOperation({summary: '게시글 수정 API', description: '게시글을 수정한다.'})
     @HttpCode(200)
     @UseGuards(JwtAuthGuard)
     modify(
