@@ -13,7 +13,7 @@ import {PostService} from "./post.service";
 import {CreatePostRequestDto} from "./dto/createPost.request.dto";
 import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
 import {UserIdRequest} from "../common/userId.request.interface";
-import {ApiBearerAuth, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiHeader, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {GetPostsResponseDto} from "./dto/getPosts.response.dto";
 import {CreatePostResponseDto} from "./dto/createPost.response.dto";
 
@@ -42,6 +42,11 @@ export class PostController {
     @ApiOperation({summary: '게시글 작성 API', description: '게시글을 작성한다.'})
     @ApiResponse({status: 201, description: '작성한 게시글을 반환한다', type: CreatePostResponseDto})
     @HttpCode(201)
+    @ApiHeader({
+        name: 'Authorization',
+        description: '로그인 토큰을 입력하세요',
+        required: true,
+    })
     @UseGuards(JwtAuthGuard)
     create(
         @Request() req: UserIdRequest,
@@ -59,6 +64,11 @@ export class PostController {
         name: 'postId',
         description: '게시글 번호',
         type: 'number'
+    })
+    @ApiHeader({
+        name: 'Authorization',
+        description: '로그인 토큰을 입력하세요',
+        required: true,
     })
     @HttpCode(204)
     @UseGuards(JwtAuthGuard)
@@ -78,6 +88,11 @@ export class PostController {
         name: 'postId',
         description: '게시글 번호',
         type: 'number'
+    })
+    @ApiHeader({
+        name: 'Authorization',
+        description: '로그인 토큰을 입력하세요',
+        required: true,
     })
     @HttpCode(200)
     @UseGuards(JwtAuthGuard)

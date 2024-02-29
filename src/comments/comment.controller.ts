@@ -16,7 +16,7 @@ import {CommentService} from "./comment.service";
 import {CreateCommentRequestDto} from "./dto/createComment.request.dto";
 import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
 import {UserIdRequest} from "../common/userId.request.interface";
-import {ApiBearerAuth, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiHeader, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {CreateCommentResponseDto} from "./dto/createComment.response.dto";
 import {GetCommentByPostIdResponseDto} from "./dto/getCommentByPostId.response.dto";
 
@@ -34,6 +34,11 @@ export class CommentController {
         name: 'postId',
         description: '댓글을 작성할 postId 값을 입력한다',
         type: 'number'
+    })
+    @ApiHeader({
+        name: 'Authorization',
+        description: '로그인 토큰을 입력하세요',
+        required: true,
     })
     @HttpCode(201)
     @UseGuards(JwtAuthGuard)
@@ -55,6 +60,11 @@ export class CommentController {
         description: '삭제할 commentId 값을 입력한다',
         type: 'number'
     })
+    @ApiHeader({
+        name: 'Authorization',
+        description: '로그인 토큰을 입력하세요',
+        required: true,
+    })
     @HttpCode(204)
     @UseGuards(JwtAuthGuard)
     delete(
@@ -72,6 +82,11 @@ export class CommentController {
         name: 'commentId',
         description: '수정할 commentId 값을 입력한다',
         type: 'number'
+    })
+    @ApiHeader({
+        name: 'Authorization',
+        description: '로그인 토큰을 입력하세요',
+        required: true,
     })
     @HttpCode(200)
     @UseGuards(JwtAuthGuard)
@@ -92,6 +107,11 @@ export class CommentController {
         description: '조회할 commentId 값을 입력한다',
         type: 'number'
     })
+    @ApiHeader({
+        name: 'Authorization',
+        description: '로그인 토큰을 입력하세요',
+        required: true,
+    })
     @HttpCode(200)
     @UseGuards(JwtAuthGuard)
     search(@Param('commentId', ParseIntPipe) commentId: number) {
@@ -110,6 +130,11 @@ export class CommentController {
         name: 'commentPage',
         description: 'pagiNation 값을 입력한다.',
         type: 'number'
+    })
+    @ApiHeader({
+        name: 'Authorization',
+        description: '로그인 토큰을 입력하세요',
+        required: true,
     })
     @HttpCode(200)
     @UseGuards(JwtAuthGuard)

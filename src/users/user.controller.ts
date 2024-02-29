@@ -36,7 +36,7 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     @ApiHeader({
         name: 'Authorization',
-        description: 'JWT 토큰을 입력하세요. 예: Bearer <"token">',
+        description: '로그인 토큰을 입력하세요',
         required: true,
     })
     getUsers() {
