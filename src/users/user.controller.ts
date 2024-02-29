@@ -3,15 +3,17 @@ import {UserService} from "./user.service";
 import {SignUpRequestDto} from "./dto/signUp.request.dto";
 import {SignInRequestDto} from "./dto/signIn.request.dto";
 import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
-import {ApiOperation} from "@nestjs/swagger";
+import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 
+@ApiTags('사용자 API')
 @Controller('users')
 export class UserController {
     constructor(private readonly userService: UserService) {
     }
 
     @Post('/signup')
-    @ApiOperation({summary: '유저 회원가입 API', description: '입력 받은 값으로 유저를 생성한다.'})
+    @ApiOperation({summary: '사용자 생성 API', description: '사용자를 생성한다.'})
+    @ApiResponse({status: 201, description: 'Created'})
     @HttpCode(201)
     signUp(@Body() signUpRequestDto: SignUpRequestDto) {
         return this.userService.signUp(signUpRequestDto);
