@@ -31,7 +31,7 @@ export class UserController {
     @ApiBearerAuth()
     @Get('/')
     @ApiOperation({summary: '전체 사용자 조회 API', description: '전체 사용자를 조회한다'})
-    @ApiResponse({status: 200, description: '전체 사용자를 조회한다.', type: GetUsersResponseDto})
+    @ApiResponse({status: 200, description: '전체 사용자목록을 반환한다.', type: GetUsersResponseDto})
     @HttpCode(200)
     @UseGuards(JwtAuthGuard)
     @ApiHeader({
