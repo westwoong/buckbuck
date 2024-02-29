@@ -14,12 +14,12 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest --runInBand --testTimeout=30000",
-    "test:dev": "jest --runInBand --detectOpenHandles --forceExit",
+    "test:dev": "jest --runInBand",
     "test:watch": "jest --watch",
-    "test:cov": "jest --coverage --runInBand --forceExit --coveragePathIgnorePatterns src/coverage/",
+    "test:cov": "jest --coverage --runInBand --coveragePathIgnorePatterns src/coverage/",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:unit": "jest --detectOpenHandles --forceExit --config test/jest-unit-test.json",
-    "test:e2e": "jest --runInBand --detectOpenHandles --forceExit --testTimeout=30000 --config ./test/jest-e2e.json"
+    "test:unit": "jest --forceExit --config test/jest-unit-test.json",
+    "test:e2e": "jest --runInBand --testTimeout=30000 --config ./test/jest-e2e.json"
   },
   "dependencies": {
     "@nestjs/common": "^10.2.4",
