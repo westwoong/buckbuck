@@ -3,6 +3,7 @@ import {AppModule} from './app.module';
 import * as dotenv from 'dotenv';
 import {ValidationPipe} from "@nestjs/common";
 import {initializeTransactionalContext} from "typeorm-transactional";
+import {SwaggerSetupModule} from "./config/swagger.module";
 
 async function bootstrap() {
     initializeTransactionalContext();
@@ -11,6 +12,9 @@ async function bootstrap() {
     app.useGlobalPipes(new ValidationPipe({
         transform: true
     }));
+
+    SwaggerSetupModule.setup(app);
+
     await app.listen(3000);
 }
 
