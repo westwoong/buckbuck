@@ -16,7 +16,7 @@ import {CommentService} from "./comment.service";
 import {CreateCommentRequestDto} from "./dto/createComment.request.dto";
 import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
 import {UserIdRequest} from "../common/userId.request.interface";
-import {ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {CreateCommentResponseDto} from "./dto/createComment.response.dto";
 import {GetCommentByPostIdResponseDto} from "./dto/getCommentByPostId.response.dto";
 
@@ -27,6 +27,7 @@ export class CommentController {
     }
 
     @Post(':postId')
+    @ApiBearerAuth()
     @ApiOperation({summary: '댓글 작성 API', description: '게시글에 댓글을 작성한다.'})
     @ApiResponse({status: 201, description: '작성한 댓글을 보여준다', type: CreateCommentResponseDto})
     @ApiParam({
@@ -46,6 +47,7 @@ export class CommentController {
     }
 
     @Delete(':commentId')
+    @ApiBearerAuth()
     @ApiOperation({summary: '댓글 삭제 API', description: '댓글을 삭제한다.'})
     @ApiResponse({status: 204, description: 'No Content'})
     @ApiParam({
@@ -63,6 +65,7 @@ export class CommentController {
     }
 
     @Patch(':commentId')
+    @ApiBearerAuth()
     @ApiOperation({summary: '댓글 수정 API', description: '댓글을 수정한다.'})
     @ApiResponse({status: 200, description: 'No Content'})
     @ApiParam({
@@ -81,6 +84,7 @@ export class CommentController {
     }
 
     @Get(':commentId')
+    @ApiBearerAuth()
     @ApiOperation({summary: '댓글 검색 API', description: '해당 댓글 1개를 검색한다'})
     @ApiResponse({status: 200, description: '검색한 댓글을 반환한다.'})
     @ApiParam({

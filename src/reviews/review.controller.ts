@@ -3,7 +3,7 @@ import {ReviewService} from "./review.service";
 import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
 import {UserIdRequest} from "../common/userId.request.interface";
 import {CreateReviewRequestDto} from "./dto/createReview.request.dto";
-import {ApiOperation, ApiParam, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags} from "@nestjs/swagger";
 
 @ApiTags('리뷰 API')
 @Controller('reviews')
@@ -12,6 +12,7 @@ export class ReviewController {
     }
 
     @Post('performers/:performerId')
+    @ApiBearerAuth()
     @ApiOperation({summary: '리뷰 작성 API', description: '리뷰를 작성한다.'})
     @ApiResponse({status: 201, description: 'No Content'})
     @ApiParam({
