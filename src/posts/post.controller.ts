@@ -13,7 +13,15 @@ import {PostService} from "./post.service";
 import {CreatePostRequestDto} from "./dto/createPost.request.dto";
 import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
 import {UserIdRequest} from "../common/userId.request.interface";
-import {ApiBearerAuth, ApiHeader, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {
+    ApiBearerAuth,
+    ApiHeader,
+    ApiOperation,
+    ApiParam,
+    ApiQuery,
+    ApiResponse,
+    ApiTags
+} from "@nestjs/swagger";
 import {GetPostsResponseDto} from "./dto/getPosts.response.dto";
 import {CreatePostResponseDto} from "./dto/createPost.response.dto";
 
@@ -35,6 +43,14 @@ export class PostController {
     @HttpCode(200)
     getPosts(@Query('page', ParseIntPipe) page: number) {
         return this.postService.getPosts(page);
+    }
+
+    @Get(':postId')
+    @ApiOperation({summary: '특정 게시글 조회 API', description: '특정 게시글을 조회한다.'})
+    @ApiResponse({status: 200, description: '게시글을 반환한다.'})
+    @HttpCode(200)
+    getPostById(@Param('postId', ParseIntPipe) postId: number) {
+        return this.postService.getPostById(postId);
     }
 
     @Post()
