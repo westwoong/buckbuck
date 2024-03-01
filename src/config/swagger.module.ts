@@ -7,6 +7,10 @@ export class SwaggerSetupModule {
         const options = new DocumentBuilder()
             .setTitle('buckbuck')
             .setDescription('buckbuck API guide')
+            .addSecurity('Auth', {
+                type: 'http',
+                scheme: 'bearer',
+            })
             .setVersion('1.0')
             .build();
 

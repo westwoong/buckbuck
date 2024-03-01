@@ -12,7 +12,7 @@ export class ReviewController {
     }
 
     @Post('performers/:performerId')
-    @ApiBearerAuth()
+    @ApiBearerAuth('Auth')
     @ApiOperation({summary: '리뷰 작성 API', description: '리뷰를 작성한다.'})
     @ApiResponse({status: 201, description: 'No Content'})
     @ApiParam({
