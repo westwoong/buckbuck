@@ -12,7 +12,14 @@ async function bootstrap() {
     app.useGlobalPipes(new ValidationPipe({
         transform: true
     }));
-
+    app.enableCors({
+        methods: ['GET', 'PATCH', 'POST', 'DELETE'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        maxAge: 900,
+        credentials: true,
+        preflightContinue: false,
+        optionsSuccessStatus: 204,
+    });
     SwaggerSetupModule.setup(app);
 
     await app.listen(3000);
