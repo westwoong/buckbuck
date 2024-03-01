@@ -129,20 +129,20 @@ describe('PostRepository (E2E)', () => {
     })
 
     describe('findOneById()', () => {
-        it('게시글의 데이터를 가져온다.', async () => {
+        it('게시글에 user, comments 객체가 있는지 확인한다', async () => {
             const userTokenFactory = new UserTokenFactory(dataSource)
             await userTokenFactory.createUser();
             const userFinder = new UserFinder(dataSource);
             const userId = await userFinder.userId();
             const postFactory = new PostFactory(dataSource, userId);
             const post = await postFactory.createPost();
+            const commentFactory = new CommentFactory(dataSource, userId, post.id);
+            await commentFactory.createComment();
 
             const foundPost = await postRepository.findOneById(post.id);
 
-            expect(foundPost?.title).toBe(post.title);
-            expect(foundPost?.content).toBe(post.content);
-            expect(foundPost?.cost).toBe(post.cost);
-            expect(foundPost?.level).toBe(post.level);
+            expect(foundPost?.user).toBeDefined();
+            expect(foundPost?.comment).toBeDefined();
         })
     })
 
