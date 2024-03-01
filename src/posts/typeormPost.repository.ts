@@ -33,6 +33,8 @@ export class TypeormPostRepository implements PostRepository {
 
     async findOneById(postId: number): Promise<PostEntity | null> {
         return await this.postRepository.findOne({
+            relations: ['user', 'comment', 'comment.user'],
+            order: {createdAt: 'DESC'},
             where: {id: postId}
         })
     }
