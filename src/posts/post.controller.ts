@@ -24,6 +24,7 @@ import {
 } from "@nestjs/swagger";
 import {GetPostsResponseDto} from "./dto/getPosts.response.dto";
 import {CreatePostResponseDto} from "./dto/createPost.response.dto";
+import {GetPostResponseDto} from "./dto/getPost.response.dto";
 
 @ApiTags('게시글 API')
 @Controller('posts')
@@ -47,7 +48,7 @@ export class PostController {
 
     @Get(':postId')
     @ApiOperation({summary: '특정 게시글 조회 API', description: '특정 게시글을 조회한다.'})
-    @ApiResponse({status: 200, description: '게시글을 반환한다.'})
+    @ApiResponse({status: 200, description: '게시글을 반환한다.', type: GetPostResponseDto})
     @HttpCode(200)
     getPostById(@Param('postId', ParseIntPipe) postId: number) {
         return this.postService.getPostById(postId);
