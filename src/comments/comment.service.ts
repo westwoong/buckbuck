@@ -13,7 +13,7 @@ import {CommentRepository} from "./comment.repository";
 import {PostRepository} from "../posts/post.repository";
 import {UserRepository} from "../users/user.repository";
 import {SearchCommentResponseDto} from "./dto/searchComment.response.dto";
-import {GetCommentByPostIdResponseDto} from "./dto/getCommentByPostId.response.dto";
+import {GetCommentsByPostIdResponseDto} from "./dto/getCommentByPostId.response.dto";
 
 @Injectable()
 export class CommentService {
@@ -79,6 +79,6 @@ export class CommentService {
 
         const comments = await this.commentRepository.getCommentByPostIdSortedDescending(postId, commentPage);
 
-        return new GetCommentByPostIdResponseDto(comments);
+        return new GetCommentsByPostIdResponseDto(comments);
     }
 }

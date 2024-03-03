@@ -61,6 +61,13 @@ describe('PostService', () => {
         })
     })
 
+    describe('get Post', () => {
+        it('조회할 게시글이 존재하지 않을 시 404 에러를 반환한다', async () => {
+            await jest.spyOn(postRepository, 'findOneById').mockResolvedValue(null);
+            await expect(postService.getPostById(postId)).rejects.toThrow(NotFoundException);
+        })
+    })
+
     describe('modify Post', () => {
         it('수정할 게시글이 존재하지 않을 시 404 에러를 반환한다', async () => {
             const post = new PostEntity({

@@ -8,6 +8,7 @@ import {UserRepository} from "../users/user.repository";
 import {PostRepository} from "./post.repository";
 import {CommentRepository} from "../comments/comment.repository";
 import {GetPostsResponseDto} from "./dto/getPosts.response.dto";
+import {GetPostResponseDto} from "./dto/getPost.response.dto";
 
 @Injectable()
 export class PostService {
@@ -25,6 +26,12 @@ export class PostService {
         if (!page) throw new BadRequestException('page 값이 존재하지 않습니다.');
         const posts = await this.postRepository.getPostsSortedDescending(page);
         return new GetPostsResponseDto(posts);
+    }
+
+    async getPostById(postId: number) {
+        const post = await this.postRepository.findOneById(postId);
+        if (!post) throw new NotFoundException('해당 게시글은 존재하지 않습니다.');
+        return new GetPostResponseDto(post);
     }
 
     @Transactional()

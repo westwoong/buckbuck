@@ -35,10 +35,24 @@ describe('PostController', () => {
                 .expect(200);
         })
 
-        it('page 파라미터에 숫자가 아닌 타입을 넣으면 400 응답코드 반환한다.', async () => {
+        it('page 파라미터에 숫자가 아닌 타입을 넣으면 400 응답코드를 반환한다.', async () => {
             return request(app.getHttpServer())
                 .get(`/posts?page=isTestFail`)
                 .expect(400)
+        })
+    })
+
+    describe('/posts/:postId (GET)', () => {
+        it('정상적인 요청 시 200 응답코드를 반환한다', async () => {
+            return request(app.getHttpServer())
+                .get('/posts/1')
+                .expect(200);
+        })
+
+        it('postId가 숫자가 아닐 시 400 응답코드를 반환한다.', async () => {
+            return request(app.getHttpServer())
+                .get('/posts/thisIsPostId')
+                .expect(400);
         })
     })
 
