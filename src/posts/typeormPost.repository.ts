@@ -14,7 +14,7 @@ export class TypeormPostRepository implements PostRepository {
     }
 
     async getPostsSortedDescending(page: number): Promise<PostEntity[]> {
-        let limit = 50;
+        let limit = 25;
         const skip = (page - 1) * limit
         return await this.postRepository.find({
             relations: ['user', 'comment'],
