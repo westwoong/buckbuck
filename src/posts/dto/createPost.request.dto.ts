@@ -14,9 +14,9 @@ export class CreatePostRequestDto {
 
     @IsNotEmpty()
     @IsString()
-    @Length(1,30)
+    @Length(1,300)
     @ApiProperty({
-        description: '1~30글자 사이의 게시글 내용',
+        description: '1~300글자 사이의 게시글 내용',
         example: '본문 내용입니다.',
         required: true
     })
