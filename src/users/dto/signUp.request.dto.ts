@@ -51,7 +51,7 @@ export class SignUpRequestDto {
     @IsString()
     @Matches(/^010\d{8}$/, {message: '- 을 제외한 010으로 시작하는 핸드폰 번호 11자리를 입력해주세요 (예: 01012345678)'})
     @ApiProperty({
-        description: '- 을 제외한 핸드폰 번호 11자리',
+        description: '"-" 을 제외한 핸드폰 번호 11자리',
         example: '01012345678',
         required: true
     })
