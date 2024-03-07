@@ -43,7 +43,9 @@ describe('PostRepository (E2E)', () => {
     });
 
     beforeEach(async () => {
-        await dataSource.dropDatabase();
+        if (process.env.NODE_ENV === 'develop' || process.env.NODE_ENV === 'local') {
+            await dataSource.dropDatabase();
+        }
         await dataSource.synchronize();
     })
 
