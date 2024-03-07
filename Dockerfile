@@ -12,4 +12,6 @@ COPY ./dist .
 
 EXPOSE 3000
 
+ENV NODE_ENV=product
+
 CMD [ "node", "main" ]
