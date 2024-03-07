@@ -29,11 +29,11 @@ jobs:
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         run: |
           touch .env.local
-          echo DB_HOST=$TEST_DB_HOST >> .env
-          echo DB_USER=$TEST_DB_USER >> .env
-          echo DB_PASSWORD=$TEST_DB_PASSWORD >> .env
-          echo DB_NAME=$DB_NAME >> .env
-          echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env
+          echo DB_HOST=$TEST_DB_HOST >> .env.local
+          echo DB_USER=$TEST_DB_USER >> .env.local
+          echo DB_PASSWORD=$TEST_DB_PASSWORD >> .env.local
+          echo DB_NAME=$DB_NAME >> .env.local
+          echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env.local
 
       - name: Run test
         run: |
@@ -42,18 +42,18 @@ jobs:
 
       - name: Develop env setup
         env:
-          DB_HOST: ${{ secrets.DEV_DB_HOST }}
-          DB_USER: ${{ secrets.DB_USER }}
+          DB_HOST: ${{ secrets.TEST_DB_HOST }}
+          DB_USER: ${{ secrets.TEST_DB_USER }}
           DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         run: |
           touch .env.develop
-          echo DB_HOST=$DB_HOST >> .env
-          echo DB_USER=$DB_USER >> .env
-          echo DB_PASSWORD=$DB_PASSWORD >> .env
-          echo DB_NAME=$DB_NAME >> .env
-          echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env
+          echo DB_HOST=$DB_HOST >> .env.develop
+          echo DB_USER=$DB_USER >> .env.develop
+          echo DB_PASSWORD=$DB_PASSWORD >> .env.develop
+          echo DB_NAME=$DB_NAME >> .env.develop
+          echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env.develop
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
