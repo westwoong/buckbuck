@@ -6,7 +6,7 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY .env.product .
+COPY .env .
 
 COPY ./dist .
 
