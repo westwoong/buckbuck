@@ -73,7 +73,7 @@ jobs:
           IMAGE_TAG: develop
         run: |
           sed -i 's/3000/1000/g' Dockerfile && sed -i 's/product/develop/g' Dockerfile
-          docker build --no-cache -t $REPOSITORY .
+          docker build --no-cache -t $REPOSITORY:$IMAGE_TAG .
           docker tag $REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
