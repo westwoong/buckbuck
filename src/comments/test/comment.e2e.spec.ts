@@ -12,6 +12,7 @@ import {CommentFactory} from "../../common/testSetup/comment/commentFactory";
 import {CommentFinder} from "../../common/testSetup/comment/commentFinder";
 import {UserFinder} from "../../common/testSetup/user/userFinder";
 import {CommentEntity} from "../Comment.entity";
+import path from "path";
 
 describe('CommentController (E2E)', () => {
     let app: INestApplication;
@@ -20,7 +21,12 @@ describe('CommentController (E2E)', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        dotenv.config();
+        dotenv.config({
+            path: path.resolve(
+                process.env.NODE_ENV === 'product' ? '.env.product' :
+                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
+            )
+        });
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();

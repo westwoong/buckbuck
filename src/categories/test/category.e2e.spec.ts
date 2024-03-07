@@ -6,6 +6,7 @@ import * as dotenv from 'dotenv';
 import {DataSource} from "typeorm";
 import {AuthService} from "../../auth/auth.service";
 import * as request from "supertest";
+import path from "path";
 
 describe('CategoryController (E2E)', () => {
     let app: INestApplication;
@@ -14,7 +15,12 @@ describe('CategoryController (E2E)', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        dotenv.config();
+        dotenv.config({
+            path: path.resolve(
+                process.env.NODE_ENV === 'product' ? '.env.product' :
+                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
+            )
+        });
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();
