@@ -5,6 +5,7 @@ export class CreatePostResponseDto {
     @ApiProperty({
         description: '게시글 생성 응답값',
         example: {
+            id: 1,
             title: '제목',
             content: '내용',
             cost: 15000,
@@ -13,6 +14,7 @@ export class CreatePostResponseDto {
         },
         required: true
     })
+    id: number;
     title: string;
     content: string;
     cost: number;
@@ -20,6 +22,7 @@ export class CreatePostResponseDto {
     createdAt: Date;
 
     constructor(createPostResponseDto: CreatePostResponseDto) {
+        this.id = createPostResponseDto.id;
         this.title = createPostResponseDto.title;
         this.content = createPostResponseDto.content;
         this.cost = createPostResponseDto.cost;

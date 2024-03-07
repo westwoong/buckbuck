@@ -39,9 +39,9 @@ export class PostService {
         const {title, content, cost, level} = createPostRequestDto;
         const post = new PostEntity({title, content, cost, level, userId});
 
-        await this.postRepository.save(post);
+        const writePost = await this.postRepository.save(post);
 
-        return new CreatePostResponseDto(post);
+        return new CreatePostResponseDto(writePost);
     }
 
     @Transactional()

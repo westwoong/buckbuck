@@ -86,8 +86,8 @@ jobs:
           script: |
             docker rmi $(docker images -q)
             docker pull ${{ steps.login-ecr.outputs.registry }}/buckbuck:latest || true
-            docker stop $(docker ps -a)
-            docker rm $(docker ps -a)
+            docker stop buckbuck
+            docker rm buckbuck
             docker run -d --name buckbuck -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/buckbuck:latest
             ${{ secrets.DEPLOY_SUCCESS_HOOK }}
             echo "done"
