@@ -13,6 +13,7 @@ import {CommentEntity} from "../Comment.entity";
 import {TypeormUserRepository} from "../../users/typeormUser.repository";
 import {TypeormPostRepository} from "../../posts/typeormPost.repository";
 import {DUMMY_COMMENT_RESOLVE, DUMMY_POST_RESOLVE} from "../../common/mockDummyResolve";
+import * as path from "path";
 
 jest.mock('../typeormComment.repository');
 jest.mock('../../users/typeormUser.repository');
@@ -35,7 +36,12 @@ describe('CommentService', () => {
     let page = 1;
 
     beforeAll(async () => {
-        dotenv.config();
+        dotenv.config({
+            path: path.resolve(
+                process.env.NODE_ENV === 'product' ? '.env.product' :
+                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
+            )
+        });
         const moduleRef: TestingModule = await Test.createTestingModule({
             providers: [
                 CommentService,

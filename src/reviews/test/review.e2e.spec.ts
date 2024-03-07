@@ -10,6 +10,7 @@ import {PostFactory} from "../../common/testSetup/post/postFactory";
 import * as request from "supertest";
 import {ReviewFinder} from "../../common/testSetup/review/reviewFinder";
 import {UserFinder} from "../../common/testSetup/user/userFinder";
+import * as path from "path";
 
 describe('ReviewController (E2E)', () => {
     let app: INestApplication;
@@ -18,7 +19,12 @@ describe('ReviewController (E2E)', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        dotenv.config();
+        dotenv.config({
+            path: path.resolve(
+                process.env.NODE_ENV === 'product' ? '.env.product' :
+                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
+            )
+        });
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule]
         }).compile();
@@ -32,7 +38,9 @@ describe('ReviewController (E2E)', () => {
     })
 
     beforeEach(async () => {
-        await dataSource.dropDatabase();
+        if (process.env.NODE_ENV === 'develop' || process.env.NODE_ENV === 'local') {
+            await dataSource.dropDatabase();
+        }
         await dataSource.synchronize();
     })
 

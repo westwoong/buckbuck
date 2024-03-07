@@ -14,7 +14,7 @@ export class TypeormCommentRepository implements CommentRepository {
     }
 
     async getCommentByPostIdSortedDescending(postId: number, page: number): Promise<CommentEntity[] | null> {
-        let limit = 50;
+        let limit = 25;
         let skip = (page - 1) * limit;
         return await this.commentRepository.find({
             relations: ['user'],

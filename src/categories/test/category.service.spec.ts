@@ -8,6 +8,7 @@ import {TypeormCategoryRepository} from "../typeormCategory.repository";
 import {CATEGORY_REPOSITORY} from "../../common/injectToken.constant";
 import {CategoriesEntity} from "../Categories.entity";
 import {DUMMY_CATEGORY_RESOLVE} from "../../common/mockDummyResolve";
+import * as path from "path";
 
 describe('CategoryService ', () => {
     let app: INestApplication;
@@ -17,7 +18,12 @@ describe('CategoryService ', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        dotenv.config();
+        dotenv.config({
+            path: path.resolve(
+                process.env.NODE_ENV === 'product' ? '.env.product' :
+                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
+            )
+        });
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();

@@ -1,8 +1,8 @@
-name: buckbuck API
+name: Develop BuckBuck
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "develop" ]
 
 jobs:
   deployment:
@@ -28,33 +28,32 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         run: |
-          touch .env
-          echo DB_HOST=$TEST_DB_HOST >> .env
-          echo DB_USER=$TEST_DB_USER >> .env
-          echo DB_PASSWORD=$TEST_DB_PASSWORD >> .env
-          echo DB_NAME=$DB_NAME >> .env
-          echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env
+          touch .env.local
+          echo DB_HOST=$TEST_DB_HOST >> .env.local
+          echo DB_USER=$TEST_DB_USER >> .env.local
+          echo DB_PASSWORD=$TEST_DB_PASSWORD >> .env.local
+          echo DB_NAME=$DB_NAME >> .env.local
+          echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env.local
 
       - name: Run test
         run: |
           npm test
-          rm -rfv .env
+          rm -rfv .env.local
 
-      - name: product env setup
+      - name: Develop env setup
         env:
-          DB_HOST: buck-db.cgm8ydwxruhn.ap-northeast-2.rds.amazonaws.com
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_HOST: ${{ secrets.DEV_DB_HOST }}
+          DB_USER: ${{ secrets.TEST_DB_USER }}
+          DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         run: |
-          touch .env
-          echo DB_HOST=$DB_HOST >> .env
-          echo DB_USER=$DB_USER >> .env
-          echo DB_PASSWORD=$DB_PASSWORD >> .env
-          echo DB_NAME=$DB_NAME >> .env
-          echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env
-          cat .env
+          touch .env.develop
+          echo DB_HOST=$DB_HOST >> .env.develop
+          echo DB_USER=$DB_USER >> .env.develop
+          echo DB_PASSWORD=$DB_PASSWORD >> .env.develop
+          echo DB_NAME=$DB_NAME >> .env.develop
+          echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env.develop
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -71,9 +70,10 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: buckbuck
-          IMAGE_TAG: latest
+          IMAGE_TAG: develop
         run: |
-          docker build --no-cache -t $REPOSITORY .
+          sed -i 's/3000/1000/g' Dockerfile && sed -i 's/product/develop/g' Dockerfile
+          docker build --no-cache -t $REPOSITORY:$IMAGE_TAG .
           docker tag $REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
@@ -86,9 +86,9 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             docker rmi $(docker images -q)
-            docker pull ${{ steps.login-ecr.outputs.registry }}/buckbuck:latest || true
+            docker pull ${{ steps.login-ecr.outputs.registry }}/buckbuck:develop || true
             docker stop $(docker ps -a)
             docker rm $(docker ps -a)
-            docker run -d --name buckbuck -p 80:3000 ${{ steps.login-ecr.outputs.registry }}/buckbuck:latest
-            ${{ secrets.DEPLOY_SUCCESS_HOOK }}
+            docker run -d --name dev-buckbuck -p 1000:1000 ${{ steps.login-ecr.outputs.registry }}/buckbuck:develop
+            ${{ secrets.DEV_DEPLOY_SUCCESS }}
             echo "done"

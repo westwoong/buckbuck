@@ -13,6 +13,7 @@ import {TypeormCommentRepository} from "../typeormComment.repository";
 import {COMMENT_REPOSITORY} from "../../common/injectToken.constant";
 import {SearchCommentResponseDto} from "../dto/searchComment.response.dto";
 import {GetCommentsByPostIdResponseDto} from "../dto/getCommentByPostId.response.dto";
+import * as path from "path";
 
 
 describe('CommentRepository (E2E)', () => {
@@ -22,7 +23,12 @@ describe('CommentRepository (E2E)', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        dotenv.config();
+        dotenv.config({
+            path: path.resolve(
+                process.env.NODE_ENV === 'product' ? '.env.product' :
+                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
+            )
+        });
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();
@@ -35,7 +41,9 @@ describe('CommentRepository (E2E)', () => {
     });
 
     beforeEach(async () => {
-        await dataSource.dropDatabase();
+        if (process.env.NODE_ENV === 'develop' || process.env.NODE_ENV === 'local') {
+            await dataSource.dropDatabase();
+        }
         await dataSource.synchronize();
     })
 

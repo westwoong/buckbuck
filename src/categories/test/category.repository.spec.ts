@@ -8,6 +8,7 @@ import {AppModule} from "../../app.module";
 import {CATEGORY_REPOSITORY} from "../../common/injectToken.constant";
 import {CategoriesEntity} from "../Categories.entity";
 import {CategoryFactory} from "../../common/testSetup/category/categoryFactory";
+import * as path from "path";
 
 describe('CategoryRepository', () => {
     let app: INestApplication;
@@ -16,7 +17,12 @@ describe('CategoryRepository', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        dotenv.config();
+        dotenv.config({
+            path: path.resolve(
+                process.env.NODE_ENV === 'product' ? '.env.product' :
+                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
+            )
+        });
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();
@@ -29,7 +35,9 @@ describe('CategoryRepository', () => {
     });
 
     beforeEach(async () => {
-        await dataSource.dropDatabase();
+        if (process.env.NODE_ENV === 'develop' || process.env.NODE_ENV === 'local') {
+            await dataSource.dropDatabase();
+        }
         await dataSource.synchronize();
     })
 

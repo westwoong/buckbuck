@@ -48,7 +48,9 @@ describe('createPost RequestDto', () => {
         const createPostRequestDto = new CreatePostRequestDto();
         it.each([
             [''],
-            ['이것은 본문의 길이가 30글자가 넘어갔을 때 테스트입니다']
+            ['이것은 본문의 길이가 300글자가 넘어갔을 때 테스트입니다이것은 본문의 길이가 300글자가 넘어갔을 때 테스트입니다이것은 본문의 길이가 300글자가 넘어갔을 때 테스트입니다' +
+            '이것은 본문의 길이가 300글자가 넘어갔을 때 테스트입니다이것은 본문의 길이가 300글자가 넘어갔을 때 테스트입니다이것은 본문의 길이가 300글자가 넘어갔을 때 테스트입니다' +
+            '이것은이것은 본문의 길이가 300글자가 넘어갔을 때 테스트입니다이것은 본문의 길이가 300글자가 넘어갔을 때 테스트입니다이것은 본문의 길이가 300글자가 넘어갔을 때 테스트입니다이것은 본문의 길이가 300글자가 넘어갔을 때 테스트입니다']
         ])('게시글 본문의 값이 validator 에 위반될 시 에러가 발생한다.', async (content) => {
             createPostRequestDto.content = content;
             const errors = await validate(createPostRequestDto, {skipMissingProperties: true});

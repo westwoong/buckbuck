@@ -11,6 +11,7 @@ import {PostFactory} from "../../common/testSetup/post/postFactory";
 import {PostFinder} from "../../common/testSetup/post/postFinder";
 import {UserFinder} from "../../common/testSetup/user/userFinder";
 import {PostEntity} from "../Post.entity";
+import * as path from "path";
 
 describe('PostController (E2E)', () => {
     let app: INestApplication;
@@ -19,7 +20,12 @@ describe('PostController (E2E)', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        dotenv.config();
+        dotenv.config({
+            path: path.resolve(
+                process.env.NODE_ENV === 'product' ? '.env.product' :
+                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
+            )
+        });
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();
@@ -32,7 +38,9 @@ describe('PostController (E2E)', () => {
     });
 
     beforeEach(async () => {
-        await dataSource.dropDatabase();
+        if (process.env.NODE_ENV === 'develop' || process.env.NODE_ENV === 'local') {
+            await dataSource.dropDatabase();
+        }
         await dataSource.synchronize();
     })
 
