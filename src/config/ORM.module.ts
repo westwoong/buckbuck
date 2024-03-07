@@ -19,7 +19,7 @@ import * as process from 'process';
           autoLoadEntities: true,
           timezone: "+09:00",
           synchronize: process.env.NODE_ENV === 'develop' || process.env.NODE_ENV === 'local',
-          logging: process.env.NODE_ENV === 'develop' || process.env.NODE_ENV === 'local',
+          logging: process.env.NODE_ENV === 'debug',
           namingStrategy: new SnakeNamingStrategy(),
         };
       },
