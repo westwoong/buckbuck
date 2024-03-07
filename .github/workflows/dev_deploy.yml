@@ -42,7 +42,7 @@ jobs:
 
       - name: Develop env setup
         env:
-          DB_HOST: ${{ secrets.TEST_DB_HOST }}
+          DB_HOST: ${{ secrets.DEV_DB_HOST }}
           DB_USER: ${{ secrets.TEST_DB_USER }}
           DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
