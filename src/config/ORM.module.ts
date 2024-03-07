@@ -18,8 +18,8 @@ import * as process from 'process';
           database: process.env.DB_NAME,
           autoLoadEntities: true,
           timezone: "+09:00",
-          synchronize: process.env.SERVER === 'local',
-          logging: process.env.SERVER === 'local',
+          synchronize: process.env.NODE_ENV === 'develop' || process.env.NODE_ENV === 'local',
+          logging: process.env.NODE_ENV === 'develop' || process.env.NODE_ENV === 'local',
           namingStrategy: new SnakeNamingStrategy(),
         };
       },
