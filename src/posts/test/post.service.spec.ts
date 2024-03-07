@@ -14,7 +14,6 @@ import {TypeormUserRepository} from "../../users/typeormUser.repository";
 import {DUMMY_COMMENT_RESOLVE, DUMMY_POST_RESOLVE, DUMMY_USER_RESOLVE} from "../../common/mockDummyResolve";
 import {PostEntity} from "../Post.entity";
 import {TypeormCommentRepository} from "../../comments/typeormComment.repository";
-import path from "path";
 
 jest.mock('../../users/typeormUser.repository');
 jest.mock('../../comments/typeormComment.repository');
@@ -36,12 +35,7 @@ describe('PostService', () => {
     let postId = 155;
 
     beforeAll(async () => {
-        dotenv.config({
-            path: path.resolve(
-                process.env.NODE_ENV === 'product' ? '.env.product' :
-                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
-            )
-        });
+        dotenv.config();
         const moduleRef: TestingModule = await Test.createTestingModule({
             providers: [
                 PostService,

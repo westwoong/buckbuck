@@ -8,7 +8,6 @@ import {AppModule} from "../../app.module";
 import {CATEGORY_REPOSITORY} from "../../common/injectToken.constant";
 import {CategoriesEntity} from "../Categories.entity";
 import {CategoryFactory} from "../../common/testSetup/category/categoryFactory";
-import path from "path";
 
 describe('CategoryRepository', () => {
     let app: INestApplication;
@@ -17,12 +16,7 @@ describe('CategoryRepository', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        dotenv.config({
-            path: path.resolve(
-                process.env.NODE_ENV === 'product' ? '.env.product' :
-                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
-            )
-        });
+        dotenv.config();
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();

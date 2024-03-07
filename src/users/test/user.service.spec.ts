@@ -12,7 +12,6 @@ import {Test, TestingModule} from "@nestjs/testing";
 import {USER_REPOSITORY} from "../../common/injectToken.constant";
 import {DUMMY_USER_RESOLVE} from "../../common/mockDummyResolve";
 import {AuthModule} from "../../auth/auth.module";
-import path from "path";
 
 
 jest.mock('../typeormUser.repository')
@@ -28,12 +27,7 @@ describe('UserService', () => {
     let userRepository: TypeormUserRepository;
 
     beforeAll(async () => {
-        dotenv.config({
-            path: path.resolve(
-                process.env.NODE_ENV === 'product' ? '.env.product' :
-                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
-            )
-        });
+        dotenv.config();
 
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AuthModule],

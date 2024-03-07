@@ -6,10 +6,9 @@ import * as dotenv from "dotenv";
 import {Test, TestingModule} from "@nestjs/testing";
 import {AppModule} from "../../app.module";
 import {REVIEW_REPOSITORY, USER_REPOSITORY} from "../../common/injectToken.constant";
-import {DUMMY_REVIEW_RESOLVE, DUMMY_USER_RESOLVE} from "../../common/mockDummyResolve";
+import {DUMMY_POST_RESOLVE, DUMMY_REVIEW_RESOLVE, DUMMY_USER_RESOLVE} from "../../common/mockDummyResolve";
 import {ReviewEntity} from "../Review.entity";
 import {TypeormUserRepository} from "../../users/typeormUser.repository";
-import path from "path";
 
 describe('ReviewService', () => {
     let app: INestApplication;
@@ -21,12 +20,7 @@ describe('ReviewService', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        dotenv.config({
-            path: path.resolve(
-                process.env.NODE_ENV === 'product' ? '.env.product' :
-                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
-            )
-        });
+        dotenv.config();
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();

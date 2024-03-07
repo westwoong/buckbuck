@@ -4,7 +4,6 @@ import * as dotenv from "dotenv";
 import {Test, TestingModule} from "@nestjs/testing";
 import {AppModule} from "../../app.module";
 import * as request from "supertest";
-import path from "path";
 
 jest.mock('../categories.service')
 describe('CategoryController', () => {
@@ -13,12 +12,7 @@ describe('CategoryController', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        dotenv.config({
-            path: path.resolve(
-                process.env.NODE_ENV === 'product' ? '.env.product' :
-                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
-            )
-        });
+        dotenv.config();
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();

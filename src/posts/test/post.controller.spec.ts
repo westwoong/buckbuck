@@ -6,7 +6,6 @@ import {AppModule} from "../../app.module";
 import * as request from "supertest";
 import {AuthService} from "../../auth/auth.service";
 import {UserService} from "../../users/user.service";
-import path from "path";
 
 jest.mock('../post.service');
 
@@ -17,12 +16,7 @@ describe('PostController', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        dotenv.config({
-            path: path.resolve(
-                process.env.NODE_ENV === 'product' ? '.env.product' :
-                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
-            )
-        });
+        dotenv.config();
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();

@@ -13,7 +13,6 @@ import {TypeormPostRepository} from "../typeormPost.repository";
 import {COMMENT_REPOSITORY, POST_REPOSITORY} from "../../common/injectToken.constant";
 import {TypeormCommentRepository} from "../../comments/typeormComment.repository";
 import {GetPostsResponseDto} from "../dto/getPosts.response.dto";
-import path from "path";
 
 
 describe('PostRepository (E2E)', () => {
@@ -24,12 +23,7 @@ describe('PostRepository (E2E)', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        dotenv.config({
-            path: path.resolve(
-                process.env.NODE_ENV === 'product' ? '.env.product' :
-                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
-            )
-        });
+        dotenv.config();
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();

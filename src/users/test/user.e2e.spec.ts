@@ -7,7 +7,6 @@ import {initializeTransactionalContext} from "typeorm-transactional";
 import {DataSource} from "typeorm";
 import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
 import {UserFinder} from "../../common/testSetup/user/userFinder";
-import path from "path";
 
 describe('UserController (E2E)', () => {
     let app: INestApplication;
@@ -15,12 +14,7 @@ describe('UserController (E2E)', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        dotenv.config({
-            path: path.resolve(
-                process.env.NODE_ENV === 'product' ? '.env.product' :
-                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
-            )
-        });
+        dotenv.config();
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule]
         }).compile();
