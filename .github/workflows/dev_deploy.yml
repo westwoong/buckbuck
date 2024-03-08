@@ -88,5 +88,5 @@ jobs:
             docker pull ${{ steps.login-ecr.outputs.registry }}/buckbuck:develop || true
             docker stop dev-buckbuck
             docker rm dev-buckbuck
-            docker run -d --name dev-buckbuck -p 1000:1000 ${{ steps.login-ecr.outputs.registry }}/buckbuck:develop
+            docker run -d --name dev-buckbuck -p 1001:1000 ${{ steps.login-ecr.outputs.registry }}/buckbuck:develop
             echo "dev done"
