@@ -6,13 +6,13 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY .env.product .
+COPY .env.develop .
 
 COPY ./dist .
 
-EXPOSE 3000
+EXPOSE 1000
 
-ENV NODE_ENV=product
+ENV NODE_ENV=develop
 
 ENV TZ=Asia/Seoul
 
