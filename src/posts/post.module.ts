@@ -9,9 +9,10 @@ import {COMMENT_REPOSITORY, POST_REPOSITORY, USER_REPOSITORY} from "../common/in
 import {TypeormPostRepository} from "./typeormPost.repository";
 import {TypeormUserRepository} from "../users/typeormUser.repository";
 import {TypeormCommentRepository} from "../comments/typeormComment.repository";
+import {UploadEntity} from "../uploads/upload.entity";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([PostEntity, UserEntity, CommentEntity])],
+    imports: [TypeOrmModule.forFeature([PostEntity, UserEntity, CommentEntity, UploadEntity])],
     controllers: [PostController],
     providers: [
         PostService,
