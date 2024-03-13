@@ -1,8 +1,6 @@
 ## 처리 중
-- Swagger 문서화 하기
-  - requestDTO 추가하기
-  - responseDTO 추가하기
-  
+- 파일 업로드 기능 추가하기 (gif, jpg, png 등)
+  - 버킷 분리 (Dev, Prod)
 
 ## 처리 완료
 - Github Actions Docker 배포 적용
@@ -16,6 +14,9 @@
 - 각 API ResponseDto 추가하기
 - ~~각 Controller 에서 RequestDto 필요한 부분 추가하기 (~~Body~~, Query, ~~Param~~ 검증용 Validator 추가하기)~~
   - RequestDto 대신 Pipe 적용
+- Swagger 문서화 하기
+  - requestDTO 추가하기
+  - responseDTO 추가하기
 
 ## TODO
 - Logging 적용하기
