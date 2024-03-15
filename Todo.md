@@ -1,6 +1,11 @@
 ## 처리 중
-- 파일 업로드 기능 추가하기 (gif, jpg, png 등)
-  - 버킷 분리 (Dev, Prod)
+- postId 매칭 로직 구현 - 이미지 선 업로드 후 postId 갱신 or 트랜잭션활용 동시(게시글&이미지) 업로드 필요
+- 이미지 업로드 validator (mimetype, size limit, max files)
+- /upload 컨트롤러 RequestDTO, ResponseDTO
+- upload 테스트 작성 (multer-s3 mock)
+- 버킷 분리 (Dev, Prod)
+- /upload API 문서화
+- 프론트 페이지 연결
 
 ## 처리 완료
 - Github Actions Docker 배포 적용
@@ -17,6 +22,7 @@
 - Swagger 문서화 하기
   - requestDTO 추가하기
   - responseDTO 추가하기
+- 파일 업로드 기능 추가하기 (gif, jpg, jpeg, png)
 
 ## TODO
 - Logging 적용하기
