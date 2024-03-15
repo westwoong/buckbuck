@@ -2,7 +2,7 @@
 - postId 매칭 로직 구현 - 이미지 선 업로드 후 postId 갱신 or 트랜잭션활용 동시(게시글&이미지) 업로드 필요
 - 이미지 업로드 validator (mimetype, size limit, max files)
 - /upload 컨트롤러 RequestDTO, ResponseDTO
-- upload 테스트 작성 (multer-s3 mock)
+- upload 테스트 작성
 - 버킷 분리 (Dev, Prod)
 - /upload API 문서화
 - 프론트 페이지 연결

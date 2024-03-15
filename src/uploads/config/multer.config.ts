@@ -20,6 +20,7 @@ export class MulterConfig {
             Bucket: process.env.BUCKET_NAME!,
             Key: `${Date.now().toString()}-${file.originalname}`,
             ContentType: file.mimetype,
+            Body: file.buffer
         };
 
         try {
