@@ -1,5 +1,5 @@
 import {UploadEntity} from "./upload.entity";
 
 export interface UploadRepository {
-    fileUpload(): Promise<UploadEntity[]>
+    uploadFile(files: UploadEntity[]): Promise<UploadEntity[]>
 }

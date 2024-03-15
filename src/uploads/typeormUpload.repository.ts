@@ -9,8 +9,8 @@ export class TypeormUploadRepository implements UploadRepository {
         private readonly uploadRepository: Repository<UploadEntity>
     ) {
     }
-    async fileUpload(): Promise<UploadEntity[]> {
-        return Promise.resolve([]);
-    }
 
+    async uploadFile(files: UploadEntity[]): Promise<UploadEntity[]> {
+        return await this.uploadRepository.save(files);
+    }
 }
