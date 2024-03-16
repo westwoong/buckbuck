@@ -1,7 +1,7 @@
 import {UploadRepository} from "./upload.repository";
 import {InjectRepository} from "@nestjs/typeorm";
 import {UploadEntity} from "./upload.entity";
-import {Repository} from "typeorm";
+import {Repository, UpdateResult} from "typeorm";
 
 export class TypeormUploadRepository implements UploadRepository {
     constructor(
@@ -16,5 +16,9 @@ export class TypeormUploadRepository implements UploadRepository {
 
     async findOneByUrl(url: string): Promise<UploadEntity | null> {
         return await this.uploadRepository.findOne({where: {url: url}});
+    }
+
+    async matchToPostId(url: string, postId: number): Promise<UpdateResult> {
+        return await this.uploadRepository.update({url: url}, {postId: postId})
     }
 }
