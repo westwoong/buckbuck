@@ -13,4 +13,8 @@ export class TypeormUploadRepository implements UploadRepository {
     async uploadFile(files: UploadEntity[]): Promise<UploadEntity[]> {
         return await this.uploadRepository.save(files);
     }
+
+    async findOneByUrl(url: string): Promise<UploadEntity | null> {
+        return await this.uploadRepository.findOne({where: {url: url}});
+    }
 }
