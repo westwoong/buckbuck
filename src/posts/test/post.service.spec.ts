@@ -8,14 +8,21 @@ import {
 import {PostService} from "../post.service";
 import {TypeormPostRepository} from "../typeormPost.repository";
 import {Test, TestingModule} from "@nestjs/testing";
-import {COMMENT_REPOSITORY, POST_REPOSITORY, USER_REPOSITORY} from "../../common/injectToken.constant";
+import {
+    COMMENT_REPOSITORY,
+    POST_REPOSITORY,
+    UPLOAD_REPOSITORY,
+    USER_REPOSITORY
+} from "../../common/injectToken.constant";
 import {TypeormUserRepository} from "../../users/typeormUser.repository";
 import {DUMMY_COMMENT_RESOLVE, DUMMY_POST_RESOLVE, DUMMY_USER_RESOLVE} from "../../common/mockDummyResolve";
 import {PostEntity} from "../Post.entity";
 import {TypeormCommentRepository} from "../../comments/typeormComment.repository";
+import {TypeormUploadRepository} from "../../uploads/typeormUpload.repository";
 
 jest.mock('../../users/typeormUser.repository');
 jest.mock('../../comments/typeormComment.repository');
+jest.mock('../../uploads/typeormUpload.repository');
 jest.mock('../typeormPost.repository');
 jest.mock('typeorm-transactional', () => {
     return {
@@ -29,6 +36,7 @@ describe('PostService', () => {
     let userRepository: TypeormUserRepository;
     let postRepository: TypeormPostRepository;
     let commentRepository: TypeormCommentRepository;
+    let uploadRepository: TypeormUploadRepository;
 
     let userId = 155;
     let postId = 155;
@@ -39,7 +47,9 @@ describe('PostService', () => {
                 PostService,
                 {provide: POST_REPOSITORY, useClass: TypeormPostRepository},
                 {provide: USER_REPOSITORY, useClass: TypeormUserRepository},
-                {provide: COMMENT_REPOSITORY, useClass: TypeormCommentRepository}]
+                {provide: COMMENT_REPOSITORY, useClass: TypeormCommentRepository},
+                {provide: UPLOAD_REPOSITORY, useClass: TypeormUploadRepository}
+            ]
         }).compile();
 
         postService = moduleRef.get<PostService>(PostService);
@@ -47,6 +57,7 @@ describe('PostService', () => {
         postRepository = moduleRef.get<TypeormPostRepository>(POST_REPOSITORY);
         userRepository = moduleRef.get<TypeormUserRepository>(USER_REPOSITORY);
         commentRepository = moduleRef.get<TypeormCommentRepository>(COMMENT_REPOSITORY);
+        uploadRepository = moduleRef.get<TypeormUploadRepository>(UPLOAD_REPOSITORY);
 
         app = moduleRef.createNestApplication();
         app.useGlobalPipes(new ValidationPipe({transform: true}));
