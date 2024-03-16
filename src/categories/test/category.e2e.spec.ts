@@ -5,7 +5,6 @@ import {initializeTransactionalContext} from 'typeorm-transactional';
 import {DataSource} from "typeorm";
 import {AuthService} from "../../auth/auth.service";
 import * as request from "supertest";
-import {envSetup} from "../../config/dotenv.config";
 
 describe('CategoryController (E2E)', () => {
     let app: INestApplication;
@@ -14,7 +13,7 @@ describe('CategoryController (E2E)', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        envSetup();
+        process.env.NODE_ENV = 'local';
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();

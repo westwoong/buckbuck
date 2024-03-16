@@ -7,7 +7,6 @@ import {AppModule} from "../../app.module";
 import {CATEGORY_REPOSITORY} from "../../common/injectToken.constant";
 import {CategoriesEntity} from "../Categories.entity";
 import {CategoryFactory} from "../../common/testSetup/category/categoryFactory";
-import {envSetup} from "../../config/dotenv.config";
 
 describe('CategoryRepository', () => {
     let app: INestApplication;
@@ -16,7 +15,7 @@ describe('CategoryRepository', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        envSetup();
+        process.env.NODE_ENV = 'local';
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();

@@ -10,7 +10,6 @@ import {PostFactory} from "../../common/testSetup/post/postFactory";
 import {PostFinder} from "../../common/testSetup/post/postFinder";
 import {UserFinder} from "../../common/testSetup/user/userFinder";
 import {PostEntity} from "../Post.entity";
-import {envSetup} from "../../config/dotenv.config";
 
 describe('PostController (E2E)', () => {
     let app: INestApplication;
@@ -19,7 +18,7 @@ describe('PostController (E2E)', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        envSetup();
+        process.env.NODE_ENV = 'local';
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();

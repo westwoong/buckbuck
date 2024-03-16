@@ -8,8 +8,6 @@ import {USER_REPOSITORY} from "../../common/injectToken.constant";
 import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
 import {UserFinder} from "../../common/testSetup/user/userFinder";
 import {UserEntity} from "../User.entity";
-import {envSetup} from "../../config/dotenv.config";
-
 
 describe('UserRepository (E2E)', () => {
     let app: INestApplication;
@@ -18,7 +16,7 @@ describe('UserRepository (E2E)', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        envSetup();
+        process.env.NODE_ENV = 'local';
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();

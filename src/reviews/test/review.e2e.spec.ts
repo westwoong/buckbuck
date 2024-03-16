@@ -9,7 +9,6 @@ import {PostFactory} from "../../common/testSetup/post/postFactory";
 import * as request from "supertest";
 import {ReviewFinder} from "../../common/testSetup/review/reviewFinder";
 import {UserFinder} from "../../common/testSetup/user/userFinder";
-import {envSetup} from "../../config/dotenv.config";
 
 describe('ReviewController (E2E)', () => {
     let app: INestApplication;
@@ -18,7 +17,7 @@ describe('ReviewController (E2E)', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        envSetup();
+        process.env.NODE_ENV = 'local';
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule]
         }).compile();

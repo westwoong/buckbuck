@@ -12,8 +12,6 @@ import {TypeormCommentRepository} from "../typeormComment.repository";
 import {COMMENT_REPOSITORY} from "../../common/injectToken.constant";
 import {SearchCommentResponseDto} from "../dto/searchComment.response.dto";
 import {GetCommentsByPostIdResponseDto} from "../dto/getCommentByPostId.response.dto";
-import {envSetup} from "../../config/dotenv.config";
-
 
 describe('CommentRepository (E2E)', () => {
     let app: INestApplication;
@@ -22,7 +20,7 @@ describe('CommentRepository (E2E)', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        envSetup();
+        process.env.NODE_ENV='local';
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();

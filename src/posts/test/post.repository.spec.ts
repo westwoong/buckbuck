@@ -12,8 +12,6 @@ import {TypeormPostRepository} from "../typeormPost.repository";
 import {COMMENT_REPOSITORY, POST_REPOSITORY} from "../../common/injectToken.constant";
 import {TypeormCommentRepository} from "../../comments/typeormComment.repository";
 import {GetPostsResponseDto} from "../dto/getPosts.response.dto";
-import {envSetup} from "../../config/dotenv.config";
-
 
 describe('PostRepository (E2E)', () => {
     let app: INestApplication;
@@ -23,7 +21,7 @@ describe('PostRepository (E2E)', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        envSetup();
+        process.env.NODE_ENV = 'local';
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();
