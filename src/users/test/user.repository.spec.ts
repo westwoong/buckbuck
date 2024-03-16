@@ -2,14 +2,13 @@ import {INestApplication, ValidationPipe} from "@nestjs/common";
 import {DataSource} from "typeorm";
 import {TypeormUserRepository} from "../typeormUser.repository";
 import {initializeTransactionalContext} from "typeorm-transactional";
-import * as dotenv from "dotenv";
 import {Test, TestingModule} from "@nestjs/testing";
 import {AppModule} from "../../app.module";
 import {USER_REPOSITORY} from "../../common/injectToken.constant";
 import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
 import {UserFinder} from "../../common/testSetup/user/userFinder";
 import {UserEntity} from "../User.entity";
-import * as path from "path";
+import {envSetup} from "../../config/dotenv.config";
 
 
 describe('UserRepository (E2E)', () => {
@@ -19,12 +18,7 @@ describe('UserRepository (E2E)', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        dotenv.config({
-            path: path.resolve(
-                process.env.NODE_ENV === 'product' ? '.env.product' :
-                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
-            )
-        });
+        envSetup();
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();

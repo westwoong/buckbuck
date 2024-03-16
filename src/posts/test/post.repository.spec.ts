@@ -2,7 +2,6 @@ import {INestApplication, ValidationPipe} from '@nestjs/common';
 import {Test, TestingModule} from '@nestjs/testing';
 import {AppModule} from '../../app.module';
 import {initializeTransactionalContext} from 'typeorm-transactional';
-import * as dotenv from 'dotenv';
 import {DataSource} from "typeorm";
 import {PostEntity} from "../Post.entity";
 import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
@@ -13,7 +12,7 @@ import {TypeormPostRepository} from "../typeormPost.repository";
 import {COMMENT_REPOSITORY, POST_REPOSITORY} from "../../common/injectToken.constant";
 import {TypeormCommentRepository} from "../../comments/typeormComment.repository";
 import {GetPostsResponseDto} from "../dto/getPosts.response.dto";
-import * as path from "path";
+import {envSetup} from "../../config/dotenv.config";
 
 
 describe('PostRepository (E2E)', () => {
@@ -24,12 +23,7 @@ describe('PostRepository (E2E)', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        dotenv.config({
-            path: path.resolve(
-                process.env.NODE_ENV === 'product' ? '.env.product' :
-                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
-            )
-        });
+        envSetup();
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();

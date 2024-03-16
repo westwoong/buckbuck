@@ -1,19 +1,13 @@
 import {NestFactory} from '@nestjs/core';
 import {AppModule} from './app.module';
-import * as dotenv from 'dotenv';
 import {ValidationPipe} from "@nestjs/common";
 import {initializeTransactionalContext} from "typeorm-transactional";
 import {SwaggerSetupModule} from "./config/swagger.module";
-import * as path from "path";
+import {envSetup} from "./config/dotenv.config";
 
 async function bootstrap() {
     initializeTransactionalContext();
-    dotenv.config({
-        path: path.resolve(
-            process.env.NODE_ENV === 'product' ? '.env.product' :
-                process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
-        )
-    });
+    envSetup();
     const app = await NestFactory.create(AppModule);
     app.useGlobalPipes(new ValidationPipe({
         transform: true

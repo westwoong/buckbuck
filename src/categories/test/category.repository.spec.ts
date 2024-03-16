@@ -2,13 +2,12 @@ import {INestApplication, ValidationPipe} from "@nestjs/common";
 import {TypeormCategoryRepository} from "../typeormCategory.repository";
 import {DataSource} from "typeorm";
 import {initializeTransactionalContext} from "typeorm-transactional";
-import * as dotenv from "dotenv";
 import {Test, TestingModule} from "@nestjs/testing";
 import {AppModule} from "../../app.module";
 import {CATEGORY_REPOSITORY} from "../../common/injectToken.constant";
 import {CategoriesEntity} from "../Categories.entity";
 import {CategoryFactory} from "../../common/testSetup/category/categoryFactory";
-import * as path from "path";
+import {envSetup} from "../../config/dotenv.config";
 
 describe('CategoryRepository', () => {
     let app: INestApplication;
@@ -17,12 +16,7 @@ describe('CategoryRepository', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        dotenv.config({
-            path: path.resolve(
-                process.env.NODE_ENV === 'product' ? '.env.product' :
-                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
-            )
-        });
+        envSetup();
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();
