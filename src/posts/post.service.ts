@@ -3,12 +3,13 @@ import {PostEntity} from "./Post.entity";
 import {CreatePostRequestDto} from "./dto/createPost.request.dto";
 import {Transactional} from "typeorm-transactional";
 import {CreatePostResponseDto} from "./dto/createPost.response.dto";
-import {COMMENT_REPOSITORY, POST_REPOSITORY, USER_REPOSITORY} from "../common/injectToken.constant";
+import {COMMENT_REPOSITORY, POST_REPOSITORY, UPLOAD_REPOSITORY, USER_REPOSITORY} from "../common/injectToken.constant";
 import {UserRepository} from "../users/user.repository";
 import {PostRepository} from "./post.repository";
 import {CommentRepository} from "../comments/comment.repository";
 import {GetPostsResponseDto} from "./dto/getPosts.response.dto";
 import {GetPostResponseDto} from "./dto/getPost.response.dto";
+import {UploadRepository} from "../uploads/upload.repository";
 
 @Injectable()
 export class PostService {
@@ -18,7 +19,9 @@ export class PostService {
         @Inject(USER_REPOSITORY)
         private readonly userRepository: UserRepository,
         @Inject(COMMENT_REPOSITORY)
-        private readonly commentRepository: CommentRepository
+        private readonly commentRepository: CommentRepository,
+        @Inject(UPLOAD_REPOSITORY)
+        private readonly uploadRepository: UploadRepository
     ) {
     }
 
@@ -36,7 +39,7 @@ export class PostService {
 
     @Transactional()
     async create(userId: number, createPostRequestDto: CreatePostRequestDto) {
-        const {title, content, cost, level} = createPostRequestDto;
+        const {title, content, images, cost, level} = createPostRequestDto;
         const post = new PostEntity({title, content, cost, level, userId});
 
         const writePost = await this.postRepository.save(post);
