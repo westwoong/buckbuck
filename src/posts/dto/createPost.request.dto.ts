@@ -13,7 +13,6 @@ export class CreatePostRequestDto {
     title: string;
 
     @IsArray()
-    @IsString()
     @IsOptional()
     @Matches(
         /^https:\/\/buckbuck-uploaded\.s3\.ap-northeast-2\.amazonaws\.com\/.*$/,
