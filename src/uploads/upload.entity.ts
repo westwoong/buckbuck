@@ -5,15 +5,14 @@ import {PostEntity} from "../posts/Post.entity";
 interface IUploadConstructor {
     url: string;
     sequence: number;
-    postId: number;
 }
 
 @Entity('images')
 export class UploadEntity extends DefaultEntityColumn {
-    @Column()
+    @Column({nullable: false})
     url: string;
 
-    @Column()
+    @Column({nullable: false})
     sequence: number;
 
     @ManyToOne(() => PostEntity, (post) => post.uploadFile, {nullable: false})
@@ -28,7 +27,6 @@ export class UploadEntity extends DefaultEntityColumn {
         if (file) {
             this.url = file.url;
             this.sequence = file.sequence;
-            this.postId = file.postId;
         }
     }
 }
