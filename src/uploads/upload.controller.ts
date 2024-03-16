@@ -3,14 +3,24 @@ import {UploadService} from "./upload.service";
 import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
 import {FilesInterceptor} from "@nestjs/platform-express";
 import {multerS3Config} from "./config/multerS3.config";
+import {ApiBearerAuth, ApiHeader, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 
+@ApiTags('파일 업로드 API')
 @Controller('upload')
 export class UploadController {
     constructor(private readonly uploadService: UploadService) {
     }
 
     @Post('/')
+    @ApiBearerAuth('Auth')
+    @ApiOperation({summary: '파일 업로드 API', description: '게시글 이미지를 업로드한다.'})
+    @ApiResponse({status: 201, description: '업로드 된 사진의 URL을 반환한다'})
     @HttpCode(201)
+    @ApiHeader({
+        name: 'Authorization',
+        description: '로그인 토큰을 입력하세요',
+        required: true,
+    })
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FilesInterceptor('postImages', 5, multerS3Config()))
     async test(@UploadedFiles() postImages: Array<Express.Multer.File>) {
