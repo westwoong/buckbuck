@@ -15,10 +15,10 @@ export class UploadEntity extends DefaultEntityColumn {
     @Column({nullable: false})
     sequence: number;
 
-    @ManyToOne(() => PostEntity, (post) => post.uploadFile, {nullable: false})
+    @ManyToOne(() => PostEntity, (post) => post.uploadFile)
     post: PostEntity;
 
-    @Column()
+    @Column({nullable: true})
     @RelationId((file: UploadEntity) => file.post)
     postId: number;
 

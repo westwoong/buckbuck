@@ -2,6 +2,7 @@ import {Controller, HttpCode, Post, UploadedFiles, UseGuards, UseInterceptors} f
 import {UploadService} from "./upload.service";
 import {JwtAuthGuard} from "../auth/jwtPassport/jwtAuth.guard";
 import {FilesInterceptor} from "@nestjs/platform-express";
+import {multerS3Config} from "./config/multerS3.config";
 
 @Controller('upload')
 export class UploadController {
@@ -11,9 +12,10 @@ export class UploadController {
     @Post('/')
     @HttpCode(201)
     @UseGuards(JwtAuthGuard)
-    @UseInterceptors(FilesInterceptor('files'))
-    async upload(@UploadedFiles() files: Array<Express.Multer.File>) {
-        return this.uploadService.fileUpload(files);
+    @UseInterceptors(FilesInterceptor('postImages', 5, multerS3Config()))
+    async test(@UploadedFiles() postImages: Array<Express.Multer.File>) {
+        return await this.uploadService.fileUpload(postImages);
     }
+
 }
 
