@@ -44,6 +44,8 @@ export class PostService {
 
         const writePost = await this.postRepository.save(post);
 
+        if (images) await this.matchImagesToPostId(images, writePost.id)
+
         return new CreatePostResponseDto(writePost);
     }
 
@@ -78,5 +80,15 @@ export class PostService {
         await this.postRepository.save(post);
 
         return
+    }
+
+    @Transactional()
+    async matchImagesToPostId(images: Array<string>, postId: number) {
+        for (const url of images) {
+            const isExistImage = await this.uploadRepository.findOneByUrl(url)
+            if (!isExistImage) throw new NotFoundException('해당 이미지는 존재하지 않습니다.');
+
+            await this.uploadRepository.matchToPostId(url, postId);
+        }
     }
 }
