@@ -4,6 +4,7 @@ import {UserEntity} from "../users/User.entity";
 import {CommentEntity} from "../comments/Comment.entity";
 import {PostToCategoriesEntity} from "../categories/PostToCategories.entity";
 import {ReviewEntity} from "../reviews/Review.entity";
+import {UploadEntity} from "../uploads/upload.entity";
 
 interface IPostConstructor {
     title: string;
@@ -39,6 +40,9 @@ export class PostEntity extends DefaultEntityColumn {
 
     @OneToMany(() => PostToCategoriesEntity, (postToCategory) => postToCategory.post)
     postToCategories: PostToCategoriesEntity[];
+
+    @OneToMany(() => UploadEntity, (image) => image.post)
+    uploadFile: UploadEntity[];
 
     @OneToMany(() => ReviewEntity, (review) => review.postId)
     review: ReviewEntity[];

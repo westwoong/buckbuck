@@ -1,13 +1,11 @@
 import {INestApplication, ValidationPipe} from "@nestjs/common";
 import {initializeTransactionalContext} from "typeorm-transactional";
-import * as dotenv from "dotenv";
 import {Test, TestingModule} from "@nestjs/testing";
 import {AppModule} from "../../app.module";
 import * as request from "supertest";
 import {DataSource} from "typeorm";
 import {AuthService} from "../../auth/auth.service";
 import {UserService} from "../../users/user.service";
-import * as path from "path";
 
 jest.mock('../comment.service');
 
@@ -21,12 +19,6 @@ describe('CommentController', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        dotenv.config({
-            path: path.resolve(
-                process.env.NODE_ENV === 'product' ? '.env.product' :
-                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
-            )
-        });
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();

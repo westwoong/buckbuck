@@ -2,16 +2,9 @@ import {Injectable, UnauthorizedException} from '@nestjs/common';
 import {ExtractJwt, Strategy} from 'passport-jwt';
 import {PassportStrategy} from '@nestjs/passport';
 import {UserService} from "../../users/user.service";
-import * as process from "process";
-import * as path from 'path';
+import {envSetup} from "../../config/dotenv.config";
 
-require('dotenv').config({
-    path: path.resolve(
-        process.env.NODE_ENV === 'product' ? '.env.product' :
-            process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
-    )
-});
-
+envSetup();
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
