@@ -6,8 +6,8 @@ import {BadRequestException} from "@nestjs/common";
 const s3 = new S3Client({
     region: 'ap-northeast-2',
     credentials: {
-        accessKeyId: process.env.ACCESS_KEY!,
-        secretAccessKey: process.env.SECRET_ACCESS_KEY!,
+        accessKeyId: process.env.S3_ACCESS_KEY!,
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
     }
 });
 
