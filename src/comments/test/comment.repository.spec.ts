@@ -2,7 +2,6 @@ import {INestApplication, ValidationPipe} from '@nestjs/common';
 import {Test, TestingModule} from '@nestjs/testing';
 import {AppModule} from '../../app.module';
 import {initializeTransactionalContext} from 'typeorm-transactional';
-import * as dotenv from 'dotenv';
 import {DataSource} from "typeorm";
 import {CommentEntity} from "../Comment.entity";
 import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
@@ -13,8 +12,6 @@ import {TypeormCommentRepository} from "../typeormComment.repository";
 import {COMMENT_REPOSITORY} from "../../common/injectToken.constant";
 import {SearchCommentResponseDto} from "../dto/searchComment.response.dto";
 import {GetCommentsByPostIdResponseDto} from "../dto/getCommentByPostId.response.dto";
-import * as path from "path";
-
 
 describe('CommentRepository (E2E)', () => {
     let app: INestApplication;
@@ -23,12 +20,7 @@ describe('CommentRepository (E2E)', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        dotenv.config({
-            path: path.resolve(
-                process.env.NODE_ENV === 'product' ? '.env.product' :
-                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
-            )
-        });
+        process.env.NODE_ENV='local';
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();

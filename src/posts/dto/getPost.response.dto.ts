@@ -8,6 +8,18 @@ export class GetPostResponseDto {
             id: 1,
             title: '테스트 제목입니다.',
             content: '테스트 내용입니다.',
+            images: [
+                {
+                    id: 1,
+                    sequence: 1,
+                    url: "https://buckbuck-uploaded.s3.ap-northeast-2.amazonaws.com/1710613228168-image1.jpeg"
+                },
+                {
+                    id: 2,
+                    sequence: 2,
+                    url: "https://buckbuck-uploaded.s3.ap-northeast-2.amazonaws.com/1710613228169-image2.jpg"
+                }
+            ],
             cost: 10500,
             level: '고수',
             nickName: '빨리점11',
@@ -35,6 +47,7 @@ export class GetPostResponseDto {
         id: number,
         title: string,
         content: string,
+        images?: Array<{ id: number, sequence: number, url: string }>,
         cost: number,
         level: string,
         nickName: string
@@ -54,6 +67,11 @@ export class GetPostResponseDto {
             id: post.id,
             title: post.title,
             content: post.content,
+            images: post.uploadFile.map((image) => ({
+                id: image.id,
+                sequence: image.sequence,
+                url: image.url
+            })),
             cost: post.cost,
             level: post.level,
             nickName: post.user.nickName,

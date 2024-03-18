@@ -2,7 +2,6 @@ import {INestApplication, ValidationPipe} from '@nestjs/common';
 import {Test, TestingModule} from '@nestjs/testing';
 import {AppModule} from '../../app.module';
 import {initializeTransactionalContext} from 'typeorm-transactional';
-import * as dotenv from 'dotenv';
 import * as request from 'supertest';
 import {DataSource} from "typeorm";
 import {AuthService} from "../../auth/auth.service";
@@ -11,7 +10,6 @@ import {PostFactory} from "../../common/testSetup/post/postFactory";
 import {PostFinder} from "../../common/testSetup/post/postFinder";
 import {UserFinder} from "../../common/testSetup/user/userFinder";
 import {PostEntity} from "../Post.entity";
-import * as path from "path";
 
 describe('PostController (E2E)', () => {
     let app: INestApplication;
@@ -20,12 +18,7 @@ describe('PostController (E2E)', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        dotenv.config({
-            path: path.resolve(
-                process.env.NODE_ENV === 'product' ? '.env.product' :
-                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
-            )
-        });
+        process.env.NODE_ENV = 'local';
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();

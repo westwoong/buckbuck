@@ -2,11 +2,9 @@ import {INestApplication, ValidationPipe} from '@nestjs/common';
 import {Test, TestingModule} from '@nestjs/testing';
 import {AppModule} from '../../app.module';
 import {initializeTransactionalContext} from 'typeorm-transactional';
-import * as dotenv from 'dotenv';
 import {DataSource} from "typeorm";
 import {AuthService} from "../../auth/auth.service";
 import * as request from "supertest";
-import * as path from "path";
 
 describe('CategoryController (E2E)', () => {
     let app: INestApplication;
@@ -15,12 +13,7 @@ describe('CategoryController (E2E)', () => {
 
     beforeAll(async () => {
         initializeTransactionalContext();
-        dotenv.config({
-            path: path.resolve(
-                process.env.NODE_ENV === 'product' ? '.env.product' :
-                    process.env.NODE_ENV === 'develop' ? '.env.develop' : '.env.local'
-            )
-        });
+        process.env.NODE_ENV = 'local';
         const moduleRef: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();
