@@ -27,6 +27,9 @@ jobs:
           TEST_DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
+          S3_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
+          BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
         run: |
           touch .env.local
           echo DB_HOST=$TEST_DB_HOST >> .env.local
@@ -34,6 +37,9 @@ jobs:
           echo DB_PASSWORD=$TEST_DB_PASSWORD >> .env.local
           echo DB_NAME=$DB_NAME >> .env.local
           echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env.local
+          echo S3_ACCESS_KEY=$S3_ACCESS_KEY >> .env.local
+          echo S3_SECRET_ACCESS_KEY=$S3_SECRET_ACCESS_KEY >> .env.local
+          echo BUCKET_NAME=$BUCKET_NAME >> .env.local
 
       - name: Run test
         run: |
@@ -47,6 +53,9 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
+          S3_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
+          BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
         run: |
           touch .env.product
           echo DB_HOST=$DB_HOST >> .env.product
@@ -54,6 +63,9 @@ jobs:
           echo DB_PASSWORD=$DB_PASSWORD >> .env.product
           echo DB_NAME=$DB_NAME >> .env.product
           echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env.product
+          echo S3_ACCESS_KEY=$S3_ACCESS_KEY >> .env.product
+          echo S3_SECRET_ACCESS_KEY=$S3_SECRET_ACCESS_KEY >> .env.product
+          echo BUCKET_NAME=$BUCKET_NAME >> .env.product
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
