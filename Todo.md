@@ -1,8 +1,8 @@
 ## 처리 중
-- postId 매칭 로직 구현 - 이미지 선 업로드 후 postId 갱신 or 트랜잭션활용 동시(게시글&이미지) 업로드 필요
 - upload 테스트 작성
 - 버킷 분리 (Dev, Prod)
 - 프론트 페이지 연결
+- 게시글 수정 & 삭제 (S3 이미지도 같이삭제) 리팩토링
 
 ## 처리 완료
 - Github Actions Docker 배포 적용
@@ -23,6 +23,7 @@
 - - 이미지 업로드 validator (mimetype, size limit, max files)
 - /upload API 문서화
 - /upload ResponseDTO
+- postId 매칭 로직 구현 - 이미지 선 업로드 후 postId 갱신 or 트랜잭션활용 동시(게시글&이미지) 업로드 필요
 
 ## TODO
 - Logging 적용하기
