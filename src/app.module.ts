@@ -9,13 +9,15 @@ import {ReviewModule} from "./reviews/review.module";
 import {JwtPassportModule} from "./auth/jwtPassport/jwt-passport.module";
 import {SwaggerSetupModule} from "./config/swagger.module";
 import {UploadModule} from "./uploads/upload.module";
+import {LoggerModule} from "./config/logger.module";
 
 @Module({
     imports: [
         UserModule, CategoriesModule, CommentModule,
         PostModule, ORMModule, AuthModule, PostModule,
         CommentModule, ReviewModule, CategoriesModule,
-        JwtPassportModule, SwaggerSetupModule, UploadModule
+        JwtPassportModule, SwaggerSetupModule, UploadModule,
+        LoggerModule
     ],
 })
 export class AppModule {
