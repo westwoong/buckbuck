@@ -5,12 +5,14 @@ import {UPLOAD_REPOSITORY} from "../common/injectToken.constant";
 import {Transactional} from "typeorm-transactional";
 import {UploadResponseDto} from "./dto/upload.response.dto";
 import {MulterS3FileLocation} from "./dto/upload.location.interface";
+import {Logger} from "winston";
 
 @Injectable()
 export class UploadService {
     constructor(
         @Inject(UPLOAD_REPOSITORY)
         private readonly uploadRepository: UploadRepository,
+        private readonly logger: Logger
     ) {
     }
 
@@ -29,6 +31,7 @@ export class UploadService {
 
             return new UploadResponseDto(uploadFiles);
         } catch (error) {
+            this.logger.debug(`업로드 실패 기록 - 시간: ${Date.now()}, 오류: ${error}`);
             throw new ServiceUnavailableException(`업로드에 실패하였습니다: ${error}`)
         }
     }
