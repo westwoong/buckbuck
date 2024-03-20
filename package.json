@@ -16,11 +16,11 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "TZ=Asia/Seoul NODE_ENV=local jest --runInBand --testTimeout=30000",
     "test:dev": "TZ=Asia/Seoul NODE_ENV=develop jest --runInBand",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage --runInBand --coveragePathIgnorePatterns src/coverage/",
+    "test:watch": "TZ=Asia/Seoul NODE_ENV=local jest --watch",
+    "test:cov": "TZ=Asia/Seoul NODE_ENV=local jest --coverage --runInBand --coveragePathIgnorePatterns src/coverage/",
     "test:debug": "TZ=Asia/Seoul NODE_ENV=debug node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:unit": "jest --forceExit --config test/jest-unit-test.json",
-    "test:e2e": "jest --runInBand --testTimeout=30000 --config ./test/jest-e2e.json"
+    "test:unit": "TZ=Asia/Seoul NODE_ENV=local jest --forceExit --config test/jest-unit-test.json",
+    "test:e2e": "TZ=Asia/Seoul NODE_ENV=local jest --runInBand --testTimeout=30000 --config ./test/jest-e2e.json"
   },
   "dependencies": {
     "@nestjs/common": "^10.2.4",
