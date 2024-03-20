@@ -32,7 +32,7 @@ jobs:
 #          BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
         run: |
           touch .env.local
-          echo ${{ secrets.ENV }} >> .env.local
+          echo "${{ secrets.ENV }}" >> .env.local
           
           echo "--------test-------"
           cat .env.local
