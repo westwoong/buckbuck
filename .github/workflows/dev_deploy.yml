@@ -2,7 +2,7 @@ name: Develop BuckBuck
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "feature/logging" ]
 
 jobs:
   deployment:
