@@ -6,5 +6,9 @@ export interface UploadRepository {
 
     findOneByUrl(url: string): Promise<UploadEntity | null>
 
+    findOneById(imageId: number): Promise<UploadEntity | null>
+
     matchToPostId(url: string, postId: number): Promise<UpdateResult>
+
+    remove(image: UploadEntity): Promise<UploadEntity>
 }

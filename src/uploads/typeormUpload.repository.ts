@@ -21,4 +21,12 @@ export class TypeormUploadRepository implements UploadRepository {
     async matchToPostId(url: string, postId: number): Promise<UpdateResult> {
         return await this.uploadRepository.update({url: url}, {postId: postId})
     }
+
+    async findOneById(imageId: number): Promise<UploadEntity | null> {
+        return await this.uploadRepository.findOne({where: {id: imageId}})
+    }
+
+    async remove(image: UploadEntity): Promise<UploadEntity> {
+        return await this.uploadRepository.remove(image);
+    }
 }
