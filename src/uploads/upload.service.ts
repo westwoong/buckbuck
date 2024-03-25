@@ -49,7 +49,6 @@ export class UploadService {
 
         const image = await this.uploadRepository.findOneById(imageId);
         if (!image) throw new NotFoundException(`${imageId} 해당 이미지는 존재하지않습니다`);
-        console.log(image.url);
 
         const deleteImage = {
             Bucket: process.env.BUCKET_NAME!,
