@@ -10,6 +10,8 @@ import {JwtPassportModule} from "./auth/jwtPassport/jwt-passport.module";
 import {SwaggerSetupModule} from "./config/swagger.module";
 import {UploadModule} from "./uploads/upload.module";
 import {LoggerModule} from "./config/logger.module";
+import {TaskModule} from './cron/task.module';
+import {ScheduleModule} from "@nestjs/schedule";
 
 @Module({
     imports: [
@@ -17,7 +19,7 @@ import {LoggerModule} from "./config/logger.module";
         PostModule, ORMModule, AuthModule, PostModule,
         CommentModule, ReviewModule, CategoriesModule,
         JwtPassportModule, SwaggerSetupModule, UploadModule,
-        LoggerModule
+        LoggerModule, ScheduleModule.forRoot(), TaskModule
     ],
 })
 export class AppModule {
