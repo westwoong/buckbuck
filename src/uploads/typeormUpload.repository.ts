@@ -1,13 +1,21 @@
 import {UploadRepository} from "./upload.repository";
 import {InjectRepository} from "@nestjs/typeorm";
 import {UploadEntity} from "./upload.entity";
-import {Repository, UpdateResult} from "typeorm";
+import {IsNull, Repository, UpdateResult} from "typeorm";
 
 export class TypeormUploadRepository implements UploadRepository {
     constructor(
         @InjectRepository(UploadEntity)
         private readonly uploadRepository: Repository<UploadEntity>
     ) {
+    }
+
+    async findByNullPostId(): Promise<UploadEntity[]> {
+        return await this.uploadRepository.find({
+            where: {
+                postId: IsNull()
+            }
+        })
     }
 
     async uploadFile(files: UploadEntity[]): Promise<UploadEntity[]> {

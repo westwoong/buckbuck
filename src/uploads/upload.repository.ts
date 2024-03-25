@@ -2,6 +2,8 @@ import {UploadEntity} from "./upload.entity";
 import {UpdateResult} from "typeorm";
 
 export interface UploadRepository {
+    findByNullPostId(): Promise<UploadEntity[]>
+
     uploadFile(files: UploadEntity[]): Promise<UploadEntity[]>
 
     findOneByUrl(url: string): Promise<UploadEntity | null>
