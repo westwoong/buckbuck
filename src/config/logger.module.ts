@@ -1,6 +1,7 @@
 import {Module} from "@nestjs/common";
 import {createLogger, Logger, format} from "winston";
 import * as DailyRotateFile from "winston-daily-rotate-file";
+import * as SlackHook from "winston-slack-webhook-transport";
 
 
 @Module({
@@ -39,6 +40,26 @@ import * as DailyRotateFile from "winston-daily-rotate-file";
                             maxFiles: '30d',
                         })
                     );
+
+                    logger.add(
+                        new SlackHook({
+                            webhookUrl: process.env.SLACK_URL!,
+                            channel: '#error_notification',
+                            level: 'error',
+                            iconEmoji: 'warning',
+                            username: 'error-bot'
+                        })
+                    )
+
+                    logger.add(
+                        new SlackHook({
+                            webhookUrl: process.env.SLACK_URL!,
+                            channel: '#info_notification',
+                            level: 'info',
+                            iconEmoji: 'bulb',
+                            username: 'info-bot'
+                        })
+                    )
                 }
 
                 return logger;
