@@ -12,6 +12,8 @@ import {UploadModule} from "./uploads/upload.module";
 import {LoggerModule} from "./config/logger.module";
 import {TaskModule} from './cron/task.module';
 import {ScheduleModule} from "@nestjs/schedule";
+import {APP_FILTER} from "@nestjs/core";
+import {AllExceptionFilter} from "./config/allExceptionFilter";
 
 @Module({
     imports: [
@@ -21,6 +23,9 @@ import {ScheduleModule} from "@nestjs/schedule";
         JwtPassportModule, SwaggerSetupModule, UploadModule,
         LoggerModule, ScheduleModule.forRoot(), TaskModule
     ],
+    providers: [
+        {provide: APP_FILTER, useClass: AllExceptionFilter},
+    ]
 })
 export class AppModule {
 }
