@@ -10,11 +10,20 @@ import {S3Client, DeleteObjectCommand} from "@aws-sdk/client-s3";
 
 @Injectable()
 export class UploadService {
+    private readonly s3: S3Client;
+
     constructor(
         @Inject(UPLOAD_REPOSITORY)
         private readonly uploadRepository: UploadRepository,
         private readonly logger: Logger,
     ) {
+        this.s3 = new S3Client({
+            region: 'ap-northeast-2',
+            credentials: {
+                accessKeyId: process.env.S3_ACCESS_KEY!,
+                secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
+            }
+        });
     }
 
     @Transactional()
@@ -43,26 +52,19 @@ export class UploadService {
 
     @Transactional()
     async deleteByImageId(userId: number, imageId: number) {
-        const s3 = new S3Client({
-            region: 'ap-northeast-2',
-            credentials: {
-                accessKeyId: process.env.S3_ACCESS_KEY!,
-                secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
-            }
-        });
-        
+        const image = await this.uploadRepository.findOneById(imageId);
+        if (!image) throw new NotFoundException(`${imageId} 해당 번호의 이미지는 존재하지않습니다`);
+
         const uploadFile = await this.uploadRepository.findOneById(imageId);
         if (uploadFile?.userId !== userId) throw new ForbiddenException('자신이 업로드한 이미지만 삭제 가능합니다');
-
-        const image = await this.uploadRepository.findOneById(imageId);
-        if (!image) throw new NotFoundException(`${imageId} 해당 이미지는 존재하지않습니다`);
 
         const deleteImage = {
             Bucket: process.env.BUCKET_NAME!,
             Key: image.url
         }
+
         const deleteCommand = new DeleteObjectCommand(deleteImage);
-        const deleteBucketImage = await s3.send(deleteCommand);
+        const deleteBucketImage = await this.s3.send(deleteCommand);
 
         if (deleteBucketImage) {
             await this.uploadRepository.remove(image);
