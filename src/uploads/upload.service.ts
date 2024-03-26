@@ -54,9 +54,7 @@ export class UploadService {
     async deleteByImageId(userId: number, imageId: number) {
         const image = await this.uploadRepository.findOneById(imageId);
         if (!image) throw new NotFoundException(`${imageId} 해당 번호의 이미지는 존재하지않습니다`);
-
-        const uploadFile = await this.uploadRepository.findOneById(imageId);
-        if (uploadFile?.userId !== userId) throw new ForbiddenException('자신이 업로드한 이미지만 삭제 가능합니다');
+        if (image?.userId !== userId) throw new ForbiddenException('자신이 업로드한 이미지만 삭제 가능합니다');
 
         const deleteImage = {
             Bucket: process.env.BUCKET_NAME!,
