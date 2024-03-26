@@ -21,16 +21,20 @@ export class UploadService {
     async fileUpload(files: Array<Express.Multer.File>) {
         try {
             const uploadFiles: UploadEntity[] = [];
+            const returnImageLocations: string[] = [];
 
             for (const file of files) {
                 let url = (file as MulterS3FileLocation).key;
                 let sequence = uploadFiles.length + 1;
                 const uploadEntity = new UploadEntity({url, sequence});
                 uploadFiles.push(uploadEntity)
+
+                let location = (file as MulterS3FileLocation).location;
+                returnImageLocations.push(location)
             }
             await this.uploadRepository.uploadFile(uploadFiles);
 
-            return new UploadResponseDto(uploadFiles);
+            return new UploadResponseDto(returnImageLocations)
         } catch (error) {
             this.logger.debug(`업로드 실패 기록 - 시간: ${Date.now()}, 오류: ${error}`);
             throw new ServiceUnavailableException(`업로드에 실패하였습니다: ${error}`)
