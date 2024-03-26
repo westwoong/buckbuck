@@ -21,25 +21,9 @@ jobs:
       - run: npm run build --if-present
 
       - name: Testing env setup
-        env:
-          TEST_DB_HOST: ${{ secrets.TEST_DB_HOST }}
-          TEST_DB_USER: ${{ secrets.TEST_DB_USER }}
-          TEST_DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-          S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
-          S3_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
-          BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
         run: |
           touch .env.local
-          echo DB_HOST=$TEST_DB_HOST >> .env.local
-          echo DB_USER=$TEST_DB_USER >> .env.local
-          echo DB_PASSWORD=$TEST_DB_PASSWORD >> .env.local
-          echo DB_NAME=$DB_NAME >> .env.local
-          echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env.local
-          echo S3_ACCESS_KEY=$S3_ACCESS_KEY >> .env.local
-          echo S3_SECRET_ACCESS_KEY=$S3_SECRET_ACCESS_KEY >> .env.local
-          echo BUCKET_NAME=$BUCKET_NAME >> .env.local
+          echo "${{ secrets.ENV }}" >> .env.local
 
       - name: Run test
         run: |
@@ -47,25 +31,9 @@ jobs:
           rm -rfv .env.local
 
       - name: Product env setup
-        env:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-          S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
-          S3_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
-          BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
         run: |
           touch .env.product
-          echo DB_HOST=$DB_HOST >> .env.product
-          echo DB_USER=$DB_USER >> .env.product
-          echo DB_PASSWORD=$DB_PASSWORD >> .env.product
-          echo DB_NAME=$DB_NAME >> .env.product
-          echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env.product
-          echo S3_ACCESS_KEY=$S3_ACCESS_KEY >> .env.product
-          echo S3_SECRET_ACCESS_KEY=$S3_SECRET_ACCESS_KEY >> .env.product
-          echo BUCKET_NAME=$BUCKET_NAME >> .env.product
+          echo "${{ secrets.PRODUCT_ENV }}" >> .env.product
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -101,5 +69,7 @@ jobs:
             docker stop buckbuck
             docker rm buckbuck
             docker run -d --name buckbuck -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/buckbuck:latest
+            docker stop buckbuck-sub
+            docker rm buckbuck-sub
+            docker run -d --name buckbuck-sub -p 3001:3001 ${{ steps.login-ecr.outputs.registry }}/buckbuck:latest
             ${{ secrets.DEPLOY_SUCCESS_HOOK }}
-            echo "done"
