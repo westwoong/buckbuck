@@ -16,11 +16,11 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "TZ=Asia/Seoul NODE_ENV=local jest --runInBand --testTimeout=30000",
     "test:dev": "TZ=Asia/Seoul NODE_ENV=develop jest --runInBand",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage --runInBand --coveragePathIgnorePatterns src/coverage/",
+    "test:watch": "TZ=Asia/Seoul NODE_ENV=local jest --watch",
+    "test:cov": "TZ=Asia/Seoul NODE_ENV=local jest --coverage --runInBand --coveragePathIgnorePatterns src/coverage/",
     "test:debug": "TZ=Asia/Seoul NODE_ENV=debug node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:unit": "jest --forceExit --config test/jest-unit-test.json",
-    "test:e2e": "jest --runInBand --testTimeout=30000 --config ./test/jest-e2e.json"
+    "test:unit": "TZ=Asia/Seoul NODE_ENV=local jest --forceExit --config test/jest-unit-test.json",
+    "test:e2e": "TZ=Asia/Seoul NODE_ENV=local jest --runInBand --testTimeout=30000 --config ./test/jest-e2e.json"
   },
   "dependencies": {
     "@nestjs/common": "^10.2.4",
@@ -28,6 +28,7 @@
     "@nestjs/jwt": "^10.1.1",
     "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^10.2.4",
+    "@nestjs/schedule": "^4.0.1",
     "@nestjs/swagger": "^7.3.0",
     "@nestjs/typeorm": "^10.0.0",
     "@types/multer": "^1.4.11",
@@ -44,7 +45,10 @@
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.17",
     "typeorm-naming-strategies": "^4.1.0",
-    "typeorm-transactional": "^0.4.1"
+    "typeorm-transactional": "^0.4.1",
+    "winston": "^3.12.0",
+    "winston-daily-rotate-file": "^5.0.0",
+    "winston-slack-webhook-transport": "^2.3.5"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.1.17",

@@ -7,9 +7,14 @@ import {UploadService} from "./upload.service";
 import {POST_REPOSITORY, UPLOAD_REPOSITORY} from "../common/injectToken.constant";
 import {TypeormUploadRepository} from "./typeormUpload.repository";
 import {TypeormPostRepository} from "../posts/typeormPost.repository";
+import {LoggerModule} from "../config/logger.module";
+import {UserEntity} from "../users/User.entity";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([PostEntity, UploadEntity])],
+    imports: [
+        TypeOrmModule.forFeature([PostEntity, UploadEntity, UserEntity]),
+        LoggerModule
+    ],
     controllers: [UploadController],
     providers: [
         UploadService,

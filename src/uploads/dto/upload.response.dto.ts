@@ -1,5 +1,4 @@
 import {ApiProperty} from "@nestjs/swagger";
-import {UploadEntity} from "../upload.entity";
 
 export class UploadResponseDto {
     @ApiProperty({
@@ -12,7 +11,7 @@ export class UploadResponseDto {
     })
     location: string[];
 
-    constructor(files: UploadEntity[]) {
-        this.location = files.map(file => (file.url));
+    constructor(locations: string[]) {
+        this.location = locations.map(location => (location));
     }
 }
