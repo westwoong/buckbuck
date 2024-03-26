@@ -5,7 +5,7 @@ import {initializeTransactionalContext} from "typeorm-transactional";
 import {SwaggerSetupModule} from "./config/swagger.module";
 import {envSetup} from "./config/dotenv.config";
 import {AllExceptionFilter} from "./config/allExceptionFilter";
-import {Logger} from "winston";
+import {ERROR_LOGGER} from "./common/injectToken.constant";
 
 async function bootstrap() {
     initializeTransactionalContext();
@@ -14,7 +14,7 @@ async function bootstrap() {
     app.useGlobalPipes(new ValidationPipe({
         transform: true
     }));
-    const logger = app.get(Logger);
+    const logger = app.get(ERROR_LOGGER);
     app.useGlobalFilters(new AllExceptionFilter(logger));
     app.enableCors({
         methods: ['GET', 'PATCH', 'POST', 'DELETE'],
