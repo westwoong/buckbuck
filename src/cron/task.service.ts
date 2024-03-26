@@ -1,6 +1,6 @@
 import {Inject, Injectable} from '@nestjs/common';
 import {Cron, CronExpression} from '@nestjs/schedule';
-import {UPLOAD_REPOSITORY} from "../common/injectToken.constant";
+import {ERROR_LOGGER, INFO_LOGGER, UPLOAD_REPOSITORY} from "../common/injectToken.constant";
 import {UploadRepository} from "../uploads/upload.repository";
 import {DeleteObjectCommand, S3Client} from "@aws-sdk/client-s3";
 import {Logger} from "winston";
@@ -12,7 +12,10 @@ export class TaskService {
     constructor(
         @Inject(UPLOAD_REPOSITORY)
         private readonly uploadRepository: UploadRepository,
-        private readonly logger: Logger
+        @Inject(ERROR_LOGGER)
+        private readonly errorLogger: Logger,
+        @Inject(INFO_LOGGER)
+        private readonly infoLogger: Logger
     ) {
         this.s3 = new S3Client({
             region: 'ap-northeast-2',
@@ -43,11 +46,11 @@ export class TaskService {
                 }));
 
                 if (imageDelete) {
-                    this.logger.info(`${postIdNullImages.length} 개의 이미지가 삭제되었습니다.`);
+                    this.infoLogger.info(`${postIdNullImages.length} 개의 이미지가 삭제되었습니다.`);
                 }
             }
         } catch (error) {
-            this.logger.debug(`S3 미사용 이미지 삭제 실패`, error);
+            this.errorLogger.error(`S3 미사용 이미지 삭제 실패`, error);
         }
     }
 }

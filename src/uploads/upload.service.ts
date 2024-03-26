@@ -1,7 +1,7 @@
 import {Injectable, Inject, ServiceUnavailableException, NotFoundException, ForbiddenException} from "@nestjs/common";
 import {UploadRepository} from "./upload.repository";
 import {UploadEntity} from "./upload.entity";
-import {UPLOAD_REPOSITORY} from "../common/injectToken.constant";
+import {ERROR_LOGGER, UPLOAD_REPOSITORY} from "../common/injectToken.constant";
 import {Transactional} from "typeorm-transactional";
 import {UploadResponseDto} from "./dto/upload.response.dto";
 import {MulterS3FileLocation} from "./dto/upload.location.interface";
@@ -15,7 +15,8 @@ export class UploadService {
     constructor(
         @Inject(UPLOAD_REPOSITORY)
         private readonly uploadRepository: UploadRepository,
-        private readonly logger: Logger,
+        @Inject(ERROR_LOGGER)
+        private readonly errorLogger: Logger,
     ) {
         this.s3 = new S3Client({
             region: 'ap-northeast-2',
@@ -45,8 +46,8 @@ export class UploadService {
 
             return new UploadResponseDto(returnImageLocations)
         } catch (error) {
-            this.logger.debug(`업로드 실패 기록 - 시간: ${Date.now()}, 오류: ${error}`);
-            throw new ServiceUnavailableException(`업로드에 실패하였습니다: ${error}`)
+            this.errorLogger.error(`- 업로드 실패 기록 - \n오류: ${error}`);
+            throw new ServiceUnavailableException(`업로드에 실패하였습니다 \n 관리자 문의 바랍니다`)
         }
     }
 

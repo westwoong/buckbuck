@@ -1,71 +1,63 @@
 import {Module} from "@nestjs/common";
-import {createLogger, Logger, format} from "winston";
+import {createLogger, format} from "winston";
 import * as DailyRotateFile from "winston-daily-rotate-file";
 import * as SlackHook from "winston-slack-webhook-transport";
-
+import {ERROR_LOGGER, INFO_LOGGER} from "../common/injectToken.constant";
 
 @Module({
     providers: [
         {
-            provide: Logger,
+            provide: ERROR_LOGGER,
             useFactory: () => {
-                const logger = createLogger({
-                    level: process.env.NODE_ENV === 'product' ? 'info' : 'debug',
+                return createLogger({
+                    level: process.env.NODE_ENV === 'product' ? 'error' : 'debug',
                     format: format.combine(format.timestamp(), format.json()),
-                    transports: [],
-                });
-
-                // 운영 아닐 시
-                if (process.env.NODE_ENV !== 'product') {
-                    logger.add(
+                    transports: [
                         new DailyRotateFile({
-                            filename: 'logs/buckbuck-api-debug-%DATE%.log',
-                            datePattern: 'YYYY-MM-DD',
-                            level: 'debug',
-                            zippedArchive: true,
-                            maxSize: '100m',
-                            maxFiles: '30d',
-                        })
-                    );
-                }
-
-                // 운영일 시
-                if (process.env.NODE_ENV === 'product') {
-                    logger.add(
-                        new DailyRotateFile({
-                            filename: 'logs/buckbuck-api-%DATE%.log',
+                            filename: 'logs/buckbuck-api-error-%DATE%.log',
                             datePattern: 'YYYY-MM-DD',
                             zippedArchive: true,
                             maxSize: '100m',
                             maxFiles: '30d',
-                        })
-                    );
-
-                    logger.add(
+                        }),
                         new SlackHook({
                             webhookUrl: process.env.SLACK_URL!,
                             channel: '#error_notification',
                             level: 'error',
                             iconEmoji: 'warning',
                             username: 'error-bot'
-                        })
-                    )
-
-                    logger.add(
+                        }),
+                    ],
+                });
+            },
+        },
+        {
+            provide: INFO_LOGGER,
+            useFactory: () => {
+                return createLogger({
+                    level: 'info',
+                    format: format.combine(format.timestamp(), format.json()),
+                    transports: [
+                        new DailyRotateFile({
+                            filename: 'logs/buckbuck-api-info-%DATE%.log',
+                            datePattern: 'YYYY-MM-DD',
+                            zippedArchive: true,
+                            maxSize: '100m',
+                            maxFiles: '30d',
+                        }),
                         new SlackHook({
                             webhookUrl: process.env.SLACK_URL!,
                             channel: '#info_notification',
                             level: 'info',
                             iconEmoji: 'bulb',
                             username: 'info-bot'
-                        })
-                    )
-                }
-
-                return logger;
+                        }),
+                    ],
+                });
             },
         },
     ],
-    exports: [Logger],
+    exports: [ERROR_LOGGER, INFO_LOGGER],
 })
-export class LoggerModule {}
+export class LoggerModule {
+}
