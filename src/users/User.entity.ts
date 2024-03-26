@@ -3,6 +3,7 @@ import {DefaultEntityColumn} from "../config/default.entity";
 import {PostEntity} from "../posts/Post.entity";
 import {CommentEntity} from "../comments/Comment.entity";
 import {ReviewEntity} from "../reviews/Review.entity";
+import {UploadEntity} from "../uploads/upload.entity";
 
 
 interface IUserConstructor {
@@ -47,6 +48,9 @@ export class UserEntity extends DefaultEntityColumn {
 
     @OneToMany(() => CommentEntity, (comment) => comment.user)
     comment: CommentEntity[];
+
+    @OneToMany(() => UploadEntity, (image) => image.user)
+    image: UploadEntity[];
 
     @OneToMany(() => ReviewEntity, (review) => review.requester)
     requester: ReviewEntity[];
