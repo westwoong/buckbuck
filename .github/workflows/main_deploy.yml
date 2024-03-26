@@ -68,8 +68,8 @@ jobs:
             docker pull ${{ steps.login-ecr.outputs.registry }}/buckbuck:latest || true
             docker stop buckbuck
             docker rm buckbuck
-            docker run -d --name buckbuck -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/buckbuck:latest
+            docker run -d --name buckbuck -v /var/log/buckbuck:/usr/src/app/logs -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/buckbuck:latest
             docker stop buckbuck-sub
             docker rm buckbuck-sub
-            docker run -d --name buckbuck-sub -p 3001:3001 ${{ steps.login-ecr.outputs.registry }}/buckbuck:latest
+            docker run -d --name buckbuck-sub -v /var/log/buckbuck:/usr/src/app/logs -p 3001:3001 ${{ steps.login-ecr.outputs.registry }}/buckbuck:latest
             ${{ secrets.DEPLOY_SUCCESS_HOOK }}
