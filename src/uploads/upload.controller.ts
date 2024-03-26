@@ -4,6 +4,7 @@ import {
     HttpCode,
     Param,
     ParseIntPipe,
+    Request,
     Post,
     UploadedFiles,
     UseGuards,
@@ -15,6 +16,7 @@ import {FilesInterceptor} from "@nestjs/platform-express";
 import {multerS3Config} from "./config/multerS3.config";
 import {ApiBearerAuth, ApiBody, ApiConsumes, ApiHeader, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {UploadResponseDto} from "./dto/upload.response.dto";
+import {UserIdRequest} from "../common/userId.request.interface";
 
 @ApiTags('파일 업로드 API')
 @Controller('uploads')
@@ -47,14 +49,30 @@ export class UploadController {
     })
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FilesInterceptor('postImages', 5, multerS3Config()))
-    async upload(@UploadedFiles() postImages: Array<Express.Multer.File>) {
-        return await this.uploadService.fileUpload(postImages);
+    async upload(
+        @Request() req: UserIdRequest,
+        @UploadedFiles() postImages: Array<Express.Multer.File>
+    ) {
+        const userId = req.user.userId;
+        return await this.uploadService.fileUpload(userId, postImages);
     }
 
     @Delete(':imageId')
     @HttpCode(204)
-    async delete(@Param('imageId', ParseIntPipe) imageId: number) {
-        return await this.uploadService.deleteByImageId(imageId);
+    @ApiBearerAuth('Auth')
+    @ApiHeader({
+        name: 'Authorization',
+        description: '로그인 토큰을 입력하세요',
+        required: true,
+    })
+    @ApiResponse({status: 204, description: 'No Content'})
+    @UseGuards(JwtAuthGuard)
+    async delete(
+        @Request() req: UserIdRequest,
+        @Param('imageId', ParseIntPipe) imageId: number
+    ) {
+        const userId = req.user.userId;
+        return await this.uploadService.deleteByImageId(userId, imageId);
     }
 
 }
