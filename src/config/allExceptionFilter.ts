@@ -21,13 +21,14 @@ export class AllExceptionFilter implements ExceptionFilter {
         const ctx = host.switchToHttp();
         const res = ctx.getResponse<Response>();
         const req = ctx.getRequest<Request>();
+        const stack = [];
 
         if (!(exception instanceof HttpException)) {
+            stack.push(exception.stack)
             exception = new InternalServerErrorException('예상치 못한 에러가 발생했습니다 관리자에게 문의바랍니다.');
         }
 
         const response = (exception as HttpException).getResponse();
-        const stack = exception.stack;
         const log = {
             timestamp: new Date().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'}),
             requestUrl: req.url,
@@ -39,7 +40,6 @@ export class AllExceptionFilter implements ExceptionFilter {
         const errorMessage = JSON.stringify(log, null, 4);
         if ((exception as HttpException).getStatus() === 500) {
             this.errorLogger.error(`에러가 발생했습니다 확인 바랍니다 \n ${errorMessage}`);
-
         }
         res.status((exception as HttpException).getStatus()).json(response);
     }
