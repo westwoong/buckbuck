@@ -46,7 +46,7 @@ export class UploadService {
 
             return new UploadResponseDto(returnImageLocations)
         } catch (error) {
-            this.errorLogger.error(`- 업로드 실패 기록 - \n오류: ${error}`);
+            this.errorLogger.error(`- 이미지 업로드 실패 기록 - \n오류: ${error}`);
             throw new ServiceUnavailableException(`업로드에 실패하였습니다 \n 관리자 문의 바랍니다`)
         }
     }
