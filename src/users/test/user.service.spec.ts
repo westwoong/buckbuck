@@ -11,6 +11,7 @@ import {Test, TestingModule} from "@nestjs/testing";
 import {USER_REPOSITORY} from "../../common/injectToken.constant";
 import {DUMMY_USER_RESOLVE} from "../../common/mockDummyResolve";
 import {AuthModule} from "../../auth/auth.module";
+import {LoggerModule} from "../../config/logger.module";
 
 
 jest.mock('../typeormUser.repository')
@@ -27,7 +28,7 @@ describe('UserService', () => {
 
     beforeAll(async () => {
         const moduleRef: TestingModule = await Test.createTestingModule({
-            imports: [AuthModule],
+            imports: [AuthModule, LoggerModule],
             providers: [
                 UserService,
                 {provide: USER_REPOSITORY, useClass: TypeormUserRepository}
