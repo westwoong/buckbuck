@@ -25,6 +25,7 @@ export class AllExceptionFilter implements ExceptionFilter {
 
         if (!(exception instanceof HttpException)) {
             stack.push(exception.stack)
+            this.errorLogger.debug(exception.stack);
             exception = new InternalServerErrorException('예상치 못한 에러가 발생했습니다 관리자에게 문의바랍니다.');
         }
 

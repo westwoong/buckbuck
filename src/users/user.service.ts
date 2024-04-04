@@ -12,9 +12,10 @@ import * as crypto from "crypto";
 import {SignInRequestDto} from "./dto/signIn.request.dto";
 import {AuthService} from "../auth/auth.service";
 import {FindUserIdResponseDto} from "./dto/findUserId.response.dto";
-import {USER_REPOSITORY} from "../common/injectToken.constant";
+import {INFO_LOGGER, USER_REPOSITORY} from "../common/injectToken.constant";
 import {UserRepository} from "./user.repository";
 import {GetUsersResponseDto} from "./dto/findUsers.response.dto";
+import {Logger} from "winston";
 
 const ITERATIONS = 105820;
 const KEY_LENGTH = 64;
@@ -25,7 +26,10 @@ export class UserService {
     constructor(
         @Inject(USER_REPOSITORY)
         private readonly userRepository: UserRepository,
-        private readonly authService: AuthService) {
+        private readonly authService: AuthService,
+        @Inject(INFO_LOGGER)
+        private readonly infoLogger: Logger,
+    ) {
     }
 
     @Transactional()
@@ -50,6 +54,7 @@ export class UserService {
         const user = new UserEntity({account, password: hashedPassword, salt, name, email, phoneNumber, nickName})
 
         await this.userRepository.save(user);
+        this.infoLogger.info(`${account}, ${name}, ${nickName} 님이 가입하셨습니다.`)
         return
     }
 
@@ -84,7 +89,7 @@ export class UserService {
     }
 
     async getUsers(): Promise<GetUsersResponseDto> {
-        const users =  await this.userRepository.findAll()
+        const users = await this.userRepository.findAll()
         return new GetUsersResponseDto(users);
     }
 
