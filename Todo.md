@@ -1,9 +1,6 @@
 ## 처리 중
-
 - upload 테스트 작성
-- 버킷 분리 (Dev, Prod)
 - 프론트 페이지 연결
-- logging Slack webhook 설정 하기
 
 ## 처리 완료
 
@@ -31,6 +28,8 @@
     - cronjob 설정추가하기 (images 테이블 post_id null값일 시 해당 이미지 S3 삭제처리하기)
 - Logging 적용하기
     - 운영서버일 때만 로깅해야함, 로컬에선 off
+- 버킷 분리 (Dev, Prod)
+- logging Slack webhook 설정 하기
 
 ## TODO
 
