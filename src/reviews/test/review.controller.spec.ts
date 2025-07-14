@@ -31,7 +31,7 @@ describe('ReviewController', () => {
 
     describe('/reviews (POST)', () => {
         it('정상적인 요청 시 201 응답코드를 반환한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             return request(app.getHttpServer())
                 .post('/reviews/performers/1')
@@ -43,7 +43,7 @@ describe('ReviewController', () => {
         })
 
         it('performerId 파라미터 값이 정수형이 아닐 시 400 응답코드를 반환한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             return request(app.getHttpServer())
                 .post('/reviews/performers/thisIsPerformerId')
@@ -55,7 +55,7 @@ describe('ReviewController', () => {
         })
 
         it('stars 값의 타입이 문자열일 시 400으로 응답한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             return request(app.getHttpServer())
                 .post('/reviews/performers/:performerId')
@@ -67,7 +67,7 @@ describe('ReviewController', () => {
         })
 
         it('stars 의 값이 비어있을 시 400으로 응답한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             return request(app.getHttpServer())
                 .post('/reviews/performers/:performerId')
@@ -78,7 +78,7 @@ describe('ReviewController', () => {
         })
 
         it('comment 값의 타입이 숫자일 시 400으로 응답한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             return request(app.getHttpServer())
                 .post('/reviews/performers/:performerId')
@@ -90,7 +90,7 @@ describe('ReviewController', () => {
         })
 
         it('comment 의 값이 비어있을 시 400으로 응답한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             return request(app.getHttpServer())
                 .post('/reviews/performers/:performerId')

@@ -40,8 +40,8 @@ describe('ReviewService', () => {
                 requesterId,
                 performerId
             })
-            await jest.spyOn(reviewRepository, 'findOneByRequesterIdAndPost').mockResolvedValue(DUMMY_REVIEW_RESOLVE);
-            await jest.spyOn(userRepository, 'findOneById').mockResolvedValue(DUMMY_USER_RESOLVE);
+            jest.spyOn(reviewRepository, 'findOneByRequesterIdAndPost').mockResolvedValue(DUMMY_REVIEW_RESOLVE);
+            jest.spyOn(userRepository, 'findOneById').mockResolvedValue(DUMMY_USER_RESOLVE);
             await expect(reviewService.create(requesterId, performerId, review)).rejects.toThrow(NotFoundException);
         })
     })

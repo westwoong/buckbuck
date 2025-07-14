@@ -29,8 +29,8 @@ describe('CategoryService ', () => {
     describe('create Category', () => {
         it('카테고리 생성 중 동일한 카테고리명이 있을 시 409에러를 반환한다.', async () => {
             const category = new CategoriesEntity({name: '해줘'});
-            await jest.spyOn(categoryRepository, 'findOneByName').mockResolvedValue(category)
-            await jest.spyOn(categoryRepository, 'save').mockResolvedValue(category)
+            jest.spyOn(categoryRepository, 'findOneByName').mockResolvedValue(category)
+            jest.spyOn(categoryRepository, 'save').mockResolvedValue(category)
             await expect(categoryService.create(category)).rejects.toThrow(ConflictException);
         })
     })
@@ -43,16 +43,16 @@ describe('CategoryService ', () => {
 
         it('수정하려는 카테고리 명이 이미 존재할 시 409 에러를 반환한다.', async () => {
             const category = new CategoriesEntity({name: '수정해줘'});
-            await jest.spyOn(categoryRepository, 'findOneById').mockResolvedValue(category);
-            await jest.spyOn(categoryRepository, 'findOneByName').mockResolvedValue(category);
+            jest.spyOn(categoryRepository, 'findOneById').mockResolvedValue(category);
+            jest.spyOn(categoryRepository, 'findOneByName').mockResolvedValue(category);
             await expect(categoryService.modify(categoryId, category)).rejects.toThrow(ConflictException);
         })
     })
 
     describe('delete Category', () => {
         it('삭제 하려는 카테고리가 존재하지 않을 시 404 에러를 반환한다.', async () => {
-            await jest.spyOn(categoryRepository, 'findOneById').mockResolvedValue(null)
-            await jest.spyOn(categoryRepository, 'removeOne').mockResolvedValue(DUMMY_CATEGORY_RESOLVE)
+            jest.spyOn(categoryRepository, 'findOneById').mockResolvedValue(null)
+            jest.spyOn(categoryRepository, 'removeOne').mockResolvedValue(DUMMY_CATEGORY_RESOLVE)
             await expect(categoryService.delete(categoryId)).rejects.toThrow(NotFoundException);
         })
     })

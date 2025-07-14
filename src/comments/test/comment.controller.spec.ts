@@ -33,7 +33,7 @@ describe('CommentController', () => {
 
     describe('/comments/post/:postId (GET)', () => {
         it('검색 권한이 있을 시 200 코드로 응답한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             await request(app.getHttpServer())
                 .get(`/comments/post/${postId}?commentPage=1`)
@@ -42,7 +42,7 @@ describe('CommentController', () => {
         })
 
         it('commentPage 값이 정수형이 아닌경우 400 코드로 응답한다', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             await request(app.getHttpServer())
                 .get(`/comments/post/${postId}?commentPage=pageNumber`)
@@ -51,7 +51,7 @@ describe('CommentController', () => {
         })
 
         it('postId 값이 정수형이 아닌경우 400 코드로 응답한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             await request(app.getHttpServer())
                 .get(`/comments/post/thisIsPostId?commentPage=1`)
@@ -68,7 +68,7 @@ describe('CommentController', () => {
 
     describe('/comments/:commentId (GET)', () => {
         it('검색 권한이 있을 시 200 코드로 응답한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             await request(app.getHttpServer())
                 .get(`/comments/${commentId}`)
@@ -77,7 +77,7 @@ describe('CommentController', () => {
         })
 
         it('commentId 값이 정수형이 아닌경우 400 코드로 응답한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             await request(app.getHttpServer())
                 .get(`/comments/thisIsCommentId}`)
@@ -94,7 +94,7 @@ describe('CommentController', () => {
 
     describe('/comments/:postId (POST)', () => {
         it('정상적인 요청 시 201 응답코드를 반환한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             await request(app.getHttpServer())
                 .post(`/comments/${postId}`)
@@ -106,7 +106,7 @@ describe('CommentController', () => {
         })
 
         it('postId 값이 정수형이 아닐 시 400 응답코드를 반환한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             await request(app.getHttpServer())
                 .post(`/comments/thisIsPostId`)
@@ -118,7 +118,7 @@ describe('CommentController', () => {
         })
 
         it('content 의 값이 비어있을 시 400으로 응답한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
@@ -129,7 +129,7 @@ describe('CommentController', () => {
         })
 
         it('proposalCost 의 값이 비어있을 시 400으로 응답한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
@@ -152,7 +152,7 @@ describe('CommentController', () => {
 
     describe('/comments/:commentId (PATCH)', () => {
         it('정상적인 요청 시 200 응답코드를 반환한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
@@ -166,7 +166,7 @@ describe('CommentController', () => {
         })
 
         it('commentId 값이 정수형이 아닐 시 400 응답코드를 반환한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
@@ -180,7 +180,7 @@ describe('CommentController', () => {
         })
 
         it('content 의 값이 비어있을 시 400으로 응답한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
@@ -191,7 +191,7 @@ describe('CommentController', () => {
         })
 
         it('proposalCost 의 값이 비어있을 시 400으로 응답한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
@@ -214,7 +214,7 @@ describe('CommentController', () => {
 
     describe('/comments/:commentId (DELETE)', () => {
         it('정상적인 요청 시 204 응답코드를 반환한다', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
@@ -224,7 +224,7 @@ describe('CommentController', () => {
         })
 
         it('commentId 값이 정수형이 아닐 시 400 응답코드를 반환한다', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())

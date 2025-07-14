@@ -72,7 +72,7 @@ describe('PostService', () => {
 
     describe('get Post', () => {
         it('조회할 게시글이 존재하지 않을 시 404 에러를 반환한다', async () => {
-            await jest.spyOn(postRepository, 'findOneById').mockResolvedValue(null);
+            jest.spyOn(postRepository, 'findOneById').mockResolvedValue(null);
             await expect(postService.getPostById(postId)).rejects.toThrow(NotFoundException);
         })
     })
@@ -87,9 +87,9 @@ describe('PostService', () => {
                 userId
             })
 
-            await jest.spyOn(postRepository, 'findPostWithUserByPostId').mockResolvedValue(null);
-            await jest.spyOn(userRepository, 'findOneById').mockResolvedValue(DUMMY_USER_RESOLVE);
-            await jest.spyOn(postRepository, 'save').mockResolvedValue(DUMMY_POST_RESOLVE);
+            jest.spyOn(postRepository, 'findPostWithUserByPostId').mockResolvedValue(null);
+            jest.spyOn(userRepository, 'findOneById').mockResolvedValue(DUMMY_USER_RESOLVE);
+            jest.spyOn(postRepository, 'save').mockResolvedValue(DUMMY_POST_RESOLVE);
             await expect(postService.modify(userId, postId, post)).rejects.toThrow(NotFoundException);
 
         })
@@ -102,27 +102,27 @@ describe('PostService', () => {
                 level: '고수',
                 userId: 5
             })
-            await jest.spyOn(postRepository, 'findPostWithUserByPostId').mockResolvedValue(post);
-            await jest.spyOn(postRepository, 'save').mockResolvedValue(DUMMY_POST_RESOLVE);
+            jest.spyOn(postRepository, 'findPostWithUserByPostId').mockResolvedValue(post);
+            jest.spyOn(postRepository, 'save').mockResolvedValue(DUMMY_POST_RESOLVE);
             await expect(postService.modify(userId, postId, DUMMY_POST_RESOLVE)).rejects.toThrow(ForbiddenException);
         })
     })
 
     describe('delete Post', () => {
         it('삭제할 게시글이 존재하지 않을 시 404 에러를 반환한다', async () => {
-            await jest.spyOn(postRepository, 'findPostWithUserByPostId').mockResolvedValue(null);
-            await jest.spyOn(commentRepository, 'findAllByPost').mockResolvedValue([DUMMY_COMMENT_RESOLVE]);
-            await jest.spyOn(commentRepository, 'removeAll').mockResolvedValue([DUMMY_COMMENT_RESOLVE]);
-            await jest.spyOn(postRepository, 'remove').mockResolvedValue(DUMMY_POST_RESOLVE);
+            jest.spyOn(postRepository, 'findPostWithUserByPostId').mockResolvedValue(null);
+            jest.spyOn(commentRepository, 'findAllByPost').mockResolvedValue([DUMMY_COMMENT_RESOLVE]);
+            jest.spyOn(commentRepository, 'removeAll').mockResolvedValue([DUMMY_COMMENT_RESOLVE]);
+            jest.spyOn(postRepository, 'remove').mockResolvedValue(DUMMY_POST_RESOLVE);
             await expect(postService.delete(userId, postId)).rejects.toThrow(NotFoundException);
         })
 
         it('본인의 게시글이 아닌것을 삭제할 시 403 에러를 반환한다', async () => {
             DUMMY_POST_RESOLVE.userId = 5;
-            await jest.spyOn(postRepository, 'findPostWithUserByPostId').mockResolvedValue(DUMMY_POST_RESOLVE);
-            await jest.spyOn(commentRepository, 'findAllByPost').mockResolvedValue([DUMMY_COMMENT_RESOLVE]);
-            await jest.spyOn(commentRepository, 'removeAll').mockResolvedValue([DUMMY_COMMENT_RESOLVE]);
-            await jest.spyOn(postRepository, 'remove').mockResolvedValue(DUMMY_POST_RESOLVE);
+            jest.spyOn(postRepository, 'findPostWithUserByPostId').mockResolvedValue(DUMMY_POST_RESOLVE);
+            jest.spyOn(commentRepository, 'findAllByPost').mockResolvedValue([DUMMY_COMMENT_RESOLVE]);
+            jest.spyOn(commentRepository, 'removeAll').mockResolvedValue([DUMMY_COMMENT_RESOLVE]);
+            jest.spyOn(postRepository, 'remove').mockResolvedValue(DUMMY_POST_RESOLVE);
             await expect(postService.delete(userId, postId)).rejects.toThrow(ForbiddenException);
         })
     })

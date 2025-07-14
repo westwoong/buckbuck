@@ -56,7 +56,7 @@ describe('PostController', () => {
 
     describe('/posts (POST)', () => {
         it('정상적인 요청 시 201 응답코드를 반환한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             return request(app.getHttpServer())
                 .post('/posts')
@@ -70,7 +70,7 @@ describe('PostController', () => {
         })
 
         it('title 의 값이 비어있을 시 400 코드로 응답한다', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
@@ -85,7 +85,7 @@ describe('PostController', () => {
         })
 
         it('content 의 값이 비어있을 시 400 코드로 응답한다', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
@@ -100,7 +100,7 @@ describe('PostController', () => {
         })
 
         it('level 의 값이 비어있을 시 400 코드로 응답한다', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
@@ -129,7 +129,7 @@ describe('PostController', () => {
 
     describe('/posts/:postId (PATCH)', () => {
         it('정상적인 요청 시 200 응답코드를 반환한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             return request(app.getHttpServer())
                 .patch('/posts/1')
@@ -143,7 +143,7 @@ describe('PostController', () => {
         })
 
         it('postId의 값이 정수형이 아닐 시 400 응답코드를 반환한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             return request(app.getHttpServer())
                 .patch('/posts/thisIsPostId')
@@ -157,7 +157,7 @@ describe('PostController', () => {
         })
 
         it('title 의 값이 비어있을 시 400 코드로 응답한다', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
@@ -172,7 +172,7 @@ describe('PostController', () => {
         })
 
         it('content 의 값이 비어있을 시 400 코드로 응답한다', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
@@ -187,7 +187,7 @@ describe('PostController', () => {
         })
 
         it('level 의 값이 비어있을 시 400 코드로 응답한다', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
 
             return request(app.getHttpServer())
@@ -216,7 +216,7 @@ describe('PostController', () => {
 
     describe('/posts/:postId (DELETE)', () => {
         it('정상적인 삭제 요청 시 204 응답코드를 반환한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             return request(app.getHttpServer())
                 .delete('/posts/1')
@@ -226,7 +226,7 @@ describe('PostController', () => {
         })
 
         it('삭제하려는 postId의 값이 정수형이 아닐 시 400 응답코드를 반환한다.', async () => {
-            await jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
+            jest.spyOn(userService, 'findOneById').mockResolvedValue({userId: 1});
             const userToken = authService.signInWithJwt({userId: 1})
             return request(app.getHttpServer())
                 .delete('/posts/deletePostId')

@@ -53,7 +53,7 @@ describe('CommentService', () => {
     describe('create Comment', () => {
         it('게시글이 존재하지 않을 시 404 에러를 반환한다', async () => {
             const comment = new CommentEntity({content: '테스트 댓글', proposalCost: 1000, postId, userId});
-            await jest.spyOn(postRepository, 'findOneById').mockResolvedValue(null);
+            jest.spyOn(postRepository, 'findOneById').mockResolvedValue(null);
             await expect(commentService.create(userId, postId, comment)).rejects.toThrow(NotFoundException);
         })
     })
@@ -61,27 +61,27 @@ describe('CommentService', () => {
     describe('modify Comment', () => {
         it('수정할 댓글이 존재하지 않을 시 404 에러를 반환한다', async () => {
             const comment = new CommentEntity({content: '테스트 댓글', proposalCost: 1000, postId, userId});
-            await jest.spyOn(commentRepository, 'findCommentWithUser').mockResolvedValue(null);
+            jest.spyOn(commentRepository, 'findCommentWithUser').mockResolvedValue(null);
             await expect(commentService.modify(userId, commentId, comment)).rejects.toThrow(NotFoundException);
         })
 
         it('수정 요청을 하는 userId가 댓글의 userId 값과 같지 않으면 403에러를 반환한다', async () => {
             const comment = new CommentEntity({content: '테스트 댓글', proposalCost: 1000, userId, postId});
-            await jest.spyOn(commentRepository, 'findCommentWithUser').mockResolvedValue(DUMMY_COMMENT_RESOLVE);
+            jest.spyOn(commentRepository, 'findCommentWithUser').mockResolvedValue(DUMMY_COMMENT_RESOLVE);
             await expect(commentService.modify(userId, commentId, comment)).rejects.toThrow(ForbiddenException);
         })
     })
 
     describe('delete Comment', () => {
         it('삭제할 댓글이 존재하지 않을 시 404 에러를 반환한다', async () => {
-            await jest.spyOn(commentRepository, 'findCommentWithUser').mockResolvedValue(null)
+            jest.spyOn(commentRepository, 'findCommentWithUser').mockResolvedValue(null)
             await expect(commentService.delete(userId, commentId)).rejects.toThrow(NotFoundException);
         })
 
         it('삭제 요청을하는 userId 와 댓글의 userId가 같지 않을 시 403에러를 반환한다', async () => {
             DUMMY_COMMENT_RESOLVE.userId = 5555;
-            await jest.spyOn(commentRepository, 'findCommentWithUser').mockResolvedValue(DUMMY_COMMENT_RESOLVE);
-            await jest.spyOn(commentRepository, 'removeOne').mockResolvedValue(DUMMY_COMMENT_RESOLVE);
+            jest.spyOn(commentRepository, 'findCommentWithUser').mockResolvedValue(DUMMY_COMMENT_RESOLVE);
+            jest.spyOn(commentRepository, 'removeOne').mockResolvedValue(DUMMY_COMMENT_RESOLVE);
 
             await expect(commentService.delete(userId, commentId)).rejects.toThrow(ForbiddenException);
         })
@@ -89,20 +89,20 @@ describe('CommentService', () => {
 
     describe('searchByCommentId()', () => {
         it('검색한 댓글이 존재하지 않을 시 404 에러를 반환한다', async () => {
-            await jest.spyOn(commentRepository, 'findCommentWithUser').mockResolvedValue(null);
+            jest.spyOn(commentRepository, 'findCommentWithUser').mockResolvedValue(null);
             await expect(commentService.searchByCommentId(commentId)).rejects.toThrow(NotFoundException);
         })
     })
 
     describe('searchCommentByPostId', () => {
         it('댓글을 조회할 게시글이 존재하지 않을 시 404 에러를 반환한다.', async () => {
-            await jest.spyOn(postRepository, 'findOneById').mockResolvedValue(null);
+            jest.spyOn(postRepository, 'findOneById').mockResolvedValue(null);
             await expect(commentService.searchCommentByPostId(postId, page)).rejects.toThrow(NotFoundException)
         })
 
         it('해당 게시글에 댓글이 존재하지 않을 시 "comments"가 빈 배열이여야 한다.', async () => {
-            await jest.spyOn(postRepository, 'findOneById').mockResolvedValue(DUMMY_POST_RESOLVE);
-            await jest.spyOn(commentRepository, 'getCommentByPostIdSortedDescending').mockResolvedValue(null);
+            jest.spyOn(postRepository, 'findOneById').mockResolvedValue(DUMMY_POST_RESOLVE);
+            jest.spyOn(commentRepository, 'getCommentByPostIdSortedDescending').mockResolvedValue(null);
             await expect(commentService.searchCommentByPostId(postId, page))
                 .resolves
                 .toEqual({
