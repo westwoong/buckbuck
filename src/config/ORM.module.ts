@@ -32,4 +32,5 @@ import * as process from 'process';
     }),
   ],
 })
-export class ORMModule {}
+export class ORMModule {
+}

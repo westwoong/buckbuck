@@ -1,60 +1,60 @@
-import {Column, Entity, ManyToOne, OneToMany, RelationId} from "typeorm";
-import {DefaultEntityColumn} from "../config/default.entity";
-import {UserEntity} from "../users/User.entity";
-import {CommentEntity} from "../comments/Comment.entity";
-import {PostToCategoriesEntity} from "../categories/PostToCategories.entity";
-import {ReviewEntity} from "../reviews/Review.entity";
-import {UploadEntity} from "../uploads/upload.entity";
+import { Column, Entity, ManyToOne, OneToMany, RelationId } from "typeorm";
+import { DefaultEntityColumn } from "../config/default.entity";
+import { UserEntity } from "../users/User.entity";
+import { CommentEntity } from "../comments/Comment.entity";
+import { PostToCategoriesEntity } from "../categories/PostToCategories.entity";
+import { ReviewEntity } from "../reviews/Review.entity";
+import { UploadEntity } from "../uploads/upload.entity";
 
 interface IPostConstructor {
-    title: string;
-    content: string;
-    cost: number;
-    level: string;
-    userId: number;
+  title: string;
+  content: string;
+  cost: number;
+  level: string;
+  userId: number;
 }
 
 @Entity('posts')
 export class PostEntity extends DefaultEntityColumn {
-    @Column()
-    title: string;
+  @Column()
+  title: string;
 
-    @Column()
-    content: string;
+  @Column()
+  content: string;
 
-    @Column()
-    cost: number;
+  @Column()
+  cost: number;
 
-    @Column()
-    level: string
+  @Column()
+  level: string
 
-    @OneToMany(() => CommentEntity, (comment) => comment.post)
-    comment: CommentEntity[];
+  @OneToMany(() => CommentEntity, (comment) => comment.post)
+  comment: CommentEntity[];
 
-    @ManyToOne(() => UserEntity, (user) => user.post, {nullable: false})
-    user: UserEntity;
+  @ManyToOne(() => UserEntity, (user) => user.post, { nullable: false })
+  user: UserEntity;
 
-    @Column()
-    @RelationId((post: PostEntity) => post.user)
-    userId: number;
+  @Column()
+  @RelationId((post: PostEntity) => post.user)
+  userId: number;
 
-    @OneToMany(() => PostToCategoriesEntity, (postToCategory) => postToCategory.post)
-    postToCategories: PostToCategoriesEntity[];
+  @OneToMany(() => PostToCategoriesEntity, (postToCategory) => postToCategory.post)
+  postToCategories: PostToCategoriesEntity[];
 
-    @OneToMany(() => UploadEntity, (image) => image.post)
-    uploadFile: UploadEntity[];
+  @OneToMany(() => UploadEntity, (image) => image.post)
+  uploadFile: UploadEntity[];
 
-    @OneToMany(() => ReviewEntity, (review) => review.postId)
-    review: ReviewEntity[];
+  @OneToMany(() => ReviewEntity, (review) => review.postId)
+  review: ReviewEntity[];
 
-    constructor(post: IPostConstructor) {
-        super();
-        if (post) {
-            this.title = post.title;
-            this.content = post.content;
-            this.cost = post.cost;
-            this.level = post.level;
-            this.userId = post.userId;
-        }
+  constructor(post: IPostConstructor) {
+    super();
+    if (post) {
+      this.title = post.title;
+      this.content = post.content;
+      this.cost = post.cost;
+      this.level = post.level;
+      this.userId = post.userId;
     }
+  }
 }

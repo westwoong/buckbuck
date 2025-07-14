@@ -1,168 +1,168 @@
-import {INestApplication, ValidationPipe} from '@nestjs/common';
-import {Test, TestingModule} from '@nestjs/testing';
-import {AppModule} from '../../app.module';
-import {initializeTransactionalContext} from 'typeorm-transactional';
-import {DataSource} from "typeorm";
-import {CommentEntity} from "../Comment.entity";
-import {UserTokenFactory} from "../../common/testSetup/user/userTokenFactory";
-import {UserFinder} from "../../common/testSetup/user/userFinder";
-import {PostFactory} from "../../common/testSetup/post/postFactory";
-import {CommentFactory} from "../../common/testSetup/comment/commentFactory";
-import {TypeormCommentRepository} from "../typeormComment.repository";
-import {COMMENT_REPOSITORY} from "../../common/injectToken.constant";
-import {SearchCommentResponseDto} from "../dto/searchComment.response.dto";
-import {GetCommentsByPostIdResponseDto} from "../dto/getCommentByPostId.response.dto";
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { AppModule } from '../../app.module';
+import { initializeTransactionalContext } from 'typeorm-transactional';
+import { DataSource } from "typeorm";
+import { CommentEntity } from "../Comment.entity";
+import { UserTokenFactory } from "../../common/testSetup/user/userTokenFactory";
+import { UserFinder } from "../../common/testSetup/user/userFinder";
+import { PostFactory } from "../../common/testSetup/post/postFactory";
+import { CommentFactory } from "../../common/testSetup/comment/commentFactory";
+import { TypeormCommentRepository } from "../typeormComment.repository";
+import { COMMENT_REPOSITORY } from "../../common/injectToken.constant";
+import { SearchCommentResponseDto } from "../dto/searchComment.response.dto";
+import { GetCommentsByPostIdResponseDto } from "../dto/getCommentByPostId.response.dto";
 
 describe('CommentRepository (E2E)', () => {
-    let app: INestApplication;
-    let commentRepository: TypeormCommentRepository
-    let dataSource: DataSource;
+  let app: INestApplication;
+  let commentRepository: TypeormCommentRepository
+  let dataSource: DataSource;
 
-    beforeAll(async () => {
-        initializeTransactionalContext();
-        process.env.NODE_ENV='local';
-        const moduleRef: TestingModule = await Test.createTestingModule({
-            imports: [AppModule],
-        }).compile();
+  beforeAll(async () => {
+    initializeTransactionalContext();
+    process.env.NODE_ENV = 'local';
+    const moduleRef: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
 
-        dataSource = moduleRef.get<DataSource>(DataSource);
-        commentRepository = moduleRef.get<TypeormCommentRepository>(COMMENT_REPOSITORY);
+    dataSource = moduleRef.get<DataSource>(DataSource);
+    commentRepository = moduleRef.get<TypeormCommentRepository>(COMMENT_REPOSITORY);
 
-        app = moduleRef.createNestApplication();
-        app.useGlobalPipes(new ValidationPipe({transform: true}));
-    });
+    app = moduleRef.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  });
 
-    beforeEach(async () => {
-        if (process.env.NODE_ENV === 'develop' || process.env.NODE_ENV === 'local') {
-            await dataSource.dropDatabase();
-        }
-        await dataSource.synchronize();
+  beforeEach(async () => {
+    if (process.env.NODE_ENV === 'develop' || process.env.NODE_ENV === 'local') {
+      await dataSource.dropDatabase();
+    }
+    await dataSource.synchronize();
+  })
+
+  describe('getCommentByPostIdSortedDescending()', () => {
+    it('게시글에 달린 댓글 조회시 nickName 속성이 포함되어야한다.', async () => {
+      const userTokenFactory = new UserTokenFactory(dataSource);
+      await userTokenFactory.createUser()
+      const userFinder = new UserFinder(dataSource);
+      const userId = await userFinder.userId();
+      const postFactory = new PostFactory(dataSource, userId);
+      const post = await postFactory.createPost();
+      const commentFactory = new CommentFactory(dataSource, userId, post.id);
+      await commentFactory.createComment();
+      await commentFactory.createSecondComment();
+
+      let page = 1
+      const searchedComment = await commentRepository.getCommentByPostIdSortedDescending(post.id, page);
+      const formatterComment = new GetCommentsByPostIdResponseDto(searchedComment!);
+
+      expect(formatterComment.comments[0]).toHaveProperty('nickName')
+    })
+  })
+
+  describe('save()', () => {
+    it('댓글을 정상적으로 저장한다.', async () => {
+      const userTokenFactory = new UserTokenFactory(dataSource)
+      await userTokenFactory.createUser();
+      const userFinder = new UserFinder(dataSource);
+      const userId = await userFinder.userId();
+      const postFactory = new PostFactory(dataSource, userId);
+      const post = await postFactory.createPost();
+
+      const comment = new CommentEntity({
+        content: '테스트 댓글 달아봅니다.',
+        proposalCost: 15000,
+        userId: userId,
+        postId: post.id
+      })
+
+      const savedComment = await commentRepository.save(comment);
+
+      expect(savedComment.content).toBe(comment.content);
+      expect(savedComment.proposalCost).toBe(comment.proposalCost);
+      expect(savedComment.userId).toBeDefined();
+      expect(savedComment.postId).toBeDefined();
     })
 
-    describe('getCommentByPostIdSortedDescending()', () => {
-        it('게시글에 달린 댓글 조회시 nickName 속성이 포함되어야한다.', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource);
-            await userTokenFactory.createUser()
-            const userFinder = new UserFinder(dataSource);
-            const userId = await userFinder.userId();
-            const postFactory = new PostFactory(dataSource, userId);
-            const post = await postFactory.createPost();
-            const commentFactory = new CommentFactory(dataSource, userId, post.id);
-            await commentFactory.createComment();
-            await commentFactory.createSecondComment();
+    it('댓글을 정상적으로 수정한다.', async () => {
+      const userTokenFactory = new UserTokenFactory(dataSource);
+      await userTokenFactory.createUser()
+      const userFinder = new UserFinder(dataSource);
+      const userId = await userFinder.userId();
+      const postFactory = new PostFactory(dataSource, userId);
+      const post = await postFactory.createPost();
+      const commentFactory = new CommentFactory(dataSource, userId, post.id);
+      const comment = await commentFactory.createComment();
 
-            let page = 1
-            const searchedComment = await commentRepository.getCommentByPostIdSortedDescending(post.id, page);
-            const formatterComment = new GetCommentsByPostIdResponseDto(searchedComment!);
+      expect(comment.content).toBe('테스트 댓글 달아봅니다.')
+      expect(comment.proposalCost).toBe(15000);
 
-            expect(formatterComment.comments[0]).toHaveProperty('nickName')
-        })
+      const modifyComment = {
+        content: '테스트 댓글 수정해봅니다.',
+        proposalCost: 50500
+      }
+      comment.content = modifyComment.content;
+      comment.proposalCost = modifyComment.proposalCost;
+
+      const modifiedComment = await commentRepository.save(comment);
+
+      expect(modifiedComment.content).toBe(modifyComment.content)
+    })
+  })
+
+  describe('findCommentWithUser()', () => {
+    it('댓글과 사용자의 데이터를 가져온다', async () => {
+      const userTokenFactory = new UserTokenFactory(dataSource);
+      await userTokenFactory.createUser()
+      const userFinder = new UserFinder(dataSource);
+      const userId = await userFinder.userId();
+      const postFactory = new PostFactory(dataSource, userId);
+      const post = await postFactory.createPost();
+      const commentFactory = new CommentFactory(dataSource, userId, post.id);
+      const comment = await commentFactory.createComment();
+
+      const foundComment = await commentRepository.findCommentWithUser(comment.id)
+
+      expect(foundComment?.id).toBeDefined();
+      expect(foundComment?.user).toBeDefined();
     })
 
-    describe('save()', () => {
-        it('댓글을 정상적으로 저장한다.', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource)
-            await userTokenFactory.createUser();
-            const userFinder = new UserFinder(dataSource);
-            const userId = await userFinder.userId();
-            const postFactory = new PostFactory(dataSource, userId);
-            const post = await postFactory.createPost();
+    it('가져온 댓글의 데이터에 사용자의 비밀번호 정보가 없어야한다.', async () => {
+      const userTokenFactory = new UserTokenFactory(dataSource);
+      await userTokenFactory.createUser()
+      const userFinder = new UserFinder(dataSource);
+      const userId = await userFinder.userId();
+      const postFactory = new PostFactory(dataSource, userId);
+      const post = await postFactory.createPost();
+      const commentFactory = new CommentFactory(dataSource, userId, post.id);
+      const comment = await commentFactory.createComment();
 
-            const comment = new CommentEntity({
-                content: '테스트 댓글 달아봅니다.',
-                proposalCost: 15000,
-                userId: userId,
-                postId: post.id
-            })
+      const searchedComment = await commentRepository.findCommentWithUser(comment.id)
+      const foundComment = new SearchCommentResponseDto(searchedComment!)
 
-            const savedComment = await commentRepository.save(comment);
-
-            expect(savedComment.content).toBe(comment.content);
-            expect(savedComment.proposalCost).toBe(comment.proposalCost);
-            expect(savedComment.userId).toBeDefined();
-            expect(savedComment.postId).toBeDefined();
-        })
-
-        it('댓글을 정상적으로 수정한다.', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource);
-            await userTokenFactory.createUser()
-            const userFinder = new UserFinder(dataSource);
-            const userId = await userFinder.userId();
-            const postFactory = new PostFactory(dataSource, userId);
-            const post = await postFactory.createPost();
-            const commentFactory = new CommentFactory(dataSource, userId, post.id);
-            const comment = await commentFactory.createComment();
-
-            expect(comment.content).toBe('테스트 댓글 달아봅니다.')
-            expect(comment.proposalCost).toBe(15000);
-
-            const modifyComment = {
-                content: '테스트 댓글 수정해봅니다.',
-                proposalCost: 50500
-            }
-            comment.content = modifyComment.content;
-            comment.proposalCost = modifyComment.proposalCost;
-
-            const modifiedComment = await commentRepository.save(comment);
-
-            expect(modifiedComment.content).toBe(modifyComment.content)
-        })
+      expect(foundComment.comment).not.toHaveProperty('password');
     })
+  })
 
-    describe('findCommentWithUser()', () => {
-        it('댓글과 사용자의 데이터를 가져온다', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource);
-            await userTokenFactory.createUser()
-            const userFinder = new UserFinder(dataSource);
-            const userId = await userFinder.userId();
-            const postFactory = new PostFactory(dataSource, userId);
-            const post = await postFactory.createPost();
-            const commentFactory = new CommentFactory(dataSource, userId, post.id);
-            const comment = await commentFactory.createComment();
+  describe('remove()', () => {
+    it('댓글을 정상적으로 삭제한다.', async () => {
+      const userTokenFactory = new UserTokenFactory(dataSource);
+      await userTokenFactory.createUser()
+      const userFinder = new UserFinder(dataSource);
+      const userId = await userFinder.userId();
+      const postFactory = new PostFactory(dataSource, userId);
+      const post = await postFactory.createPost();
+      const commentFactory = new CommentFactory(dataSource, userId, post.id);
+      const comment = await commentFactory.createComment();
 
-            const foundComment = await commentRepository.findCommentWithUser(comment.id)
+      await commentRepository.removeOne(comment);
 
-            expect(foundComment?.id).toBeDefined();
-            expect(foundComment?.user).toBeDefined();
-        })
+      const foundComment = await commentRepository.findCommentWithUser(comment.id);
 
-        it('가져온 댓글의 데이터에 사용자의 비밀번호 정보가 없어야한다.', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource);
-            await userTokenFactory.createUser()
-            const userFinder = new UserFinder(dataSource);
-            const userId = await userFinder.userId();
-            const postFactory = new PostFactory(dataSource, userId);
-            const post = await postFactory.createPost();
-            const commentFactory = new CommentFactory(dataSource, userId, post.id);
-            const comment = await commentFactory.createComment();
-
-            const searchedComment = await commentRepository.findCommentWithUser(comment.id)
-            const foundComment = new SearchCommentResponseDto(searchedComment!)
-
-            expect(foundComment.comment).not.toHaveProperty('password');
-        })
+      expect(foundComment).toBe(null);
     })
+  })
 
-    describe('remove()', () => {
-        it('댓글을 정상적으로 삭제한다.', async () => {
-            const userTokenFactory = new UserTokenFactory(dataSource);
-            await userTokenFactory.createUser()
-            const userFinder = new UserFinder(dataSource);
-            const userId = await userFinder.userId();
-            const postFactory = new PostFactory(dataSource, userId);
-            const post = await postFactory.createPost();
-            const commentFactory = new CommentFactory(dataSource, userId, post.id);
-            const comment = await commentFactory.createComment();
-
-            await commentRepository.removeOne(comment);
-
-            const foundComment = await commentRepository.findCommentWithUser(comment.id);
-
-            expect(foundComment).toBe(null);
-        })
-    })
-
-    afterAll(async () => {
-        await app.close();
-    })
+  afterAll(async () => {
+    await app.close();
+  })
 })

@@ -1,17 +1,17 @@
-import {UserEntity} from "./User.entity";
+import { UserEntity } from "./User.entity";
 
 export interface UserRepository {
-    findAll(): Promise<UserEntity[]>
+  findAll(): Promise<UserEntity[]>
 
-    findOneById(userId: number): Promise<UserEntity | null>
+  findOneById(userId: number): Promise<UserEntity | null>
 
-    findByEmail(email: string): Promise<UserEntity | null>
+  findByEmail(email: string): Promise<UserEntity | null>
 
-    findByPhoneNumber(phoneNumber: string): Promise<UserEntity | null>
+  findByPhoneNumber(phoneNumber: string): Promise<UserEntity | null>
 
-    findByAccount(account: string): Promise<UserEntity | null>
+  findByAccount(account: string): Promise<UserEntity | null>
 
-    findByNickName(nickName: string): Promise<UserEntity | null>
+  findByNickName(nickName: string): Promise<UserEntity | null>
 
-    save(user: UserEntity): Promise<UserEntity>
+  save(user: UserEntity): Promise<UserEntity>
 }

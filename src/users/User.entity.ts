@@ -1,75 +1,75 @@
-import {Column, Entity, OneToMany} from "typeorm";
-import {DefaultEntityColumn} from "../config/default.entity";
-import {PostEntity} from "../posts/Post.entity";
-import {CommentEntity} from "../comments/Comment.entity";
-import {ReviewEntity} from "../reviews/Review.entity";
-import {UploadEntity} from "../uploads/upload.entity";
+import { Column, Entity, OneToMany } from "typeorm";
+import { DefaultEntityColumn } from "../config/default.entity";
+import { PostEntity } from "../posts/Post.entity";
+import { CommentEntity } from "../comments/Comment.entity";
+import { ReviewEntity } from "../reviews/Review.entity";
+import { UploadEntity } from "../uploads/upload.entity";
 
 
 interface IUserConstructor {
-    account: string;
-    password: string
-    salt: string;
-    address?: string;
-    name: string;
-    email: string;
-    phoneNumber: string;
-    nickName: string;
+  account: string;
+  password: string
+  salt: string;
+  address?: string;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  nickName: string;
 }
 
 @Entity('users')
 export class UserEntity extends DefaultEntityColumn {
-    @Column()
-    account: string;
+  @Column()
+  account: string;
 
-    @Column()
-    password: string;
+  @Column()
+  password: string;
 
-    @Column({nullable: true})
-    salt: string;
+  @Column({ nullable: true })
+  salt: string;
 
-    @Column()
-    name: string;
+  @Column()
+  name: string;
 
-    @Column()
-    email: string;
+  @Column()
+  email: string;
 
-    @Column()
-    phoneNumber: string;
+  @Column()
+  phoneNumber: string;
 
-    @Column()
-    nickName: string;
+  @Column()
+  nickName: string;
 
-    @Column({nullable: true})
-    address?: string;
+  @Column({ nullable: true })
+  address?: string;
 
-    @OneToMany(() => PostEntity, (post) => post.user)
-    post: PostEntity[];
+  @OneToMany(() => PostEntity, (post) => post.user)
+  post: PostEntity[];
 
-    @OneToMany(() => CommentEntity, (comment) => comment.user)
-    comment: CommentEntity[];
+  @OneToMany(() => CommentEntity, (comment) => comment.user)
+  comment: CommentEntity[];
 
-    @OneToMany(() => UploadEntity, (image) => image.user)
-    image: UploadEntity[];
+  @OneToMany(() => UploadEntity, (image) => image.user)
+  image: UploadEntity[];
 
-    @OneToMany(() => ReviewEntity, (review) => review.requester)
-    requester: ReviewEntity[];
+  @OneToMany(() => ReviewEntity, (review) => review.requester)
+  requester: ReviewEntity[];
 
-    @OneToMany(() => ReviewEntity, (review) => review.performer)
-    performer: ReviewEntity[];
+  @OneToMany(() => ReviewEntity, (review) => review.performer)
+  performer: ReviewEntity[];
 
 
-    constructor(user: IUserConstructor) {
-        super();
-        if (user) {
-            this.account = user.account;
-            this.password = user.password;
-            this.salt = user.salt;
-            this.name = user.name;
-            this.email = user.email;
-            this.phoneNumber = user.phoneNumber;
-            this.nickName = user.nickName;
-            this.address = user.address;
-        }
+  constructor(user: IUserConstructor) {
+    super();
+    if (user) {
+      this.account = user.account;
+      this.password = user.password;
+      this.salt = user.salt;
+      this.name = user.name;
+      this.email = user.email;
+      this.phoneNumber = user.phoneNumber;
+      this.nickName = user.nickName;
+      this.address = user.address;
     }
+  }
 }
