@@ -18,8 +18,7 @@ import { AllExceptionFilter } from "./config/allExceptionFilter";
 @Module({
   imports: [
     UserModule, CategoriesModule, CommentModule,
-    PostModule, ORMModule, AuthModule, PostModule,
-    CommentModule, ReviewModule, CategoriesModule,
+    PostModule, ORMModule, AuthModule, ReviewModule,
     JwtPassportModule, SwaggerSetupModule, UploadModule,
     LoggerModule, ScheduleModule.forRoot(), TaskModule
   ],
