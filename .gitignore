@@ -4,6 +4,7 @@
 # compiled output
 /dist
 /node_modules
+/buckbuck_front
 
 # Logs
 logs
